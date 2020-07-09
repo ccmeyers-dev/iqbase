@@ -1,0 +1,21 @@
+#webapp config
+
+import os
+import sys
+#
+## assuming your django settings file is at '/home/username/mysite/mysite/settings.py'
+## and your manage.py is is at '/home/iqoptions/mysite/manage.py'
+# here mysite is called appname
+path = '/home/username/appname'
+if path not in sys.path:
+    sys.path.append(path)
+#
+os.environ['DJANGO_SETTINGS_MODULE'] = 'appname.settings'
+#
+## then:
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+
+#bash console
+
+echo 'set -a; source /home/username/projectname/.env; set +a' >> /home/username/.virtualenvs/virtualenvname/bin/postactivate

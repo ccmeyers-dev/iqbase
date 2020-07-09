@@ -1,0 +1,18 @@
+from django.contrib import admin
+from django.urls import path, include, re_path
+from account import views
+from broker.views import home
+
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('ccmeyers100/', admin.site.urls),
+    path('', include('front.urls')),
+    path('register/', views.register_view, name='register'),
+    path('profile_authentication/', views.profile, name='profile'),
+    path('action_block/', views.action_block, name='action_block'),
+    path('login/', views.login_view, name="login"),
+    path('logout/', views.logout_view, name="logout"),
+    re_path('$', home),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
