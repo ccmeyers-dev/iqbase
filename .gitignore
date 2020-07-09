@@ -1,4 +1,6 @@
 __pycache__
 *.sqlite3
 .env
-assets/
+/assets/
+front_id/
+back_id/

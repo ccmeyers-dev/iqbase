@@ -1,6 +1,11 @@
 #webapp config
 
 import os
+
+from dotenv import load_dotenv
+project_folder = os.path.expanduser('/home/iqoptions/global')  # adjust as appropriate
+load_dotenv(os.path.join(project_folder, '.env'))
+
 import sys
 #
 ## assuming your django settings file is at '/home/username/mysite/mysite/settings.py'
