@@ -37,10 +37,11 @@
                             <div class="card-body text-center px-5 pb-5"><img
                                     src="{% static '/assets/images/coins/lite.png' %}" alt="" class="thumb-lg">
                                 <div class="my-4">
-                                    <h2 class="font-24">${{ltc_balance|floatformat:2}}</h2>
-                                    {% if ltc_balance <= 0 %}
+                                    <h2 class="font-24">${{cust.ltc_available|floatformat:2}}</h2>
+                                    {% if cust.ltc_available < 1000 %}
                                     <p class="text-muted mb-3">Not enough funds</p>
-                                    {% elif ltc_balance > 0 %}
+                                    <p class="text-muted mb-3">Minimum withdrawal is $1000</p>
+                                    {% else %}
                                     <p class="text-muted mb-3">Your available balance</p>
                                     {%endif%}
                                 </div>
@@ -53,10 +54,10 @@
                                 <!--end form-group-->
                                 <div class="form-group mb-0 row">
                                     <div class="col-12 mt-2">
-                                        {% if ltc_balance <= 0 %}
-                                        <input disabled class="btn btn-dark btn-rounded btn-block waves-effect waves-light py-2" type="button" value="Insufficient Balance">
-                                        {% elif ltc_balance > 0 %}
-                                        <input class="btn btn-dark btn-rounded btn-block waves-effect waves-light py-2" type="button" value="Withdraw is disabled">
+                                        {% if cust.ltc_available < 1000 %}
+                                        <input disabled class="shadow-none btn btn-dark btn-rounded btn-block waves-effect waves-light py-2" type="button" value="Insufficient Balance">
+                                        {% else %}
+                                        <input class="shadow-none btn btn-dark btn-rounded btn-block waves-effect waves-light py-2" type="button" value="Withdrawal is disabled">
                                         {%endif%}
                                     </div>
                                 </div>
@@ -87,18 +88,6 @@
     <script src="{% static '/plugins/apexcharts/irregular-data-series.js' %}"></script>
     <script src="{% static '/assets/pages/jquery.crypto-dashboard.init.js' %}"></script><!-- App js -->
     <script src="{% static '/assets/js/app.js' %}"></script>
-    <script>
-        function copyElementText(id) {
-            var text = document.getElementById(id).innerText;
-            var elem = document.createElement("textarea");
-            document.body.appendChild(elem);
-            elem.value = text;
-            elem.select();
-            document.execCommand("copy");
-            document.body.removeChild(elem);
-            document.getElementById('copy').innerHTML = "Copied";
-        }
-    </script>
 </body>
 <!-- Mirrored from mannatthemes.com/metrica/metrica_live/crypto/crypto-index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 31 May 2020 23:09:23 GMT -->
 

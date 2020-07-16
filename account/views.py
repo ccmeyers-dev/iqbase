@@ -4,38 +4,44 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from .forms import RegistrationForm, LoginForm, CustomerForm
+from .models import Account
+from .forms import *
 from broker.views import Customer
+from broker.decorators import *
 from smtplib import SMTPException
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 def profile(request):
     user = request.user
+    ref = user.referrer
     if  user.is_setup:
         return redirect('dashboard')
     cust = user.customer
-    form = CustomerForm(initial={'user': cust})
     if request.POST:
-        user.is_setup = True
-        user.save()
         form = CustomerForm(request.POST, request.FILES, instance=cust)
         if form.is_valid():
+            user.is_setup = True
+            user.save()
             form.save()
-            try:
-                name = user.first_name
-                subject = 'Welcome to IQ Options Trade'
-                html_message = render_to_string('front/mail.html', {
-                    'name': name,
-                    })
-                plain_message = strip_tags(html_message)
-                from_email = settings.EMAIL_HOST_USER
-                to = user.email
-                send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+            if settings.DEBUG:
                 return redirect('dashboard')
-            except SMTPException:
-                return redirect('dashboard')
+            else:
+                try:
+                    name = user.first_name
+                    subject = 'Welcome to IQ Options Trade'
+                    html_message = render_to_string('front/mail.html', {
+                        'name': name,
+                        })
+                    plain_message = strip_tags(html_message)
+                    from_email = settings.EMAIL_HOST_USER
+                    to = user.email
+                    send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+                    return redirect('dashboard')
+                except SMTPException:
+                    return redirect('dashboard')
+    else:
+        form = CustomerForm(initial={'user': user, 'referrer': ref})
     context = {'form': form}
     return render(request, 'front/auth/auth-profile.html', context)
 
@@ -66,6 +72,44 @@ def register_view(request):
         context['form'] = form
     return render(request, 'front/auth/auth-register.html', context)
 
+def register_view_ref(request, ref):
+    user = request.user
+
+    try:
+        referrer = Customer.objects.get(unique_id=ref)
+    except Customer.DoesNotExist:
+        ref = 'None'
+        referrer = 'None'
+        return redirect('register')
+
+    if user.is_authenticated:
+        cust = user.customer
+        return redirect('dashboard')
+
+    form = RegistrationForm()
+    if request.POST:
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            act = form.save()
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password1')
+            account = authenticate(email=email, password=raw_password)
+            if account:
+                act.save()
+                login(request, account)
+                return redirect('profile')
+            else:
+                context['form'] = RegistrationForm(request.POST)
+        else:
+            context['form'] = RegistrationForm(request.POST)
+    else:
+        form = RegistrationForm(initial={'referrer': ref})
+    context = {
+        'form': form,
+        'referrer': referrer
+    }
+    return render(request, 'front/auth/auth-register.html', context)
+
 def login_view(request):
     context = {}
     user = request.user
@@ -90,6 +134,11 @@ def login_view(request):
         context['form'] = LoginForm()
     return render(request, 'front/auth/auth-login.html', context)
 
+def referral(request):
+    if request.POST:
+        ref = request.POST['ref']
+        return redirect('register_ref', ref)
+    return render(request, 'front/auth/auth-ref.html')
 
 def logout_view(request):
     logout(request)
@@ -99,3 +148,43 @@ def action_block(request):
     if request.user.is_verified:
         return redirect('dashboard')
     return render(request, 'front/auth/action_block.html')
+
+@login_required(login_url='login')
+@setup_only
+@verified_only
+def change_password(request, cust):
+    context = {}
+    cust = Customer.objects.get(unique_id=cust)
+    act = Account.objects.get(customer=cust).id
+    if request.POST:
+        form = PasswordChangeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            if request.user.is_admin:
+                return redirect('user', cust.unique_id)
+        else:
+            context['form'] = PasswordChangeForm(request.POST)
+    else:
+        form = PasswordChangeForm()
+    context = {
+        'form': form,
+        'cust': cust,
+        'act': act
+    }
+    return render(request, 'front/auth/auth-change-password.html', context)
+
+def reset_password(request):
+    context = {}
+    if request.POST:
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+        else:
+            context['form'] = PasswordResetForm(request.POST)
+    else:
+        form = PasswordResetForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'front/auth/auth-reset-password.html', context)

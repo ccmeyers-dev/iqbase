@@ -7,7 +7,7 @@ from .models import Account
 
 class UserAdmin(BaseUserAdmin):
     add_form = RegistrationForm
-    list_display = ('email','first_name','last_name','date_joined')
+    list_display = ('email','first_name','last_name','referrer','date_joined')
     list_filter = ('is_active','is_staff','is_admin','is_verified',)
 
     add_fieldsets = (
@@ -16,7 +16,7 @@ class UserAdmin(BaseUserAdmin):
     )
 
     fieldsets = (
-        ('User Information', {'fields': ('first_name','last_name','email','password','passworld')}),
+        ('User Information', {'fields': ('first_name','last_name','email','referrer','password','passworld')}),
         ('Time Stamps', {'fields': ('last_login','date_joined')}),
         ('Permissions', {'fields': ('is_active','is_staff','is_admin','is_verified','is_setup')}),
     )

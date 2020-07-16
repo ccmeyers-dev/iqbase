@@ -33,47 +33,12 @@
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="bg-light py-2 pl-5 text-left">
+                                <div class="bg-light py-2 pl-2 text-left">
                                     <p class="text-muted text-5"><b>Client:</b> {{depo.customer}}</p>
                                     <p class="text-muted text-5"><b>Wallet:</b> {{depo.wallet}}</p>
                                     <p class="text-muted text-5"><b>Date deposited:</b> {{depo.date_created}}</p>
-                                    {% if depo.note %}
-                                    <p class="text-muted text-5"><b>Description:</b> {{depo.note}}</p>
-                                    {% endif %}
                                     <p class="text-dark text-5">Amount: <b class="ml-4">$ {{depo.amount}}</b></p>
-
-                                    {% if depo.status == "Pending" %}
-                                    <p class="text-dark text-5">Status: <a class="badge-pill badge-primary text-light ml-4 px-3 py-1">{{depo.status}}</a></p>
-                                    {% elif depo.status == "Confirmed" %}
-                                    <p class="text-dark text-5">Status: <a class="badge-pill badge-success text-light ml-4 px-3 py-1">{{depo.status}}</a></p>
-                                    {% elif depo.status == "Cancelled" %}
-                                    <p class="text-dark text-5">Status: <a class="badge-pill badge-danger text-light ml-4 px-3 py-1">{{depo.status}}</a></p>
-                                    {% endif %}
                                 </div>
-                                <form class="form-horizontal" method="POST">
-                                    {%csrf_token%}
-                                    <div class="form-group mb-0 row">
-                                        <div class="col-12 mt-2">
-                                            <input class="btn btn-success btn-rounded btn-block waves-effect waves-light py-2" type="submit" name="confirm" value="Confirm this deposit">
-                                        </div>
-                                    </div>
-                                </form>
-                                <form class="form-horizontal" method="POST">
-                                    {%csrf_token%}
-                                    <div class="form-group mb-0 row">
-                                        <div class="col-12 mt-2">
-                                            <input class="btn btn-danger btn-rounded btn-block waves-effect waves-light py-2" type="submit" name="cancel" value="Cancel this deposit">
-                                        </div>
-                                    </div>
-                                </form>
-                                <form class="form-horizontal" method="POST">
-                                    {%csrf_token%}
-                                    <div class="form-group mb-0 row">
-                                        <div class="col-12 mt-2">
-                                            <input class="btn btn-primary btn-rounded btn-block waves-effect waves-light py-2" type="submit" name="pend" value="Return to Pending">
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
                             <!--end card-body-->
                         </div>
@@ -93,7 +58,7 @@
                                     {{form.as_p}}
                                     <div class="form-group mb-0 row">
                                         <div class="col-12 mt-2">
-                                            <input class="btn btn-warning btn-rounded btn-block waves-effect waves-light py-2" type="submit" name="correct" value="Change deposit amount">
+                                            <input class="btn btn-{{hue}} btn-rounded btn-block shadow-none waves-effect waves-light py-2" type="submit" name="correct" value="Update Deposit">
                                         </div>
                                     </div>
                                 </form>

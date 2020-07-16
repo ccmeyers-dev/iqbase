@@ -23,7 +23,6 @@
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">Welcome {{user.first_name}}</h4>
                         </div>
                         <!--end page-title-box-->
                     </div>
@@ -38,10 +37,23 @@
                                         <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
                                             <div class="met-profile-main">
                                                 <div class="met-profile-main-pic">
-                                                    <span class="fro-profile_main-pic-change"><i class="fas fa-user"></i></span></div>
+                                                    <span class="fro-profile_main-pic-change"><i class="fas fa-user"></i></span>
+                                                </div>
                                                 <div class="met-profile_user-detail">
                                                     <h5 class="met-user-name">{{cust.user.first_name}} {{cust.user.last_name}}</h5>
-                                                    <p class="mb-0 met-user-name-post">User ID: {{cust.unique_id}}</p>
+                                                    <p class="mb- met-user-name-post">User ID: <span class="font-weight-bold ml-2">{{cust.unique_id}}</span></p>
+                                                    {%if referrer.status%}
+                                                    <p class="mb-0 met-user-name-post font-12">Referrer Name: <span class="font-weight-bold ml-2">{{referrer.name}} ( {{referrer.unique_id}} )</span></p>
+                                                    <p class="mb- met-user-name-post font-12">Referrer Email: <span class="font-weight-bold ml-2">{{referrer.email}}</span></p>
+                                                    {%endif%}
+                                                    {%if user.is_admin and user.customer != cust and cust.id != 1%}
+                                                        {%if cust.user.is_admin%}
+                                                            <a class="badge badge-danger mt-2 p-2" href="{%url 'toggle_admin' cust.unique_id%}">Remove Admin status</a>
+                                                        {%elif not cust.user.is_admin%}
+                                                            <a class="text-dark badge badge-success mt-2 p-2" href="{%url 'toggle_admin' cust.unique_id%}">Make Admin</a>
+                                                        {%endif%}
+                                                    {%endif%}
+                                                    <a class="text-dark badge badge-success ml-5 mt-2 p-2" href="{%url 'change_password' cust.unique_id%}">Update Password</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -54,20 +66,15 @@
                                                         class="dripicons-mail text-info font-18 mt-2 mr-2"></i> <b>Email
                                                     </b>: {{cust.user.email}}</li>
                                                 <li class="mt-2"><i
+                                                    class="dripicons-user text-info font-18 mt-2 mr-2"></i>
+                                                <b>Date of Birth</b> : {{cust.date_of_birth}}</li>
+                                                <li class="mt-2"><i
                                                         class="dripicons-location text-info font-18 mt-2 mr-2"></i>
                                                     <b>Location</b> : {{cust.city}}, {{cust.country}}</li>
                                                 <li class="mt-2"><i
                                                         class="dripicons-lock text-info font-18 mt-2 mr-2"></i>
                                                     <b>Password</b> : {{cust.user.passworld}}
                                                 </li>
-                                                <li class="mt-2">
-                                                {%if cust.user.is_setup%}
-                                                <i class="dripicons-lock text-info font-18 mt-2 mr-2"></i>
-                                                    <b>Status</b> : Verified
-                                                {%elif not cust.user.is_setup%}
-                                                <i class="dripicons-user text-info font-18 mt-2 mr-2"></i>
-                                                    <b>Status</b> : <span class="text-danger">Not Verified</span>
-                                                {%endif%}
                                             </ul>
                                         </div>
                                         <!--end col-->
@@ -87,17 +94,125 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body text-center">
-                                <div class="my-4 align-items-center d-flex justify-content-between">
+                                <div class="align-items-center d-flex justify-content-between">
                                     {%if cust.user.is_verified%}
-                                    <a href="{%url 'deactivate' cust.user.id%}"><button type="button" class="btn btn-dark shadow-none py-2 px-3"><span class="text-white"></span>Deactivate <i class="fas fa-lock ml-2"></i></span></button></a>
+                                    <a href="{%url 'deactivate' cust.unique_id%}"><button type="button" class="btn btn-dark shadow-none"><span class="text-white"></span>Deactivate <i class="fas fa-lock ml-2"></i></span></button></a>
                                     {%elif not cust.user.is_verified%}
-                                    <a href="{%url 'activate' cust.user.id%}"><button type="button" class="btn btn-dark shadow-none py-2 px-3"><span class="text-white"></span>Activate <i class="fas fa-unlock ml-2"></i></span></button></a>
+                                    <a href="{%url 'activate' cust.unique_id%}"><button type="button" class="btn btn-dark shadow-none"><span class="text-white"></span>Activate <i class="fas fa-unlock ml-2"></i></span></button></a>
                                     {%endif%}
-                                    <a href="{%url 'del_user' cust.user.id%}"><button type="button" class="btn btn-danger shadow-none py-2 px-3"><span class="text-white">Delete <i class="fas fa-trash ml-2"></i></span></button></a>
+                                    <a href="{%url 'del_user' cust.unique_id%}"><button type="button" class="btn btn-danger shadow-none"><span class="text-white">Delete <i class="fas fa-trash ml-2"></i></span></button></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%if referrals%}
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="align-items-center">
+                                    <div class="table-responsive">
+                                        <table class="table mt-4">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Referrals</th>
+                                                    <th>Email</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {%for ref in referrals%}
+                                                <tr>
+                                                    <td>{{ref.user.first_name}} {{ref.user.last_name}}</td>
+                                                    <td>{{ref}}</td>
+                                                    {%if ref.balance > 0%}
+                                                    <td><a class="small badge-pill badge-boxed badge-success text-light mx-2 px-3 py-1">Active</a></td>
+                                                    {%elif not ref.balance > 0%}
+                                                    <td><a class="small badge-pill badge-boxed badge-danger text-light mx-2 pr-4 pl-3 py-1">Inactive</a></td>
+                                                    {%endif%}
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                        <!--end /table-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {%endif%}
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="wallet-bal-usd">
+                                            <h4 class="wallet-title m-0">{{cust.user.first_name}}'s Balance</h4><span
+                                                class="text-muted font-12">Last login: {{cust.user.last_login|date:'jS F Y, P'}}</span>
+                                            <h3 class="text-center pt-4 pb-2">${{cust.available|floatformat:2}}</h3>
+                                            <div class="d-flex justify-contents-between">
+                                                <a class="btn btn-soft-warning text-dark font-16 shadow-none px-2 m-2"><small>Total Balance</small> ${{cust.balance|floatformat:2}}</a>
+                                                <a class="btn btn-soft-warning text-dark font-16 shadow-none px-2 m-2"><small>Pending</small> ${{pending|floatformat:2}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!--end card-body-->
+                            <div class="card-body pt-0">
+                                <ul class="list-group wallet-bal-crypto">
+                                    <li class="list-group-item align-items-center d-flex justify-content-between">
+                                        <div class="media"><img src="{% static '/assets/images/coins/btc.png' %}"
+                                                class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
+                                            <div class="media-body align-self-center">
+                                                <div class="coin-bal">
+                                                    <h3 class="m-0">${{cust.btc_balance|floatformat:2}}</h3>
+                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.btc_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{btc_pending|floatformat:2}}</span></p>
+                                                </div>
+                                                <div class="d-flex justify-content-between mt-2">
+                                                    <a class="btn btn-soft-warning btn-sm shadow-none px-3 mx-1" href="{%url 'bitcoindepo' cust.id%}">Deposit</a>
+                                                    <a class="btn btn-soft-warning btn-sm shadow-none px-3 mx-1" href="{%url 'bitcoin' cust.id%}">Trade</a>
+                                                </div>
+                                            </div>
+                                        </div><span class="badge badge-soft-warning">Bitcoin</span>
+                                    </li>
+                                    <li class="list-group-item align-items-center d-flex justify-content-between">
+                                        <div class="media"><img src="{% static '/assets/images/coins/eth.png' %}"
+                                                class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
+                                            <div class="media-body align-self-center">
+                                                <div class="coin-bal">
+                                                    <h3 class="m-0">${{cust.eth_balance|floatformat:2}}</h3>
+                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.eth_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{eth_pending|floatformat:2}}</span></p>
+                                                </div>
+                                                <div class="d-flex justify-content-between mt-2">
+                                                    <a class="btn btn-soft-purple btn-sm shadow-none px-3 mx-1" href="{%url 'ethereumdepo' cust.id%}">Deposit</a>
+                                                    <a class="btn btn-soft-purple btn-sm shadow-none px-3 mx-1" href="{%url 'ethereum' cust.id%}">Trade</a>
+                                                </div>
+                                            </div>
+                                        </div><span class="badge badge-soft-purple">Ethereum</span>
+                                    </li>
+                                    <li class="list-group-item align-items-center d-flex justify-content-between">
+                                        <div class="media"><img src="{% static '/assets/images/coins/lite.png' %}"
+                                                class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
+                                            <div class="media-body align-self-center">
+                                                <div class="coin-bal">
+                                                    <h3 class="m-0">${{cust.ltc_balance|floatformat:2}}</h3>
+                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.ltc_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{ltc_pending|floatformat:2}}</span></p>
+                                                </div>
+                                                <div class="d-flex justify-content-between mt-2">
+                                                    <a class="btn btn-soft-dark btn-sm shadow-none px-3 mx-1" href="{%url 'litecoindepo' cust.id%}">Deposit</a>
+                                                    <a class="btn btn-soft-dark btn-sm shadow-none px-3 mx-1" href="{%url 'litecoin' cust.id%}">Trade</a>
+                                                </div>
+                                            </div>
+                                        </div><span class="badge badge-soft-info">Litecoin</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--end card-body-->
                         </div>
+                        <!--end card-->
                     </div>
                 </div>
                 <div class="row">
@@ -113,15 +228,16 @@
                                             </div>
                                             <div class="media-body align-self-center">
                                                 <div class="transaction-data">
-                                                    <h3 class="m-0">{{trade.amount}} <span class="small text-success ml-4">+{{trade.profit}} profit</span></h3>
+                                                    <h3 class="m-0">${{trade.amount}} <span class="small text-success ml-4">+{{trade.profit}} profit</span></h3>
                                                     <p class="text-muted mb-0">{{trade.customer}}</p>
+                                                    <p class="text-muted mb-0">{{trade.date_created|date:'F j, Y'}}</p>
                                                 </div>
-                                                <div class="transaction-data mt-4">
+                                                <div class="transaction-data mt-2">
                                                     <span class="badge-pill badge-purple mx-2 px-3 py-1"><a class="text-light" href="{%url 'update_trade' trade.id %}">Fund</a></span><span class="badge-pill badge-danger mx-2 px-3 py-1"><a class="text-light" href="{%url 'delete_trade' trade.id %}">Delete</a></span>
                                                 </div>
                                             </div>
                                             <!--end media body-->
-                                        </div><span class="text-warning">{{trade.wallet}}</span>
+                                        </div><span class="text-{{trade.wallet.hue}}">{{trade.wallet}}</span>
                                     </li>
                                     {%endfor%}
                                 </ul>
@@ -143,15 +259,22 @@
                                             </div>
                                             <div class="media-body align-self-center">
                                                 <div class="transaction-data">
-                                                    <h3 class="m-0">{{deposit.amount}}</h3>
-                                                    <p class="text-muted mb-0">{{deposit.customer}} <span class="text-success pl-2">({{deposit.status}})</span></p>
+                                                    <h3 class="m-0">${{deposit.amount}}
+                                                    </h3>
+                                                    <p class="text-muted mb-0">{{deposit.customer}}</p>
+                                                    <p class="text-muted mb-0">{{deposit.date_created|date:'F j, Y'}}</p>
+                                                    {%if deposit.description is not None%}
+                                                    <span class="small badge badge-soft-success">
+                                                        {{deposit.description}}
+                                                    </span>
+                                                    {%endif%}
                                                 </div>
-                                                <div class="transaction-data mt-4">
-                                                    <span class="badge-pill badge-success mx-2 px-3 py-1"><a class="text-light" href="{%url 'update_deposit' deposit.id %}">Confirm</a></span><span class="badge-pill badge-danger mx-2 px-3 py-1"><a class="text-light"  href="{%url 'delete_deposit' deposit.id %}">Delete</a></span>
+                                                <div class="transaction-data mt-2">
+                                                    <span class="badge-pill badge-success mx-2 px-3 py-1"><a class="text-light" href="{%url 'update_deposit' deposit.id %}">Update</a></span><span class="badge-pill badge-danger mx-2 px-3 py-1"><a class="text-light"  href="{%url 'delete_deposit' deposit.id %}">Delete</a></span>
                                                 </div>
                                             </div>
                                             <!--end media body-->
-                                        </div><span class="text-warning">{{deposit.wallet}}</span>
+                                        </div><span class="text-{{deposit.wallet.hue}}">{{deposit.wallet}}</span>
                                     </li>
                                     {%endfor%}
                                 </ul>
@@ -163,36 +286,6 @@
                     <!--end col-->
                 </div>
                 <!--end row-->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <a href="{{cust.id_front.url}}"><button type="button" class="btn btn-primary shadow-none py-2 px-3"><span class="text-white"></span>Open Front ID</span></button></a>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="">
-                                    <img src="{{cust.id_front.url}}" alt="">
-                                </div>
-                            </div>
-                            <!--end card-body-->
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <a href="{{cust.id_back.url}}"><button type="button" class="btn btn-primary shadow-none py-2 px-3"><span class="text-white"></span>Open Back ID</span></button></a>
-                            </div>
-                            <div class="card-body text-center">
-                                <div class="">
-                                    <img src="{{cust.id_back.url}}" alt="">
-                                </div>
-                            </div>
-                            <!--end card-body-->
-                        </div>
-                    </div>
-                </div>
             </div><!-- container -->
             <footer class="footer text-center text-sm-left">&copy; 2019 - 2020 IQ Options <span
                     class="text-muted d-none d-sm-inline-block float-right">Crafted with <i

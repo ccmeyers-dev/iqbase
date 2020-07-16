@@ -3,7 +3,7 @@
 <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
 <meta content="" name="author">
 <meta http-equiv="X-UA-Compatible" content="IE=edge"><!-- App favicon -->
-<link rel="shortcut icon" href={% static 'front/assets/images/coin.ico' %}">
+<link rel="shortcut icon" href="{% static 'front/assets/images/coin.ico' %}">
 <!-- DataTables -->
 <link href="{% static '/plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
 <link href="{% static '/plugins/datatables/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
@@ -21,6 +21,12 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css" rel="stylesheet" type="text/css">
 <link href="https://cdn.jsdelivr.net/npm/dripicons@2.0.0/webfont/webfont.css" rel="stylesheet" type="text/css">
 
+<style>
+    .card, .btn, .form-control, .met-pro-bg, .table, .table-responsive, .thead-light, .bg-light {
+        border-radius: 16px
+    }
+</style>
+
 </head>
 
 <body>
@@ -28,11 +34,7 @@
 <div class="leftbar-tab-menu">
     <div class="main-icon-menu"><a class="logo logo-metrica d-block text-center"><span><img
                     src="{% static 'front/assets/images/coinimage.png' %}" alt="logo-small" class="logo-sm"></span></a>
-        <nav class="nav"><a href="#MetricaCrypto" class="nav-link" data-toggle="tooltip-custom"
-                data-placement="right" title="" data-original-title="Crypto" data-trigger="hover"><i
-                    data-feather="dollar-sign" class="align-self-center menu-icon icon-dual"></i> </a>
-            <!--end MetricaAuthentication-->
-        </nav>
+        
     </div>
     <!--end main-icon-menu-->
     <div class="main-menu-inner active">
@@ -79,8 +81,7 @@
                         height="16" alt=""></a>
             </li>
             <li class="dropdown notification-list"><a
-                    class="nav-link dropdown-toggle arrow-none waves-light waves-effect" data-toggle="dropdown"
-                    href="#" role="button" aria-haspopup="false" aria-expanded="false"><i
+                    class="nav-link dropdown-toggle arrow-none waves-light waves-effect" href="{%url 'userprofile'%}" role="button" aria-haspopup="false" aria-expanded="false"><i
                         class="ti-wallet noti-icon"></i>
                 </a>
             </li>

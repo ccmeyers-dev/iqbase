@@ -41,7 +41,9 @@
                                                     <span class="fro-profile_main-pic-change"><i class="fas fa-user"></i></span></div>
                                                 <div class="met-profile_user-detail">
                                                     <h5 class="met-user-name">{{user.first_name}} {{user.last_name}}</h5>
-                                                    <p class="mb-0 met-user-name-post">User ID: {{user.customer.unique_id}}</p>
+                                                    <p class="met-user-name-post">User ID: <span class="font-weight-bold ml-2">{{user.customer.unique_id}}</span></p>
+                                                    
+                                                    <a class="text-dark badge badge-success mt-2 p-2" href="{%url 'change_password' user.customer.unique_id%}">Update Password</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -69,13 +71,106 @@
                         <!--end card-->
                     </div>
                     <!--end col-->
+                    
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="align-items-center">
+                                    <p class="mb-1 met-user-name-post">Your Referral Link: <br> <span class="small">(Your <b>User ID</b> is your <b>Referral Code</b>, share your code or copy link below)</span></p>
+                                    <input readonly type="text" class="form-control" id="ref" value="{{request.get_host}}/register/ref={{user.customer.unique_id}}">
+                                    <a class="badge badge-secondary mt-2 p-2" href="#" onclick="copyWalletAddress('ref')">Copy Referral Link</a>
+                                    {%if referrals%}
+                                    <div class="table-responsive">
+                                        <table class="table mt-4">
+                                            <thead class="thead-light">
+                                                <tr>
+                                                    <th>Referrals</th>
+                                                    <th>Email</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {%for ref in referrals%}
+                                                <tr>
+                                                    <td>{{ref.user.first_name}} {{ref.user.last_name}}</td>
+                                                    <td>{{ref}}</td>
+                                                    {%if ref.balance > 0%}
+                                                    <td><a class="small badge-pill badge-boxed badge-success text-light mx-2 px-3 py-1">Active</a></td>
+                                                    {%elif not ref.balance > 0%}
+                                                    <td><a class="small badge-pill badge-boxed badge-danger text-light mx-2 pr-4 pl-3 py-1">Inactive</a></td>
+                                                    {%endif%}
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                        <!--end /table-->
+                                    </div>
+                                    {%endif%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <h4 class="header-title mt-0 text-center">Bitcoin Wallet</h4>
+                            </div>
+
+                            <div class="card-body text-center px-5 pb-5">
+                                <img src="{% static '/assets/images/coins/btc.png' %}" alt="" class="thumb-lg">
+                                <div class="my-4">
+                                    <input readonly id="Bitcoin" class="form-control mb-3" value="{{bitcoin.address}}" type="text">
+                                    <button onclick="copyWalletAddress('Bitcoin')" class="btn btn-soft-warning shadow-none px-5">Copy Address</button>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <h4 class="header-title mt-0 text-center">Ethereum Wallet</h4>
+                            </div>
+                            <div class="card-body text-center px-5 pb-5">
+                                <img src="{% static '/assets/images/coins/eth.png' %}" alt="" class="thumb-lg">
+                                <div class="my-4">
+                                    <input readonly id="Ethereum" class="form-control mb-3" value="{{ethereum.address}}" type="text">
+                                    <button onclick="copyWalletAddress('Ethereum')" class="btn btn-soft-purple shadow-none px-5">Copy Address</button>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-lg-6 col-xl-4">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <h4 class="header-title mt-0 text-center">Litecoin Wallet</h4>
+                            </div>
+                            <div class="card-body text-center px-5 pb-5">
+                                <img src="{% static '/assets/images/coins/lite.png' %}" alt="" class="thumb-lg">
+                                <div class="my-4">
+                                    <input readonly id="Litecoin" class="form-control mb-3" value="{{litecoin.address}}" type="text">
+                                    <button onclick="copyWalletAddress('Litecoin')" class="btn btn-soft-warning shadow-none px-5">Copy Address</button>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <div class="row pb-3">
                     <div class="col-sm-12">
                         <form method="POST">
                         {%csrf_token%}
                         {{form.as_p}}
-                        <input class="btn btn-primary btn-rounded btn-block waves-effect waves-light py-2" type="submit" value="Update Profile">
+                        <input class="btn btn-primary btn-rounded btn-block shadow-none waves-effect waves-light py-2" type="submit" value="Update Profile">
                         </form>
                     </div>
                 </div>
@@ -98,6 +193,19 @@
     <script src="{% static '/plugins/apexcharts/irregular-data-series.js' %}"></script>
     <script src="{% static '/assets/pages/jquery.crypto-dashboard.init.js' %}"></script><!-- App js -->
     <script src="{% static '/assets/js/app.js' %}"></script>
+    <script>
+        function copyWalletAddress(id) {
+            var copyText = document.getElementById(id);
+            copyText.select();
+            copyText.setSelectionRange(0,99999);
+            document.execCommand("copy");
+            if (id == "ref"){
+                alert("Copied Referral Link");
+            } else {
+            alert("Copied " + id + " wallet address");
+            }
+        }
+    </script>
 </body>
 <!-- Mirrored from mannatthemes.com/metrica/metrica_live/crypto/crypto-index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 31 May 2020 23:09:23 GMT -->
 

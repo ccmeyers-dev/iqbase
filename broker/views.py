@@ -3,7 +3,8 @@ from .models import *
 from account.models import Account
 from .forms import *
 from account.forms import UserForm
-from django.db.models import Sum
+from django.db.models import Sum, ExpressionWrapper, F, DateTimeField, DurationField
+from django.db.models.functions import Cast
 from django.http import HttpResponseRedirect
 import random, json
 from django.conf import settings
@@ -19,14 +20,46 @@ from .decorators import *
 @admin_only
 @verified_only
 def user(request, pk):
-    cust = Customer.objects.get(id=pk)
+    cust = Customer.objects.get(unique_id=pk)
     trade = Trade.objects.filter(customer=cust).order_by("-id")
     depo = Deposit.objects.filter(customer=cust).order_by("-id")
 
+    #pending
+    pending = cust.profit - cust.completed
+    btc_pending = cust.btc_profit - cust.btc_completed
+    eth_pending = cust.eth_profit - cust.eth_completed
+    ltc_pending = cust.ltc_profit - cust.ltc_completed
+
+    #referrals
+    ref = cust.referrer
+    try:
+        referrer = Customer.objects.get(unique_id=ref)
+        referrer = {
+            'status': True,
+            'name': referrer.user.first_name + " " + referrer.user.last_name,
+            'email': referrer.user.email,
+            'unique_id': referrer.unique_id
+        }
+    except Customer.DoesNotExist:
+        referrer = {
+            'status': False,
+        }
+    referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
+   
     context = {
         'cust': cust,
         'trade': trade,
         'depo': depo,
+
+        #ref
+        'referrer': referrer,
+        'referrals': referrals,
+
+        #pending
+        'pending': pending,
+        'btc_pending': btc_pending,
+        'eth_pending': eth_pending,
+        'ltc_pending': ltc_pending,
     }
     return render(request, 'front/crypto/user.html', context)
 
@@ -35,7 +68,13 @@ def user(request, pk):
 @verified_only
 def update_trade(request, pk):
     trade = Trade.objects.get(id=pk)
-
+    
+    if trade.wallet.coin == "Ethereum":
+        hue = "purple"
+    elif trade.wallet.coin == "Litecoin":
+        hue = "dark"
+    else:
+        hue = "warning"
     formq = quickfundform(instance=trade)
     form = fundform(instance=trade)
 
@@ -54,7 +93,8 @@ def update_trade(request, pk):
     context = {
         'form': form,
         'formq': formq,
-        'trade': trade
+        'trade': trade,
+        'hue': hue
     }
     return render(request, 'front/update_trade.html', context)
 
@@ -64,9 +104,6 @@ def update_trade(request, pk):
 def delete_trade(request, pk):
     trade = Trade.objects.get(id=pk)
     cust = trade.customer.id
-
-    # Trade.delete()
-    # return redirect('home')
 
     if request.POST:
         trade.delete()
@@ -85,18 +122,13 @@ def update_deposit(request, pk):
     depo = Deposit.objects.get(id=pk)
     cust = depo.customer.id
 
-    if request.POST and 'confirm' in request.POST:
-        depo.status = 'Confirmed'
-        depo.save()
-
-    if request.POST and 'cancel' in request.POST:
-        depo.status = 'Cancelled'
-        depo.save()
-
-    if request.POST and 'pend' in request.POST:
-        depo.status = 'Pending'
-        depo.save()
-
+    if depo.wallet.coin == "Ethereum":
+        hue = "purple"
+    elif depo.wallet.coin == "Litecoin":
+        hue = "dark"
+    else:
+        hue = "warning"
+        
     form = depocorrectform(instance=depo)
     if request.POST and 'correct' in request.POST:
         form = depocorrectform(request.POST, instance=depo)
@@ -107,7 +139,8 @@ def update_deposit(request, pk):
     context = {
         'depo': depo,
         'form': form,
-        'cust': cust
+        'cust': cust,
+        'hue': hue
     }
     return render(request, 'front/update_deposit.html', context)
 
@@ -168,13 +201,17 @@ def administrator(request):
             context['ltcform'] = ltcform
 
     context = {
-        'cust': cust,
+        #iterations
         'customer': customer,
         'trade': trade,
         'depo': depo,
+
+        #forms
         'btcform': btcform,
         'ethform': ethform,
         'ltcform': ltcform,
+
+        #wallets
         'bitcoin': bitcoin,
         'ethereum': ethereum,
         'litecoin': litecoin,
@@ -185,27 +222,61 @@ def administrator(request):
 @admin_only
 @verified_only
 def del_user(request, pk):
-    user = Account.objects.get(id=pk)
-    user.delete()
-    return redirect('administrator')
+    cust = Customer.objects.get(unique_id=pk)
+    user = cust.user
+    trade = cust.trade_set.all().count()
+    deposit = cust.deposit_set.all().count()
+
+    if request.POST:
+        user.delete()
+        return redirect('administrator')
+
+    context = {
+        'cust': cust,
+        'trade': trade,
+        'deposit': deposit
+        }
+    return render(request, 'front/delete_user.html', context)
+
+@login_required(login_url='login')
+@admin_only
+@verified_only
+def toggle_admin(request, pk):
+    cust = Customer.objects.get(unique_id=pk)
+    user = cust.user
+
+    if request.POST:
+        if user.is_admin:
+            user.is_admin = False
+        else:
+            user.is_admin = True
+        user.save()
+        return redirect('user', cust.unique_id)
+
+    context = {
+        'cust': cust,
+        }
+    return render(request, 'front/toggle_admin.html', context)
 
 @login_required(login_url='login')
 @admin_only
 @verified_only
 def deactivate(request, pk):
-    user = Account.objects.get(id=pk)
+    cust = Customer.objects.get(unique_id=pk)
+    user = cust.user
     user.is_verified = False
     user.save()
-    return redirect('user', user.customer.id)
+    return redirect('user', cust.unique_id)
 
 @login_required(login_url='login')
 @admin_only
 @verified_only
 def activate(request, pk):
-    user = Account.objects.get(id=pk)
+    cust = Customer.objects.get(unique_id=pk)
+    user = cust.user
     user.is_verified = True
     user.save()
-    return redirect('user', user.customer.id)
+    return redirect('user', cust.unique_id)
 
 @login_required(login_url='login')
 @setup_only
@@ -217,44 +288,27 @@ def dashboard(request):
     cust = Customer.objects.get(id=id)
     trade = cust.trade_set.all().order_by('-id')
     deposit = cust.deposit_set.all().order_by('-id')
-    t = cust.trade
-    p = cust.profit
-    d = cust.deposit
-    balance = cust.balance
+
+    trade_count = trade.count()
+
+    #pending
+    pending = cust.profit - cust.completed
+    btc_pending = cust.btc_profit - cust.btc_completed
+    eth_pending = cust.eth_profit - cust.eth_completed
+    ltc_pending = cust.ltc_profit - cust.ltc_completed
 
     #bitcoin transactions
     btc_tradeset = cust.trade_set.filter(wallet__coin='Bitcoin').order_by('-id')
-    btc_deposet = cust.deposit_set.filter(wallet__coin='Bitcoin', status='Confirmed').order_by('-id')
-    #pendingdeposit
-    btc_pending = cust.deposit_set.filter(wallet__coin='Bitcoin', status='Pending').order_by('-id').aggregate(Sum('amount'))['amount__sum'] or 0
-
-    btc_amount = btc_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    btc_profit = btc_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    btc_deposit = btc_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    btc_balance = btc_deposit - btc_amount + btc_profit
+    btc_deposet = cust.deposit_set.filter(wallet__coin='Bitcoin').order_by('-id')
 
     #ethereum transactions
     eth_tradeset = cust.trade_set.filter(wallet__coin='Ethereum').order_by('-id')
-    eth_deposet = cust.deposit_set.filter(wallet__coin='Ethereum', status='Confirmed').order_by('-id')
-    #pendingdeposit
-    eth_pending = cust.deposit_set.filter(wallet__coin='Ethereum', status='Pending').order_by('-id').aggregate(Sum('amount'))['amount__sum'] or 0
-
-    eth_amount = eth_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    eth_profit = eth_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    eth_deposit = eth_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    eth_balance = eth_deposit - eth_amount + eth_profit
+    eth_deposet = cust.deposit_set.filter(wallet__coin='Ethereum').order_by('-id')
 
     #litecoin transactions
     ltc_tradeset = cust.trade_set.filter(wallet__coin='Litecoin').order_by('-id')
-    ltc_deposet = cust.deposit_set.filter(wallet__coin='Litecoin', status='Confirmed').order_by('-id')
-    #pendingdeposit
-    ltc_pending = cust.deposit_set.filter(wallet__coin='Litecoin', status='Pending').order_by('-id').aggregate(Sum('amount'))['amount__sum'] or 0
-
-    ltc_amount = ltc_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    ltc_profit = ltc_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    ltc_deposit = ltc_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    ltc_balance = ltc_deposit - ltc_amount + ltc_profit
-
+    ltc_deposet = cust.deposit_set.filter(wallet__coin='Litecoin').order_by('-id')
+    
     #api
     try:
         btcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true'
@@ -302,15 +356,18 @@ def dashboard(request):
         btcch = 0.87
         ethch = 0.43
         ltcch = 0.63
-
+    
     context = {
         'cust': cust,
-        't': t,
-        'p': p,
-        'd': d,
-        'balance': balance,
         'trade': trade,
         'deposit': deposit,
+        'trade_count': trade_count,
+
+        #pending
+        'pending': pending,
+        'btc_pending': btc_pending,
+        'eth_pending': eth_pending,
+        'ltc_pending': ltc_pending,
 
         #api
         'btc': btc,
@@ -320,324 +377,196 @@ def dashboard(request):
         'ethch': ethch,
         'ltcch': ltcch,
 
-        #pending
-        'btc_pending': btc_pending,
-        'eth_pending': eth_pending,
-        'ltc_pending': ltc_pending,
-
         #btc
         'btc_tradeset': btc_tradeset,
         'btc_deposet': btc_deposet,
-        'btc_amount': btc_amount,
-        'btc_profit': btc_profit,
-        'btc_deposit': btc_deposit,
-        'btc_balance': btc_balance,
 
         #eth
         'eth_tradeset': eth_tradeset,
         'eth_deposet': eth_deposet,
-        'eth_amount': eth_amount,
-        'eth_profit': eth_profit,
-        'eth_deposit': eth_deposit,
-        'eth_balance': eth_balance,
 
         #ltc
         'ltc_tradeset': ltc_tradeset,
         'ltc_deposet': ltc_deposet,
-        'ltc_amount': ltc_amount,
-        'ltc_profit': ltc_profit,
-        'ltc_deposit': ltc_deposit,
-        'ltc_balance': ltc_balance,
 
         }
     return render(request, 'front/crypto/crypto-index.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def bitcoin(request, pk):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
+    cust = Customer.objects.get(id=pk)
+    context = {}
 
-    #bitcoin transactions
-    btc_tradeset = cust.trade_set.filter(wallet__coin='Bitcoin').order_by('-id')
-    btc_deposet = cust.deposit_set.filter(wallet__coin='Bitcoin', status='Confirmed').order_by('-id')
-    btc_amount = btc_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    btc_profit = btc_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    btc_deposit = btc_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    btc_balance = btc_deposit - btc_amount + btc_profit
-
-    formt = coinform(initial={'customer':cust,'status':'Pending', 'profit':0, 'wallet': '1'})
+    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
             formt.save()
-            return redirect('dashboard')
+            if not request.user.is_admin:
+                return redirect('dashboard')
+            return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = formt
+            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
     context = {
         'cust': cust,
         'formt': formt,
-        #btc
-        'btc_tradeset': btc_tradeset,
-        'btc_deposet': btc_deposet,
-        'btc_amount': btc_amount,
-        'btc_profit': btc_profit,
-        'btc_deposit': btc_deposit,
-        'btc_balance': btc_balance,
     }
     return render(request, 'front/crypto/bitcoin.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def ethereum(request, pk):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
-
-    #ethereum transactions
-    eth_tradeset = cust.trade_set.filter(wallet__coin='Ethereum').order_by('-id')
-    eth_deposet = cust.deposit_set.filter(wallet__coin='Ethereum', status='Confirmed').order_by('-id')
-    eth_amount = eth_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    eth_profit = eth_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    eth_deposit = eth_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    eth_balance = eth_deposit - eth_amount + eth_profit
-
-    formt = coinform(initial={'customer':cust,'status':'Pending', 'profit':0, 'wallet': '2'})
+    cust = Customer.objects.get(id=pk)
+    context = {}
+    
+    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '2'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
             formt.save()
-            return redirect('dashboard')
+            if not request.user.is_admin:
+                return redirect('dashboard')
+            return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = formt
+            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '2'})
     context = {
         'cust': cust,
         'formt': formt,
-        #eth
-        'eth_tradeset': eth_tradeset,
-        'eth_deposet': eth_deposet,
-        'eth_amount': eth_amount,
-        'eth_profit': eth_profit,
-        'eth_deposit': eth_deposit,
-        'eth_balance': eth_balance,
     }
     return render(request, 'front/crypto/ethereum.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def litecoin(request, pk):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
+    cust = Customer.objects.get(id=pk)
+    context = {}
 
-    #litecoin transactions
-    ltc_tradeset = cust.trade_set.filter(wallet__coin='Litecoin').order_by('-id')
-    ltc_deposet = cust.deposit_set.filter(wallet__coin='Litecoin', status='Confirmed').order_by('-id')
-    ltc_amount = ltc_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    ltc_profit = ltc_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    ltc_deposit = ltc_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    ltc_balance = ltc_deposit - ltc_amount + ltc_profit
-
-    formt = coinform(initial={'customer':cust,'status':'Pending', 'profit':0, 'wallet': '3'})
+    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
             formt.save()
-            return redirect('dashboard')
+            if not request.user.is_admin:
+                return redirect('dashboard')
+            return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = formt
+            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
     context = {
         'cust': cust,
         'formt': formt,
-        #ltc
-        'ltc_tradeset': ltc_tradeset,
-        'ltc_deposet': ltc_deposet,
-        'ltc_amount': ltc_amount,
-        'ltc_profit': ltc_profit,
-        'ltc_deposit': ltc_deposit,
-        'ltc_balance': ltc_balance,
     }
     return render(request, 'front/crypto/litecoin.html', context)
 
 @login_required(login_url='login')
 @verified_only
+@admin_only
 def bitcoindepo(request, pk):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
+    cust = Customer.objects.get(id=pk)
+    context = {}
+    
 
-    wallet = Wallet.objects.get(coin='Bitcoin')
-
-    formd = coindepoform(initial={'customer':cust, 'status':'Pending', 'wallet':1})
+    formd = coindepoform(initial={'customer':cust, 'wallet':1})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
             formd.save()
-            trade = request.POST['amount']
-            rand = random.randint(103030, 903030)
-            context = {
-                'rand': rand,
-                'trade': trade,
-                'cust': cust,
-                'wallet': wallet,
-            }
-            return render(request, 'front/crypto/invoice.html', context)
+            return HttpResponseRedirect(request.path_info)
         else:
-            context['formd'] = formd
+            context['formd'] = coindepoform(request.POST)
     context = {
         'cust': cust,
         'formd': formd,
-        'wallet': wallet,
     }
     return render(request, 'front/crypto/bitcoindepo.html', context)
 
 @login_required(login_url='login')
 @verified_only
+@admin_only
 def ethereumdepo(request, pk):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
+    cust = Customer.objects.get(id=pk)
+    context = {}
 
-    wallet = Wallet.objects.get(coin='Ethereum')
-
-    formd = coindepoform(initial={'customer':cust, 'status':'Pending', 'wallet':2})
+    formd = coindepoform(initial={'customer':cust, 'wallet':2})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
             formd.save()
-            trade = request.POST['amount']
-            rand = random.randint(103030, 903030)
-            context = {
-                'rand': rand,
-                'trade': trade,
-                'cust': cust,
-                'wallet': wallet,
-            }
-            return render(request, 'front/crypto/invoice.html', context)
+            return HttpResponseRedirect(request.path_info)
         else:
-            context['formd'] = formd
+            context['formd'] = coindepoform(request.POST)
     context = {
         'cust': cust,
         'formd': formd,
-        'wallet': wallet,
     }
     return render(request, 'front/crypto/ethereumdepo.html', context)
 
 @login_required(login_url='login')
 @verified_only
+@admin_only
 def litecoindepo(request, pk):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
-
-    wallet = Wallet.objects.get(coin='Litecoin')
-
-    formd = coindepoform(initial={'customer':cust, 'status':'Pending', 'wallet':3})
+    cust = Customer.objects.get(id=pk)
+    context = {}
+    
+    
+    formd = coindepoform(initial={'customer':cust, 'wallet':3})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
             formd.save()
-            trade = request.POST['amount']
-            rand = random.randint(103030, 903030)
-            context = {
-                'rand': rand,
-                'trade': trade,
-                'cust': cust,
-                'wallet': wallet,
-            }
-            return render(request, 'front/crypto/invoice.html', context)
+            return HttpResponseRedirect(request.path_info)
         else:
-            context['formd'] = formd
+            context['formd'] = coindepoform(request.POST)
     context = {
         'cust': cust,
         'formd': formd,
-        'wallet': wallet,
     }
     return render(request, 'front/crypto/litecoindepo.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def bitcoinwith(request, pk):
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    #bitcoin transactions
-    btc_tradeset = cust.trade_set.filter(wallet__coin='Bitcoin').order_by('-id')
-    btc_deposet = cust.deposit_set.filter(wallet__coin='Bitcoin', status='Confirmed').order_by('-id')
-    btc_amount = btc_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    btc_profit = btc_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    btc_deposit = btc_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    btc_balance = btc_deposit - btc_amount + btc_profit
-
     context = {
         'cust': cust,
-        #btc
-        'btc_tradeset': btc_tradeset,
-        'btc_deposet': btc_deposet,
-        'btc_amount': btc_amount,
-        'btc_profit': btc_profit,
-        'btc_deposit': btc_deposit,
-        'btc_balance': btc_balance,
     }
     return render(request, 'front/crypto/bitcoinwith.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def ethereumwith(request, pk):
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    #ethereum transactions
-    eth_tradeset = cust.trade_set.filter(wallet__coin='Ethereum').order_by('-id')
-    eth_deposet = cust.deposit_set.filter(wallet__coin='Ethereum', status='Confirmed').order_by('-id')
-    eth_amount = eth_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    eth_profit = eth_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    eth_deposit = eth_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    eth_balance = eth_deposit - eth_amount + eth_profit
-
     context = {
         'cust': cust,
-        #eth
-        'eth_tradeset': eth_tradeset,
-        'eth_deposet': eth_deposet,
-        'eth_amount': eth_amount,
-        'eth_profit': eth_profit,
-        'eth_deposit': eth_deposit,
-        'eth_balance': eth_balance,
     }
     return render(request, 'front/crypto/ethereumwith.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def litecoinwith(request, pk):
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    #litecoin transactions
-    ltc_tradeset = cust.trade_set.filter(wallet__coin='Litecoin').order_by('-id')
-    ltc_deposet = cust.deposit_set.filter(wallet__coin='Litecoin', status='Confirmed').order_by('-id')
-    ltc_amount = ltc_tradeset.aggregate(Sum('amount'))['amount__sum'] or 0
-    ltc_profit = ltc_tradeset.aggregate(Sum('profit'))['profit__sum'] or 0
-    ltc_deposit = ltc_deposet.aggregate(Sum('amount'))['amount__sum'] or 0
-    ltc_balance = ltc_deposit - ltc_amount + ltc_profit
-
     context = {
         'cust': cust,
-        #ltc
-        'ltc_tradeset': ltc_tradeset,
-        'ltc_deposet': ltc_deposet,
-        'ltc_amount': ltc_amount,
-        'ltc_profit': ltc_profit,
-        'ltc_deposit': ltc_deposit,
-        'ltc_balance': ltc_balance,
     }
     return render(request, 'front/crypto/litecoinwith.html', context)
 
 @login_required(login_url='login')
+@setup_only
 @verified_only
 def userprofile(request):
     context = {}
@@ -645,18 +574,31 @@ def userprofile(request):
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
+    referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
+    
+    #wallet addresses
+    bitcoin = Wallet.objects.get(coin='Bitcoin')
+    ethereum = Wallet.objects.get(coin='Ethereum')
+    litecoin = Wallet.objects.get(coin='Litecoin')
+
     form = UserForm(instance=cust)
     if request.POST:
         form = UserForm(request.POST, instance=cust)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect(request.path_info)
     context = {
         'cust': cust,
-        'form': form
+        'form': form,
+        'bitcoin': bitcoin,
+        'ethereum': ethereum,
+        'litecoin': litecoin,
+        'referrals': referrals
     }
     return render(request, 'front/crypto/crypto-settings.html', context)
 
 @login_required(login_url='login')
+@admin_only
 @verified_only
 def receipt(request):
     context = {}
@@ -738,3 +680,9 @@ def home(request):
         'ltcch': ltcch,
         }
     return render(request, 'front/front.html', context)
+
+def test(request):
+    return render(request, 'front/template_light/reset.html')
+
+def invoice(request):
+    return render(request, 'front/crypto/invoice.html')

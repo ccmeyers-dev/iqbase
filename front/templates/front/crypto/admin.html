@@ -23,7 +23,7 @@
                                     <li class="breadcrumb-item active">Administrator</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">Welcome {{user.first_name}}</h4>
+                            <h4 class="page-title">Welcome, {{user.first_name}}</h4>
                         </div>
                         <!--end page-title-box-->
                     </div>
@@ -32,9 +32,9 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="d-flex justify-content-between mb-3">
-                            <div>
+                            <div class="mr-4">
 
-                                <a href="{%url 'receipt' %}"><button type="button" class="btn btn-soft-dark shadow-none px-5">Generate Receipt</button></a>
+                                <a href="{%url 'receipt' %}"><button class="btn btn-soft-dark shadow-none px-4 py-2">Generate Receipt</button></a>
 
                             </div>
                             <div class="media">
@@ -50,7 +50,7 @@
                     <div class="col-lg-6 col-xl-4">
                         <div class="card">
                             <div class="card-body pb-0">
-                                <h4 class="header-title mt-0">Add Bitcoin Wallet</h4>
+                                <h4 class="header-title mt-0 text-center">Add Bitcoin Wallet</h4>
                             </div>
 
                             <div class="card-body text-center px-5 pb-5"><img
@@ -74,7 +74,7 @@
                     <div class="col-lg-6 col-xl-4">
                         <div class="card">
                             <div class="card-body pb-0">
-                                <h4 class="header-title mt-0">Add Ethereum Wallet</h4>
+                                <h4 class="header-title mt-0 text-center">Add Ethereum Wallet</h4>
                             </div>
                             <div class="card-body text-center px-5 pb-5"><img
                                     src="{% static '/assets/images/coins/eth.png' %}" alt="" class="thumb-lg">
@@ -97,7 +97,7 @@
                     <div class="col-lg-6 col-xl-4">
                         <div class="card">
                             <div class="card-body pb-0">
-                                <h4 class="header-title mt-0">Add Litecoin Wallet</h4>
+                                <h4 class="header-title mt-0 text-center">Add Litecoin Wallet</h4>
                             </div>
                             <div class="card-body text-center px-5 pb-5"><img
                                     src="{% static '/assets/images/coins/lite.png' %}" alt="" class="thumb-lg">
@@ -128,7 +128,7 @@
                                     <table class="table mb-0">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>S/N</th>
+                                                <th>Client ID</th>
                                                 <th>Name</th>
                                                 <th>Email</th>
                                                 <th>Access</th>
@@ -137,16 +137,15 @@
                                         <tbody>
                                             {%for cust in customer%}
                                             <tr>
-                                                <th scope="row">{{cust.id}}</th>
+                                                <th scope="row">{{cust.unique_id}}</th>
                                                 <td>{{cust.user.first_name}}</td>
                                                 {%if cust.user.is_setup%}
-                                                <td>{{cust}}
+                                                <td>{{cust}}</td>
+                                                <td><a href="{%url 'user' cust.unique_id %}"><span class="small badge-pill badge-boxed badge-primary mx-2 px-3 py-1">Manage</span></a></td>
                                                 {%elif not cust.user.is_setup%}
-                                                <td class="text-danger">{{cust}}
+                                                <td class="text-danger">{{cust}}</td>
+                                                <td><a href="{%url 'del_user' cust.unique_id %}"><span class="small badge-pill badge-boxed badge-danger mx-2 pr-4 pl-3 py-1">Delete</span></a></td>
                                                 {%endif%}
-                                                </td>
-                                                <td><a href="{%url 'user' cust.id %}"><span class="small badge-pill badge-boxed badge-primary mx-2 px-3 py-1">Manage</span></a>
-                                                </td>
                                             </tr>
                                             {%endfor%}
                                         </tbody>
@@ -176,13 +175,15 @@
                                                 <div class="transaction-data">
                                                     <h3 class="m-0">${{trade.amount}} <span class="small text-success ml-4">+{{trade.profit}} profit</span></h3>
                                                     <p class="text-muted mb-0">{{trade.customer}}</p>
+                                                    <p class="text-muted mb-0">{{trade.date_created|date:'F j, Y'}}</p>
                                                 </div>
-                                                <div class="transaction-data mt-4">
+                                                <div class="transaction-data mt-2">
                                                     <span class="badge-pill badge-purple mx-2 px-3 py-1"><a class="text-light" href="{%url 'update_trade' trade.id %}">Fund</a></span><span class="badge-pill badge-danger mx-2 px-3 py-1"><a class="text-light" href="{%url 'delete_trade' trade.id %}">Delete</a></span>
                                                 </div>
                                             </div>
                                             <!--end media body-->
-                                        </div><span class="text-warning">{{trade.wallet}}</span>
+                                        </div>
+                                        <span class="badge badge-soft-{{trade.wallet.hue}}">{{trade.wallet}}</span>
                                     </li>
                                     {%endfor%}
                                 </ul>
@@ -204,15 +205,22 @@
                                             </div>
                                             <div class="media-body align-self-center">
                                                 <div class="transaction-data">
-                                                    <h3 class="m-0">${{deposit.amount}}</h3>
-                                                    <p class="text-muted mb-0">{{deposit.customer}} <span class="text-success pl-2">({{deposit.status}})</span></p>
+                                                    <h3 class="m-0">${{deposit.amount}}
+                                                    </h3>
+                                                    <p class="text-muted mb-0">{{deposit.customer}}</p>
+                                                    <p class="text-muted mb-0">{{deposit.date_created|date:'F j, Y'}}</p>
+                                                    {%if deposit.description is not None%}
+                                                    <span class="small badge badge-soft-success">
+                                                        {{deposit.description}}
+                                                    </span>
+                                                    {%endif%}
                                                 </div>
-                                                <div class="transaction-data mt-4">
-                                                    <span class="badge-pill badge-success mx-2 px-3 py-1"><a class="text-light" href="{%url 'update_deposit' deposit.id %}">Confirm</a></span><span class="badge-pill badge-danger mx-2 px-3 py-1"><a class="text-light"  href="{%url 'delete_deposit' deposit.id %}">Delete</a></span>
+                                                <div class="transaction-data mt-2">
+                                                    <span class="badge-pill badge-success mx-2 px-3 py-1"><a class="text-light" href="{%url 'update_deposit' deposit.id %}">Update</a></span><span class="badge-pill badge-danger mx-2 px-3 py-1"><a class="text-light"  href="{%url 'delete_deposit' deposit.id %}">Delete</a></span>
                                                 </div>
                                             </div>
                                             <!--end media body-->
-                                        </div><span class="text-warning">{{deposit.wallet}}</span>
+                                        </div><span class="badge badge-soft-{{deposit.wallet.hue}}">{{deposit.wallet}}</span>
                                     </li>
                                     {%endfor%}
                                 </ul>

@@ -6,7 +6,7 @@ class WalletForm(forms.ModelForm):
     class Meta:
         model = Wallet
         fields = '__all__'
-        widgets = {'coin': forms.HiddenInput(),}
+        widgets = {'coin': forms.HiddenInput(), 'hue': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -19,16 +19,14 @@ class depocorrectform(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'customer': forms.HiddenInput(),
-            'status': forms.HiddenInput(),
             'wallet': forms.HiddenInput(),
-            'note': forms.HiddenInput(),
             'date_created': forms.HiddenInput()
             }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs.update({'class': 'form-control'})
-
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
 
 class quickfundform(forms.ModelForm):
     class Meta:
@@ -39,7 +37,6 @@ class quickfundform(forms.ModelForm):
             'amount': forms.HiddenInput(),
             'wallet': forms.HiddenInput(),
             'duration': forms.HiddenInput(),
-            'note': forms.HiddenInput()
             }
 
     def __init__(self, *args, **kwargs):
@@ -58,7 +55,6 @@ class fundform(forms.ModelForm):
         self.fields['amount'].widget.attrs.update({'class': 'form-control'})
         self.fields['profit'].widget.attrs.update({'class': 'form-control'})
         self.fields['duration'].widget.attrs.update({'class': 'form-control'})
-        self.fields['note'].widget.attrs.update({'class': 'form-control', 'rows':"2"})
 
 
 class coinform(forms.ModelForm):
@@ -71,47 +67,16 @@ class coinform(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['wallet'].widget.attrs.update({'class': 'form-control'})
         self.fields['amount'].widget.attrs.update({'class': 'form-control'})
-        self.fields['duration'].widget.attrs.update({'class': 'form-control'})
-        self.fields['note'].widget.attrs.update({'class': 'form-control', 'rows':"2"})
+        self.fields['duration'].widget.attrs.update({'class': 'form-control', 'step': '1', 'min': '7', 'max': '30'})
 
 
 class coindepoform(forms.ModelForm):
     class Meta:
         model = Deposit
         fields = '__all__'
-        widgets = {'customer': forms.HiddenInput(), 'status': forms.HiddenInput(), 'wallet': forms.HiddenInput()}
+        widgets = {'customer': forms.HiddenInput(), 'wallet': forms.HiddenInput()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['wallet'].widget.attrs.update({'class': 'form-control'})
+        self.fields['description'].widget.attrs.update({'class': 'form-control'})
         self.fields['amount'].widget.attrs.update({'class': 'form-control'})
-        self.fields['note'].widget.attrs.update({'class': 'form-control', 'rows':"2"})
-
-class tradeform(forms.ModelForm):
-    class Meta:
-        model = Trade
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['wallet'].widget.attrs.update({'class': 'form-control'})
-        self.fields['amount'].widget.attrs.update({'class': 'form-control'})
-        self.fields['customer'].widget.attrs.update({'class': 'form-control'})
-        self.fields['note'].widget.attrs.update({'class': 'form-control', 'rows':"2"})
-        self.fields['profit'].widget.attrs.update({'class': 'form-control'})
-        self.fields['duration'].widget.attrs.update({'class': 'form-control'})
-        self.fields['date_created'].widget.attrs.update({'class': 'form-control'})
-
-class depositform(forms.ModelForm):
-    class Meta:
-        model = Deposit
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['wallet'].widget.attrs.update({'class': 'form-control'})
-        self.fields['amount'].widget.attrs.update({'class': 'form-control'})
-        self.fields['customer'].widget.attrs.update({'class': 'form-control'})
-        self.fields['note'].widget.attrs.update({'class': 'form-control', 'rows':"2"})
-        self.fields['status'].widget.attrs.update({'class': 'form-control'})
-        self.fields['date_created'].widget.attrs.update({'class': 'form-control'})

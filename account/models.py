@@ -30,6 +30,7 @@ class AccountManager(BaseUserManager):
 
 class Account(AbstractBaseUser):
     email              = models.EmailField(verbose_name="email", max_length=60, null=True, unique=True)
+    referrer           = models.CharField(max_length=15, null=True, default="None")
     first_name         = models.CharField(max_length=30)
     last_name          = models.CharField(max_length=30)
     passworld          = models.CharField(max_length=50, blank=True, null=True)

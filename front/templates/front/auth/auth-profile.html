@@ -34,7 +34,6 @@
                                     <div class="col-7">
                                         <div class="text-primary p-4">
                                             <h5 class="text-primary">Hello {{user.first_name}}, kindly complete verification</h5>
-                                            <p>For verification we require a valid form of identification to confirm your identity.</p>
                                         </div>
                                     </div>
                                     <div class="col-5 align-self-end">
@@ -70,6 +69,11 @@
                                         <div class="form-group">
                                             <label for="username">Phone Number</label>
                                             {{form.phone_number}}
+                                            <div class="small text-danger">
+                                                {%for error in form.phone_number.errors%}
+                                                {{error}}
+                                                {%endfor%}
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                             <label for="username">Date of Birth</label>
@@ -84,14 +88,6 @@
                                             <label for="username">Gender</label>
                                             {{form.gender}}
                                         </div>
-                                        <div class="form-group">
-                                            <label for="username">Upload the front of your ID</label>
-                                            {{form.id_front}}
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="username">Upload the back of your ID</label>
-                                            {{form.id_back}}
-                                        </div>
                                         <div class="text-danger ml-4">
                                         {%if form.errors%}
                                             {%for error in form.non_field_errors%}
@@ -101,6 +97,7 @@
                                             {%endfor%}
                                         {%endif%}
                                         </div>
+                                        {{form.referrer}}
                                         {{form.user}}
                                         <div class="mt-3">
                                             <button class="btn btn-primary btn-block waves-effect waves-light" type="submit">Verify</button>
@@ -111,8 +108,7 @@
                             </div>
                         </div>
                         <div class="mt-5 text-center">
-                            <p class="text-muted mb-0 small">Government issued photo ID, Driver's license.</p>
-                            <p class="text-muted mb-0 small">(Note that US customers may use a non-driver's ID card)</p>
+                            <p class="text-muted mb-0 small">(Note that US customers may require further verification)</p>
                             <p class="text-muted mb-0 small">Verification is instant but may take a while.</p>
                             <p>2020 © IQ Options.</p>
                         </div>

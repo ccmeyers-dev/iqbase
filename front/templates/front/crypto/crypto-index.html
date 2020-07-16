@@ -23,7 +23,7 @@
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">Welcome {{user.first_name}}</h4>
+                            <h4 class="page-title">Welcome, {{user.first_name}}</h4>
                         </div>
                         <!--end page-title-box-->
                     </div>
@@ -131,12 +131,21 @@
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="card-body">
-                                <div class="row py2">
+                                <div class="row">
                                     <div class="col-12">
                                         <div class="wallet-bal-usd">
-                                            <h4 class="wallet-title m-0">Total Balance</h4><span
+                                            <h4 class="wallet-title m-0">Available Balance</h4><span
                                                 class="text-muted font-12">{% now 'jS F Y' %}</span>
-                                            <h3 class="text-center pt-4 pb-2">${{balance|floatformat:2}}</h3>
+                                            <h3 class="text-center py-2">${{cust.available|floatformat:2}}</h3>
+                                            {%if cust.available <= 0 and trade_count >= 1%}
+                                            <div class="text-center">
+                                                <span class="badge badge-soft-success mb-2">You have Pending Profits</span>
+                                            </div>
+                                            {%endif%}
+                                            <div class="d-flex justify-contents-between">
+                                                <a class="btn btn-soft-warning text-dark font-16 shadow-none px-2 m-2"><small>Total Balance</small> ${{cust.balance|floatformat:2}}</a>
+                                                <a class="btn btn-soft-warning text-dark font-16 shadow-none px-2 m-2"><small>Pending</small> ${{pending|floatformat:2}}</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -149,8 +158,9 @@
                                                 class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
-                                                    <h3 class="m-0">$ {{btc_balance|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Pending Deposits: <span class="text-danger">${{btc_pending}}</span></p>
+                                                    <h3 class="m-0">${{cust.btc_available|floatformat:2}}</h3>
+                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.btc_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{btc_pending|floatformat:2}}</span></p>
                                                 </div>
                                             </div>
                                             <!--end media body-->
@@ -161,8 +171,9 @@
                                                 class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
-                                                    <h3 class="m-0">$ {{eth_balance|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Pending Deposits: <span class="text-danger">${{eth_pending}}</span></p>
+                                                    <h3 class="m-0">${{cust.eth_available|floatformat:2}}</h3>
+                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.eth_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{eth_pending|floatformat:2}}</span></p>
                                                 </div>
                                             </div>
                                             <!--end media body-->
@@ -173,8 +184,9 @@
                                                 class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
-                                                    <h3 class="m-0">$ {{ltc_balance|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Pending Deposits: <span class="text-danger">${{ltc_pending}}</span></p>
+                                                    <h3 class="m-0">${{cust.ltc_available|floatformat:2}}</h3>
+                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.ltc_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{ltc_pending|floatformat:2}}</span></p>
                                                 </div>
                                             </div>
                                             <!--end media body-->
@@ -197,9 +209,11 @@
                             <div class="card-body text-center px-5 pb-5"><img
                                     src="{% static '/assets/images/coins/btc.png' %}" alt="" class="thumb-lg">
                                 <div class="my-4">
-                                    <h2 class="font-24">${{btc_balance|floatformat:2}}</h2>
+                                    <h2 class="font-24">${{cust.btc_available|floatformat:2}}</h2>
                                     <p class="text-muted mb-3">The most respected, capitalized and traded cryptocurrency in the market.</p>
-                                </div><a href="{%url 'bitcoin' cust.id %}"><button type="button" class="btn btn-soft-warning shadow-none px-5">Trade</button></a>
+                                </div>
+                                <a href="{%url 'bitcoin' cust.id %}"><button type="button" class="btn btn-soft-warning shadow-none px-4">Trade</button></a>
+                                <a href="{%url 'bitcoinwith' cust.id %}"><button type="button" class="btn btn-soft-success shadow-none px-4">Withdraw</button></a>
                             </div>
                             <!--end card-body-->
                         </div>
@@ -214,9 +228,11 @@
                             <div class="card-body text-center px-5 pb-5"><img
                                     src="{% static '/assets/images/coins/eth.png' %}" alt="" class="thumb-lg">
                                 <div class="my-4">
-                                    <h2 class="font-24">${{eth_balance|floatformat:2}}</h2>
+                                    <h2 class="font-24">${{cust.eth_available|floatformat:2}}</h2>
                                     <p class="text-muted mb-3">The second largest cryptocurrency by market capitalization.</p>
-                                </div><a href="{%url 'ethereum' cust.id %}"><button type="button" class="btn btn-soft-primary shadow-none px-5">Trade</button></a>
+                                </div>
+                                <a href="{%url 'ethereum' cust.id %}"><button type="button" class="btn btn-soft-primary shadow-none px-4">Trade</button></a>
+                                <a href="{%url 'ethereumwith' cust.id %}"><button type="button" class="btn btn-soft-success shadow-none px-4">Withdraw</button></a>
                             </div>
                             <!--end card-body-->
                         </div>
@@ -231,9 +247,11 @@
                             <div class="card-body text-center px-5 pb-5"><img
                                     src="{% static '/assets/images/coins/lite.png' %}" alt="" class="thumb-lg">
                                 <div class="my-4">
-                                    <h2 class="font-24">${{ltc_balance|floatformat:2}}</h2>
+                                    <h2 class="font-24">${{cust.ltc_available|floatformat:2}}</h2>
                                     <p class="text-muted mb-3">The most identical altcoin to Bitcoin with instant payment capabilities.</p>
-                                </div><a href="{%url 'litecoin' cust.id %}"><button type="button" class="btn btn-soft-dark shadow-none px-5">Trade</button></a>
+                                </div>
+                                <a href="{%url 'litecoin' cust.id %}"><button type="button" class="btn btn-soft-dark shadow-none px-4">Trade</button></a>
+                                <a href="{%url 'litecoinwith' cust.id %}"><button type="button" class="btn btn-soft-success shadow-none px-4">Withdraw</button></a>
                             </div>
                             <!--end card-body-->
                         </div>
@@ -254,16 +272,16 @@
                                             </div>
                                             <div class="media-body align-self-center">
                                                 <div class="transaction-data">
-                                                    <h3 class="m-0">{{trade.amount}}
-                                                        <span class="small ml-2 text-success">
-                                                            +${{trade.profit}} profit
-                                                        </span>
+                                                    <h3 class="m-0">${{trade.amount}}
+                                                        <span class="small ml-2 text-success">+${{trade.current|floatformat:2}} Profit</span>
                                                     </h3>
-                                                    <p class="text-muted mb-0">{{trade.date_created|date:'F j, Y'}}</p>
+                                                    <p class="text-muted mb-0">{{trade.date_created|date:'F j, Y'}}<span class="badge badge-pill badge-soft-primary px-2 ml-3">{{trade.progress}}</span></p>
+                                                    <p class="badge badge-soft-info">Withdrawal date: {{trade.withdrawal_date|date:'F j, Y'}}</p>
                                                 </div>
                                             </div>
                                             <!--end media body-->
-                                        </div><span class="text-danger">{{trade.wallet}}</span>
+                                        </div>
+                                        <span class="badge badge-soft-{{trade.wallet.hue}}">{{trade.wallet}}</span>
                                     </li>
                                     {%endfor%}
                                 </ul>
@@ -285,12 +303,18 @@
                                             </div>
                                             <div class="media-body align-self-center">
                                                 <div class="transaction-data">
-                                                    <h3 class="m-0">{{deposit.amount}}</h3>
-                                                    <p class="text-muted mb-0">{{deposit.date_created|date:'F j, Y'}}<span class="text-success pl-2">({{deposit.status}})</span></p>
+                                                    <h3 class="m-0">${{deposit.amount}} <i class="fa fas fa-tick text-success"></i>
+                                                        </h3>
+                                                    <p class="text-muted mb-0">{{deposit.date_created|date:'F j, Y'}}</p>
+                                                    {%if deposit.description is not None%}
+                                                    <span class="small badge badge-soft-success">
+                                                        {{deposit.description}}
+                                                    </span>
+                                                    {%endif%}
                                                 </div>
                                             </div>
                                             <!--end media body-->
-                                        </div><span class="text-danger">{{deposit.wallet}}</span>
+                                        </div><span class="badge badge-soft-{{deposit.wallet.hue}}">{{deposit.wallet}}</span>
                                     </li>
                                     {%endfor%}
                                 </ul>
