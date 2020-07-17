@@ -67,7 +67,7 @@ class coinform(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['wallet'].widget.attrs.update({'class': 'form-control'})
         self.fields['amount'].widget.attrs.update({'class': 'form-control'})
-        self.fields['duration'].widget.attrs.update({'class': 'form-control', 'step': '1', 'min': '7', 'max': '30'})
+        self.fields['duration'].widget.attrs.update({'class': 'form-control'})
 
 
 class coindepoform(forms.ModelForm):

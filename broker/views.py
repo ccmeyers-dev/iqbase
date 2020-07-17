@@ -45,7 +45,7 @@ def user(request, pk):
             'status': False,
         }
     referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
-   
+
     context = {
         'cust': cust,
         'trade': trade,
@@ -68,7 +68,7 @@ def user(request, pk):
 @verified_only
 def update_trade(request, pk):
     trade = Trade.objects.get(id=pk)
-    
+
     if trade.wallet.coin == "Ethereum":
         hue = "purple"
     elif trade.wallet.coin == "Litecoin":
@@ -128,7 +128,7 @@ def update_deposit(request, pk):
         hue = "dark"
     else:
         hue = "warning"
-        
+
     form = depocorrectform(instance=depo)
     if request.POST and 'correct' in request.POST:
         form = depocorrectform(request.POST, instance=depo)
@@ -308,7 +308,7 @@ def dashboard(request):
     #litecoin transactions
     ltc_tradeset = cust.trade_set.filter(wallet__coin='Litecoin').order_by('-id')
     ltc_deposet = cust.deposit_set.filter(wallet__coin='Litecoin').order_by('-id')
-    
+
     #api
     try:
         btcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true'
@@ -356,7 +356,7 @@ def dashboard(request):
         btcch = 0.87
         ethch = 0.43
         ltcch = 0.63
-    
+
     context = {
         'cust': cust,
         'trade': trade,
@@ -399,7 +399,7 @@ def bitcoin(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
 
-    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
+    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
@@ -408,7 +408,7 @@ def bitcoin(request, pk):
                 return redirect('dashboard')
             return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
+            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
     context = {
         'cust': cust,
         'formt': formt,
@@ -421,7 +421,7 @@ def bitcoin(request, pk):
 def ethereum(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
-    
+
     formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '2'})
     if request.POST:
         formt = coinform(request.POST)
@@ -445,7 +445,7 @@ def litecoin(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
 
-    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
+    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
@@ -454,7 +454,7 @@ def litecoin(request, pk):
                 return redirect('dashboard')
             return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
+            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
     context = {
         'cust': cust,
         'formt': formt,
@@ -467,9 +467,9 @@ def litecoin(request, pk):
 def bitcoindepo(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
-    
 
-    formd = coindepoform(initial={'customer':cust, 'wallet':1})
+
+    formd = coindepoform(initial={'customer':cust, 'wallet':3})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
@@ -510,9 +510,9 @@ def ethereumdepo(request, pk):
 def litecoindepo(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
-    
-    
-    formd = coindepoform(initial={'customer':cust, 'wallet':3})
+
+
+    formd = coindepoform(initial={'customer':cust, 'wallet':1})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
@@ -575,7 +575,7 @@ def userprofile(request):
     cust = Customer.objects.get(id=id)
 
     referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
-    
+
     #wallet addresses
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')

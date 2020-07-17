@@ -22,8 +22,11 @@
 <link href="https://cdn.jsdelivr.net/npm/dripicons@2.0.0/webfont/webfont.css" rel="stylesheet" type="text/css">
 
 <style>
-    .card, .btn, .form-control, .met-pro-bg, .table, .table-responsive, .thead-light, .bg-light {
-        border-radius: 16px
+    .btn, .form-control {
+        border-radius: 16px;
+    }
+    .card, .met-pro-bg, .table, .table-responsive, .thead-light, .bg-light {
+        border-radius: 12px;
     }
 </style>
 
@@ -34,7 +37,7 @@
 <div class="leftbar-tab-menu">
     <div class="main-icon-menu"><a class="logo logo-metrica d-block text-center"><span><img
                     src="{% static 'front/assets/images/coinimage.png' %}" alt="logo-small" class="logo-sm"></span></a>
-        
+
     </div>
     <!--end main-icon-menu-->
     <div class="main-menu-inner active">
@@ -62,6 +65,7 @@
                         <a class="nav-link" href="{%url 'admin:index'%}">Django Admin <i class="dripicons-star text-info ml-2"></i></a>
                         {%endif%}
                     </li>
+                    <li class="nav-item my-2"><a class="nav-link text-success" href="https://tawk.to/chat/5ede6eb69e5f6944229025de/1eafef71j" target="_blank">Customer Support </a></li>
                     <li class="nav-item"><a class="nav-link text-danger" href="{%url 'logout'%}">Logout <i class="dripicons-exit text-danger ml-2"></i></a></li>
                 </ul>
             </div><!-- end Crypto -->
@@ -101,6 +105,7 @@
                         <a class="dropdown-item" href="{%url 'admin:index'%}"><i class="dripicons-star text-info mr-2"></i>Django Admin</a>
                         {%endif%}
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-success my-2" href="https://tawk.to/chat/5ede6eb69e5f6944229025de/1eafef71j" target="_blank"></i> Customer Support</a>
                     <a class="dropdown-item text-danger" href="{%url 'logout'%}"><i class="dripicons-exit text-danger mr-2"></i> Logout</a>
                 </div>
             </li>

@@ -159,7 +159,7 @@
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
                                                     <h3 class="m-0">${{cust.btc_available|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.btc_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Total: <span class="text-success">${{cust.btc_balance|floatformat:2}}</span></p>
                                                     <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{btc_pending|floatformat:2}}</span></p>
                                                 </div>
                                             </div>
@@ -172,7 +172,7 @@
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
                                                     <h3 class="m-0">${{cust.eth_available|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.eth_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Total: <span class="text-success">${{cust.eth_balance|floatformat:2}}</span></p>
                                                     <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{eth_pending|floatformat:2}}</span></p>
                                                 </div>
                                             </div>
@@ -185,7 +185,7 @@
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
                                                     <h3 class="m-0">${{cust.ltc_available|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Balance: <span class="text-success">${{cust.ltc_balance|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Total: <span class="text-success">${{cust.ltc_balance|floatformat:2}}</span></p>
                                                     <p class="text-muted mb-0 small">Pending: <span class="text-danger">${{ltc_pending|floatformat:2}}</span></p>
                                                 </div>
                                             </div>
@@ -275,7 +275,6 @@
                                                     <h3 class="m-0">${{trade.amount}}
                                                         <span class="small ml-2 text-success">+${{trade.current|floatformat:2}} Profit</span>
                                                     </h3>
-                                                    <p class="text-muted mb-0">{{trade.date_created|date:'F j, Y'}}<span class="badge badge-pill badge-soft-primary px-2 ml-3">{{trade.progress}}</span></p>
                                                     <p class="badge badge-soft-info">Withdrawal date: {{trade.withdrawal_date|date:'F j, Y'}}</p>
                                                 </div>
                                             </div>
@@ -305,7 +304,6 @@
                                                 <div class="transaction-data">
                                                     <h3 class="m-0">${{deposit.amount}} <i class="fa fas fa-tick text-success"></i>
                                                         </h3>
-                                                    <p class="text-muted mb-0">{{deposit.date_created|date:'F j, Y'}}</p>
                                                     {%if deposit.description is not None%}
                                                     <span class="small badge badge-soft-success">
                                                         {{deposit.description}}
@@ -345,13 +343,13 @@
     <script src="{% static '/plugins/apexcharts/irregular-data-series.js' %}"></script>
     <script src="{% static '/assets/pages/jquery.crypto-dashboard.init.js' %}"></script><!-- App js -->
     <script src="{% static '/assets/js/app.js' %}"></script>
-   <!--Start of Tawk.to Script-->
+    <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
-s1.src='https://embed.tawk.to/5ede6eb69e5f6944229025de/default';
+s1.src='https://embed.tawk.to/5ede6eb69e5f6944229025de/1eafef71j';
 s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);

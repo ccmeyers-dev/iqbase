@@ -3,13 +3,13 @@
 import os
 
 from dotenv import load_dotenv
-project_folder = os.path.expanduser('/home/iqoptions/global')  # adjust as appropriate
+project_folder = os.path.expanduser('/home/username/global')  # adjust as appropriate
 load_dotenv(os.path.join(project_folder, '.env'))
 
 import sys
 #
 ## assuming your django settings file is at '/home/username/mysite/mysite/settings.py'
-## and your manage.py is is at '/home/iqoptions/mysite/manage.py'
+## and your manage.py is is at '/home/username/mysite/manage.py'
 # here mysite is called appname
 path = '/home/username/appname'
 if path not in sys.path:
