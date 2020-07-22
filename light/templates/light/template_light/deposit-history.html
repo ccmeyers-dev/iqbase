@@ -1,0 +1,67 @@
+{% extends 'light/template_light/index.html'%}
+{%load static%}
+{% block title %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+{%include 'light/template_light/header.html'%}
+
+        <div class="history mb-80">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h4 class="card-title">Deposit History</h4>
+                            </div>
+                            <div class="card-body">
+                                {%if deposit%}
+                                <div class="transaction-table">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-responsive-sm">
+                                            <tbody>
+                                                {%for deposit in deposit%}
+                                                <tr>
+                                                    <td><span class="buy-thumb"><i class="la la-arrow-down"></i></span>
+                                                    </td>
+                                                    <td class="text-success">+{{deposit.amount|floatformat:2}} USD</td>
+                                                    <td>
+                                                        <i class="cc {{deposit.wallet.code}}"></i> {{deposit.wallet.coin}}
+                                                    </td>
+                                                    <td>
+                                                        {%if deposit.description is not None%}
+                                                        <span class="badge badge-success">
+                                                            {{deposit.description}}
+                                                        </span>
+                                                        {%endif%}
+                                                    </td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {%else%}
+                                <div class="text-center">
+                                    <span>No Deposits yet</span>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {%include 'light/template_light/index-footer.html'%}
+    </div>
+
+
+
+    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
+    <script src="{% static 'static_new/js/scripts.js' %}"></script>
+</body>
+{% endblock %}

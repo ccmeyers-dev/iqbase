@@ -5,7 +5,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>IQ Options - Trade Bitcoin</title>
+    <title>{{vars.site}} - Trade Bitcoin</title>
 
     {%include 'front/header.html' %}
     <div class="page-wrapper">
@@ -18,7 +18,7 @@
                         <div class="page-title-box">
                             <div class="float-right">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="javascript:void(0);">IQ Options</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">{{vars.site}}</a></li>
                                     <li class="breadcrumb-item"><a href="javascript:void(0);">Crypto</a></li>
                                     <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
@@ -63,7 +63,21 @@
                                     </div>
                                     <div class="form-group "><label
                                             for="example-text-input">Duration</label>
-                                            {{formt.duration}}
+                                            
+                                            <select class="form-control" name="duration">
+                                                <option value="1">1 Day</option>
+                                                <option value="2">2 Days</option>
+                                                <option value="3">3 Days</option>
+                                                <option value="4">4 Days</option>
+                                                <option value="5">5 Days</option>
+                                                <option value="6">6 Days</option>
+                                                <option value="7">7 Days</option>
+                                                <option value="14">14 Days</option>
+                                                <option value="21">21 Days</option>
+                                                <option selected value="30">1 Month</option>
+                                                <option value="60">2 Months</option>
+                                                <option value="90">3 Months</option>
+                                            </select>
                                         <div class="small">
                                             {{formt.duration.errors}}
                                         </div>
@@ -98,9 +112,9 @@
                     <!--end col-->
                 </div>
             </div><!-- container -->
-            <footer class="footer text-center text-sm-left">&copy; 2019 - 2020 IQ Options <span
+            <footer class="footer text-center text-sm-left">&copy; 2019 - 2020 {{vars.site}} <span
                     class="text-muted d-none d-sm-inline-block float-right">Crafted with <i
-                        class="mdi mdi-heart text-danger"></i> by Mannatthemes</span></footer>
+                        class="mdi mdi-heart text-danger"></i> {{vars.site}} Developers</span></footer>
             <!--end footer-->
         </div><!-- end page content -->
     </div><!-- end page-wrapper -->

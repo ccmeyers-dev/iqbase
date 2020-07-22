@@ -1,7 +1,7 @@
 (function ($) {
     "use strict"
 
-    toastr.success("Complete your payment to make it easier to exchange", "Complete your payment!", {
+    toastr.success("You currently have no coins ", "Deposit to get started!", {
         // timeOut: 500000,
         closeButton: !0,
         debug: !1,

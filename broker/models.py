@@ -32,6 +32,8 @@ class Customer(models.Model):
     def __str__(self):
         return str(self.user)
     
+    def fullname(self):
+        return "{} {}".format(self.user.first_name, self.user.last_name)
     #bitcoin transactions
     @property
     def btc_trade_amount(self):
@@ -114,7 +116,7 @@ class Customer(models.Model):
 
     @property
     def deposit_amount(self):
-        return self.btc_deposit_amount + self.eth_deposit_amount + self.ltc_deposit_amount
+        return self.btc_depo_amount + self.eth_depo_amount + self.ltc_depo_amount
 
     @property
     def profit(self):
@@ -137,6 +139,7 @@ class Customer(models.Model):
 class Wallet(models.Model):
     coin = models.CharField(max_length=20)
     address = models.CharField(max_length=60, default='Coming Soon')
+    code = models.CharField(max_length=8, default='BTC')
     hue = models.CharField(max_length=14, default='primary')
 
     def __str__(self):

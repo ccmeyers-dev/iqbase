@@ -1,0 +1,199 @@
+{% extends 'light/template_light/index.html'%}
+{%load static%}
+{% block title %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+{%include 'light/template_light/header.html'%}
+        <div class="homepage mb-80">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-8 col-lg-8">
+                        <div class="card profile_chart">
+                            <div class="card-header">
+                                <div class="chart_current_data">
+                                    <h3 class="ml-4">{{cust.balance|floatformat:2}} <span>USD</span></h3>
+                                    <p class="text-success">{{cust.available|floatformat:2}} <span>USD ( {%widthratio cust.available cust.balance 100%}% completed )</span></p>
+                                </div>
+                                <div class="duration-option">
+                                    <a id="all" class="active">ALL</a>
+                                    <a id="one_month" class="">1M</a>
+                                    <a id="six_months">6M</a>
+                                    <a id="one_year" class="">1Y</a>
+                                    <a id="ytd" class="">YTD</a>
+                                </div>
+                            </div>
+                            <div class="card-body pt-0">
+
+                                <div id="timeline-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4">
+                        <div class="card balance-widget">
+                            <div class="card-header pb-0 border-0">
+                                <h4 class="card-title">Your Wallets </h4>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="balance-widget">
+                                    <div class="total-balance">
+                                        <h3>${{cust.balance|floatformat:2}}</h3>
+                                    <h6 class="mt-3">Available balance: ${{cust.available|floatformat:2}}</h6>
+                                    </div>
+                                    <ul class="list-unstyled">
+                                        <li class="media">
+                                            <i class="cc BTC mr-3"></i>
+                                            <div class="media-body">
+                                                <a href="{%url 'account'%}"><h5 class="m-0">Bitcoin</h5></a>
+                                            </div>
+                                            <div class="text-right">
+                                                <h5>{{cust.btc_balance|floatformat:2}} USD</h5>
+                                                <span class="small">Available: {{cust.btc_available|floatformat:2}} USD</span>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                            <i class="cc ETH mr-3"></i>
+                                            <div class="media-body">
+                                                <a href="{%url 'account'%}"><h5 class="m-0">Ethereum</h5></a>
+                                            </div>
+                                            <div class="text-right">
+                                                <h5>{{cust.eth_balance|floatformat:2}} USD</h5>
+                                                <span class="small">Available: {{cust.eth_available|floatformat:2}} USD</span>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                            <i class="cc LTC mr-3"></i>
+                                            <div class="media-body">
+                                                <a href="{%url 'account'%}"><h5 class="m-0">Litecoin</h5></a>
+                                            </div>
+                                            <div class="text-right">
+                                                <h5>{{cust.ltc_balance|floatformat:2}} USD</h5>
+                                                <span class="small">Available: {{cust.ltc_available|floatformat:2}} USD</span>
+                                            </div>
+                                        </li>
+                                        <li class="media">
+                                             <a href="{%url 'trade_view'%}" class="btn btn-success btn-block">Trade Now</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h4 class="card-title">Trade History</h4>
+                                {%if trade.count >= 5%}
+                                <a href="{%url 'trade_history'%}">View More </a>
+                                {%endif%}
+                            </div>
+                            <div class="card-body">
+                                {%if trade%}
+                                <div class="transaction-table">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-responsive-sm">
+                                            <tbody>
+                                                {%for trade in trade%}
+                                                <tr>
+                                                    <td><span class="sold-thumb"><i class="la la-arrow-up"></i></span>
+                                                    </td>
+                                                    <td class="text-danger">-{{trade.amount|floatformat:2}} USD</td>
+                                                    <td class="text-success">+{{trade.current|floatformat:2}} USD</td>
+
+                                                    <td>
+                                                        <span class="badge badge-warning">{{trade.progress}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="cc {{trade.wallet.code}}"></i> {{trade.wallet.coin}}
+                                                    </td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {%else%}
+                                <div class="text-center">
+                                    <span>No Trades yet</span>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h4 class="card-title">Deposit History</h4>
+                                {%if deposit.count >= 5%}
+                                <a href="{%url 'deposit_history'%}">View More </a>
+                                {%endif%}
+                            </div>
+                            <div class="card-body">
+                                {%if deposit%}
+                                <div class="transaction-table">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-responsive-sm">
+                                            <tbody>
+                                                {%for deposit in deposit%}
+                                                <tr>
+                                                    <td><span class="buy-thumb"><i class="la la-arrow-down"></i></span>
+                                                    </td>
+                                                    <td class="text-success">+{{deposit.amount|floatformat:2}} USD</td>
+                                                    <td>
+                                                        <i class="cc {{deposit.wallet.code}}"></i> {{deposit.wallet.coin}}
+                                                    </td>
+                                                    <td>
+                                                        {%if deposit.description is not None%}
+                                                        <span class="badge badge-success">
+                                                            {{deposit.description}}
+                                                        </span>
+                                                        {%endif%}
+                                                    </td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {%else%}
+                                <div class="text-center">
+                                    <span>No Deposits yet</span>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {%include 'light/template_light/index-footer.html'%}
+
+    </div>
+
+
+
+    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
+
+    <script src="{% static 'static_new/vendor/circle-progress/circle-progress.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/circle-progress/circle-progress-init.js' %}"></script>
+
+
+    <!--  flot-chart js -->
+    <script src="{% static 'static_new/vendor/apexchart/apexcharts.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/apexchart/apexchart-init.js' %}"></script>
+
+
+    <!-- <script src="{% static 'static_new/./js/dashboard.js"></script> -->
+    <script src="{% static 'static_new/js/scripts.js' %}"></script>
+    
+    {%include 'light/livechat.html'%}
+
+</body>
+{% endblock %}

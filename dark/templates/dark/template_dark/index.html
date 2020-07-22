@@ -1,0 +1,358 @@
+{%extends 'dark/template_dark/dashboard.html'%}
+{%load static%}
+{% block head %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+<body>
+
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+
+    <div id="main-wrapper pt-0">
+
+        <div class="header landing_page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <nav class="navbar navbar-expand-lg navbar-light px-0">
+                            <a class="navbar-brand" href="{%url 'dashboard'%}"><img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
+                                <span>{{vars.site}}</span></a>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#" data-scroll-nav="0">Home</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#" data-scroll-nav="1">Market</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#" data-scroll-nav="2">Portfolio</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#" data-scroll-nav="4">Contact</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="dashboard_log">
+                                <div class="d-flex align-items-center">
+                                    <div class="header_auth">
+                                        <a href="{%url 'login'%}" class="btn btn-primary">Sign In</a>
+                                        <a href="{%url 'register'%}" class="btn btn-outline-primary">Sign Up</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="intro section-padding position-relative" id="intro" data-scroll-index="0">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-xl-7 col-md-6">
+                        <div class="intro-content">
+                            <h2>Invest and Trade <br>cryptocurrency</h2>
+                            <p>Fast and secure way to trade popular cryptocurrencies</p>
+                            <div class="mt-4">
+                                <a href="{%url 'login'%}" class="btn my-1 waves-effect">
+                                    Sign In
+                                </a>
+                                <a href="{%url 'register'%}" class="btn my-1 waves-effect">
+                                    Sign Up
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="market section-padding page-section" data-scroll-index="1">
+            <div class="container">
+                <div class="row py-lg-5 justify-content-center">
+                    <div class="col-xl-7">
+                        <div class="section_heading">
+                            <span>Explore</span>
+                            <h3>The World's Leading Cryptocurrency Trade</h3>
+                            <p>Trade BTC, ETH, and LTC in minutes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="market-table">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-responsive-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Crypto</th>
+                                                    <th>Price</th>
+                                                    <th>Change</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="coin_icon">
+                                                        <i class="cc BTC"></i>
+                                                        <span>Bitcoin <b>BTC</b></span>
+                                                    </td>
+
+                                                    <td>
+                                                        USD {{btc.bitcoin.usd}}
+                                                    </td>
+                                                    <td>
+                                                        {%if btcch > 0%}
+                                                        <span class="text-success">+{{btcch}}%</i></span>
+                                                        {%elif btcch < 0%}
+                                                        <span class="text-danger">-{{btcch}}%</i></span>
+                                                        {%endif%}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="coin_icon">
+                                                        <i class="cc ETH"></i>
+                                                        <span>Ethereum <b>ETH</b></span>
+                                                    </td>
+
+                                                    <td>
+                                                        USD {{eth.ethereum.usd}}
+                                                    </td>
+                                                    <td>
+                                                        {%if ethch > 0%}
+                                                        <span class="text-success">+{{ethch}}%</i></span>
+                                                        {%elif ethch < 0%}
+                                                        <span class="text-danger">-{{ethch}}%</i></span>
+                                                        {%endif%}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="coin_icon">
+                                                        <i class="cc LTC"></i>
+                                                        <span>Litecoin <b>LTC</b></span>
+                                                    </td>
+
+                                                    <td>
+                                                        USD {{ltc.litecoin.usd}}
+                                                    </td>
+                                                    <td>
+                                                        {%if ltcch > 0%}
+                                                        <span class="text-success">+{{ltcch}}%</i></span>
+                                                        {%elif ltcch < 0%}
+                                                        <span class="text-danger">-{{ltcch}}%</i></span>
+                                                        {%endif%}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="features section-padding">
+            <div class="container">
+                <div class="row py-lg-5 justify-content-center">
+                    <div class="col-xl-7">
+                        <div class="section_heading">
+                            <span>Features</span>
+                            <h3>The most trusted cryptocurrency platform</h3>
+                            <p>Here are a few reasons why you should choose {{vars.site}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="features-content">
+                            <span><i class="fa fa-shield"></i></span>
+                            <h4>Secure storage</h4>
+                            <p>We store the vast majority of the digital assets in secure offline storage.</p>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="features-content">
+                            <span><i class="fa fa-cubes"></i></span>
+                            <h4>Protected by insurance</h4>
+                            <p>Cryptocurrency stored on our servers is covered by our insurance policy.</p>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="features-content">
+                            <span><i class="fa fa-life-ring"></i></span>
+                            <h4>Industry best practices</h4>
+                            <p>{{vars.site}} supports a variety of the most popular digital currencies.</p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="portfolio section-padding" data-scroll-index="2">
+            <div class="container">
+                <div class="row py-lg-5 justify-content-center">
+                    <div class="col-xl-7">
+                        <div class="section_heading">
+                            <span>Join Us</span>
+                            <h3>Start trading cryptocurrency today</h3>
+                            <p>{{vars.site}} has a variety of features that make it the best place to start trading</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-xl-5 col-md-12">
+                        <div class="portfolio_list">
+                            <div class="media">
+                                <span class="port-icon"> <i class="la la-chart-bar"></i></span>
+                                <div class="media-body">
+                                    <h4>Manage your portfolio</h4>
+                                    <p>Trade popular digital currencies, keep track of them in the one place.</p>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <span class="port-icon"> <i class="la la-calendar-check"></i></span>
+                                <div class="media-body">
+                                    <h4>Recurring buys</h4>
+                                    <p>Invest in cryptocurrency slowly over time by scheduling buys daily, weekly, or
+                                        monthly.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <span class="port-icon"> <i class="la la-lock"></i></span>
+                                <div class="media-body">
+                                    <h4>Vault protection</h4>
+                                    <p>For added security, store your funds in a vault with time delayed withdrawals.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="media">
+                                <span class="port-icon"> <i class="la la-mobile"></i></span>
+                                <div class="media-body">
+                                    <h4>Mobile friendly</h4>
+                                    <p>Stay on top of the markets with the {{vars.site}} mobile friendly web version.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form section-padding" data-scroll-index="4">
+            <div class="container">
+                <div class="row py-lg-5 justify-content-center">
+                    <div class="col-xl-7">
+                        <div class="section_heading">
+                            <span>Ask Question</span>
+                            <h3>Let us hear from you directly!</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-4 col-md-4 col-sm-4">
+                        <div class="info-list">
+                            <h4 class="mb-3">Address</h4>
+                            <ul>
+                                <li><i class="fa fa-map-marker"></i> California, USA</li>
+                                <li><i class="fa fa-envelope"></i>{{vars.email}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xl-8 col-md-8 col-sm-8">
+                        <form method="post" name="myform" class="contact_validate">
+                            {%csrf_token%}
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="contactName">
+                                            Full name
+                                        </label>
+                                        <input type="text" class="form-control" id="fullname" placeholder="Full name"
+                                            name="fullname">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-group">
+                                        <label for="contactEmail">
+                                            Email
+                                        </label>
+                                        <input type="email" class="form-control" name="email"
+                                            placeholder="hello@example.com" id="email">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <textarea class="form-control p-3" name="message" rows="5"
+                                            placeholder="Tell us what we can help you with!" id="message"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary px-4">
+                                Send message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="footer landing">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 col-md-6">
+                        {%include 'dark/template_dark/auth-footer.html'%}
+
+    </div>
+
+
+
+
+    <script src="{% static 'static_dark/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/waves/waves.min.js' %}"></script>
+
+    <script src="{% static 'static_dark/vendor/owlcarousel/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'static_dark/js/plugins/owl-carousel-init.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/scrollit/scrollIt.js' %}"></script>
+    <script src="{% static 'static_dark/js/plugins/scrollit-init.js' %}"></script>
+
+    <!-- Chart sparkline plugin files -->
+    <script src="{% static 'static_dark/vendor/jquery-sparkline/jquery.sparkline.min.js' %}"></script>
+    <script src="{% static 'static_dark/js/plugins/sparkline-init.js' %}"></script>
+
+    <script src="{% static 'static_dark/vendor/validator/jquery.validate.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/validator/validator-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/scripts.js' %}"></script>
+
+    <script src="{% static 'static_dark/js/settings.js' %}"></script>
+    <script src="{% static 'static_dark/js/quixnav-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/styleSwitcher.js' %}"></script>
+</body>
+{% endblock %}

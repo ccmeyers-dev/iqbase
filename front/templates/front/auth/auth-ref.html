@@ -7,10 +7,10 @@
 <head>
 
         <meta charset="utf-8" />
-        <title>Enter Referral Code | IQ Options</title>
+        <title>Enter Referral Code | {{vars.site}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="IQ Options - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
-        <meta content="IQ Options" name="author" />
+        <meta content="{{vars.site}} - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
+        <meta content="{{vars.site}}" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="{% static 'front/assets/images/coin.ico' %}">
 
@@ -69,7 +69,7 @@
                         </div>
                         <div class="mt-5 text-center">
                             <p>Don't have a Referral ? <a href="{% url 'register'%}" class="font-weight-medium text-primary"> Signup now </a> </p>
-                            <p>2020 © IQ Options LLC.</p>
+                            <p>2020 © {{vars.site}} LLC.</p>
                         </div>
 
                     </div>

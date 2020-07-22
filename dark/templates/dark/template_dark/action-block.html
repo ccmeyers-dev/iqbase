@@ -1,0 +1,105 @@
+{%extends 'dark/template_dark/dashboard.html'%}
+{%load static%}
+{% block head %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+<body>
+
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+
+        <div class="header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <nav class="navbar navbar-expand-lg navbar-light px-0 justify-content-between">
+                            <a class="navbar-brand" href="{%url 'dashboard'%}"><img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
+                                <span>{{vars.site}}</span></a>
+
+
+                            <div class="dashboard_log my-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="account_money">
+                                        <ul>
+                                            <li class="crypto">
+                                                <span>$ {{cust.available|floatformat:2}}</span>
+                                                <i class="cc BTC-alt"></i>
+                                            </li>
+                                            <li class="usd">
+                                                <span>$ {{cust.balance|floatformat:2}}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="profile_log dropdown">
+                                        <div class="user" data-toggle="dropdown">
+                                            <span class="thumb"><i class="la la-user"></i></span>
+                                            <span class="name">{{cust.fullname}}</span>
+                                            <span class="arrow"><i class="la la-angle-down"></i></span>
+                                        </div>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="{%url 'logout'%}" class="dropdown-item logout"> Logout
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="verification section-padding my-5">
+            <div class="container h-100">
+                <div class="row justify-content-center h-100 align-items-center">
+                    <div class="col-xl-5 col-md-6">
+                        <div class="auth-form card">
+                            <div class="card-header">
+                                <h4 class="card-title text-center mx-auto">Account Temporarily Deactivated</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="identity-content">
+                                    <span class="icon"><i class="fa fa-lock"></i></span>
+                                    <h4>Hello {{cust.user.first_name}}</h4>
+                                    <p>We noticed unusual activity from your account. For security reasons your account has been deactivated.
+                                        <br><strong>N.B. This is all automated</strong></p>
+                                </div>
+
+                                <div class="text-center">
+                                    <a href="mailto:{{vars.email}}" class="btn btn-success pl-5 pr-5">Send us a mail</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        {%include 'dark/template_dark/index-footer.html'%}
+
+    
+    </div>
+
+
+
+    <script src="{% static 'static_dark/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/waves/waves.min.js' %}"></script>
+    <script src="{% static 'static_dark/js/scripts.js' %}"></script>
+    <script src="{% static 'static_dark/js/settings.js' %}"></script>
+    <script src="{% static 'static_dark/js/quixnav-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/styleSwitcher.js' %}"></script>
+</body>
+{% endblock %}

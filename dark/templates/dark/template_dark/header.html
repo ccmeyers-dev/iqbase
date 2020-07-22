@@ -1,0 +1,75 @@
+{%load static%}
+<body>
+
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+
+        <div class="header">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <nav class="navbar navbar-expand-lg navbar-light px-0 justify-content-between">
+                            <a class="navbar-brand" href="{%url 'dashboard'%}"><img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
+                                <span>{{vars.site}}</span></a>
+
+
+                            <div class="dashboard_log my-2">
+                                <div class="d-flex align-items-center">
+                                    <div class="account_money">
+                                        <ul>
+                                            <li class="crypto">
+                                                <span>$ {{cust.available|floatformat:2}}</span>
+                                            </li>
+                                            <li class="usd">
+                                                <span>$ {{cust.balance|floatformat:2}}</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="profile_log dropdown">
+                                        <div class="user" data-toggle="dropdown">
+                                            <span class="thumb"><i class="la la-user"></i></span>
+                                            <span class="name">{{cust.fullname}}</span>
+                                            <span class="arrow"><i class="la la-angle-down"></i></span>
+                                        </div>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a href="{%url 'dashboard'%}" class="dropdown-item"> Dashboard
+                                            </a>
+                                            <a href="{%url 'account'%}" class="dropdown-item"> Account
+                                            </a>
+                                            <a href="{%url 'settings_profile'%}" class="dropdown-item"> Settings
+                                            </a>
+                                            <a href="{%url 'trade_view'%}" class="dropdown-item"> Trade / Withdraw
+                                            </a>
+                                            <a href="{%url 'logout'%}" class="dropdown-item logout"> Logout
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="page_title ml-4">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="page_title-content">
+                            <p>Welcome Back,
+                                <span> {{cust.fullname}}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -1,0 +1,259 @@
+{%extends 'dark/template_dark/dashboard.html'%}
+{%load static%}
+{% block head %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+{%include 'dark/template_dark/header.html'%}
+
+        <div class="content-body ml-0">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6">
+                        <div class="card profile_card">
+                            <div class="card-body">
+                                <div class="media">
+                                    <div class="media-body">
+                                        <p class="mb-2">User ID <span class="font-weight-bold ml-4">{{cust.unique_id}}</span></p>
+                                        <p class="mb-2">Full Name <span class="font-weight-bold ml-4">{{cust.fullname}}</span></p>
+                                        <p class="mb-1"> <span><i class="fa fa-phone mr-2 text-primary"></i></span>
+                                            {{cust.phone_number}}</p>
+                                        <p class="mb-1"> <span><i class="fa fa-envelope mr-2 text-primary"></i></span>
+                                            {{cust}}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <ul class="card-profile__info">
+                                    <li>
+                                        <h5 class="mr-4">Address</h5>
+                                        <span class="text-muted">{{cust.address}}</span>
+                                    </li>
+                                    <li class="mb-1">
+                                        <h5 class="mr-4">Region</h5>
+                                        <span class="text-muted">{{cust.city}}, {{cust.country}}</span>
+                                    </li>
+                                    <li>
+                                        <h5 class="mr-4">Gender</h5>
+                                        <span class="text-muted">{{cust.gender}}</span>
+                                    </li>
+                                    <li>
+                                        <h5 class="mr-4">Date of Birth</h5>
+                                        <span class="text-muted">{{cust.date_of_birth}}</span>
+                                    </li>
+                                </ul>
+                                <div class="social-icons">
+                                    <span class="text-muted">Referrals</span>
+                                    <p class="text-center mb-0 mt-2 small">Your <b>User ID</b> is your <b>Referral Code</b>, share your code or copy link below</p>
+                                    <p class="text-center my-2 text-muted small">{{request.get_host}}/register/ref={{user.customer.unique_id}}</p>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <input id="ref" type="text" value="{{request.get_host}}/register/ref={{user.customer.unique_id}}" class="form-control">
+                                            <div class="input-group-append">
+                                                <label onclick="copyWallet('ref')" class="input-group-text"><span class="small">copy</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Withdraw</h4>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" name="myform" class="currency_validate">
+                                    <div class="form-group">
+                                        <label class="mr-sm-2">Wallet</label>
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label id="wallet_withdraw_label" class="input-group-text">
+                                                    <i class="cc BTC-alt"></i>
+                                                </label>
+                                            </div>
+                                            <select id="wallet_withdraw_coin" onchange="walletWithdrawChange()" name='currency' class="form-control">
+                                                <option selected value="3">Bitcoin</option>
+                                                <option value="2">Ethereum</option>
+                                                <option value="1">Litecoin</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="mr-sm-2">Enter amount</label>
+                                        <div class="input-group">
+                                            <input id="withdraw_amount" onkeyup="amountWithdrawCheck()" type="text" name="currency_amount" class="form-control"
+                                                placeholder="Amount in USD">
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-3">
+                                            <p id="wallet_withdraw_limit" class="mb-0">Bitcoin Available Balance</p>
+                                            <h6 id="wallet_withdraw_available" class="mb-0">${{cust.btc_available|floatformat:2}}</h6>
+                                        </div>
+                                        <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw up to ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
+                                    </div>
+                                    <button id="withdraw_submit" type="submit" name="submit"
+                                        class="btn btn-success btn-block">Withdraw
+                                        Now</button>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Wallets</h4>
+                            </div>
+                            <div class="card-body">
+                                    <p class="font-weight-bold"><i class="cc BTC mr-2"></i><span>Bitcoin wallet address</span></p>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <input id="Bitcoin" type="text" class="form-control" value="{{bitcoin.address}}">
+                                            <div class="input-group-append">
+                                                <label onclick="copyWallet('Bitcoin')" class="input-group-text"><span class="small">copy</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="font-weight-bold"><i class="cc ETH mr-2"></i><span>Ethereum wallet address</span></p>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <input id="Ethereum" type="text" class="form-control" value="{{ethereum.address}}">
+                                            <div class="input-group-append">
+                                                <label onclick="copyWallet('Ethereum')" class="input-group-text"><span class="small">copy</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="font-weight-bold"><i class="cc LTC mr-2"></i><span>Litecoin wallet address</span></p>
+                                    <div class="form-group">
+                                        <div class="input-group mb-3">
+                                            <input id="Litecoin" type="text" class="form-control" value="{{litecoin.address}}">
+                                            <div class="input-group-append">
+                                                <label onclick="copyWallet('Litecoin')" class="input-group-text"><span class="small">copy</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h4 class="card-title">Referrals</h4>
+                            </div>
+                            <div class="card-body">
+                                {%if referrals%}
+                                <div class="transaction-table">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-responsive-sm">
+                                            <tbody>
+                                                {%for referral in referrals%}
+                                                <tr>
+                                                    <td>{{referral.fullname}}</td>
+                                                    <td>{{referral}}</td>
+        
+                                                    <td>
+                                                        {%if referral.deposit_amount > 0%}
+                                                        <span class="badge badge-success">Active</span>
+                                                        {%else%}
+                                                        <span class="badge badge-warning">Inactive</span>
+                                                        {%endif%}
+                                                    </td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {%else%}
+                                <div class="text-center">
+                                    <span>No Referrals yet</span>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        {%include 'dark/template_dark/index-footer.html'%}
+
+    </div>
+
+
+
+    <script src="{% static 'static_dark/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/waves/waves.min.js' %}"></script>
+    <script src="{% static 'static_dark/js/scripts.js' %}"></script>
+    <script src="{% static 'static_dark/js/settings.js' %}"></script>
+    <script src="{% static 'static_dark/js/quixnav-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/styleSwitcher.js' %}"></script>
+    <script>
+        function copyWallet(id) {
+            var copyText = document.getElementById(id);
+            copyText.select();
+            copyText.setSelectionRange(0,99999);
+            document.execCommand("copy");
+            if (id == "ref") {
+                alert("Copied Referral Link. Share with a friend");
+            } else {
+            alert("Copied " + id + " wallet address");
+            }
+        }
+        
+        var wallet_withdraw_coin = document.getElementById('wallet_withdraw_coin');
+        var wallet_withdraw_label = document.getElementById('wallet_withdraw_label');
+        var wallet_withdraw_limit = document.getElementById('wallet_withdraw_limit');
+        var wallet_withdraw_available = document.getElementById('wallet_withdraw_available');
+        var wallet_withdraw_summary = document.getElementById('wallet_withdraw_summary');
+        var withdraw_amount = document.getElementById('withdraw_amount');
+        var withdraw_submit = document.getElementById('withdraw_submit');
+        var btc_limit = "{{cust.btc_available|floatformat:2}}";
+        var eth_limit = "{{cust.eth_available|floatformat:2}}";
+        var ltc_limit = "{{cust.ltc_available|floatformat:2}}";
+        
+        function walletWithdrawChange() {
+            amountWithdrawCheck();
+            if (wallet_withdraw_coin.value == 1) {
+                wallet_withdraw_label.innerHTML = "<i class=\"cc LTC-alt\"></i>";
+                wallet_withdraw_limit.innerHTML = "Litecoin Wallet Limit"
+                wallet_withdraw_available.innerHTML = "$" + ltc_limit;
+                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + ltc_limit + " from your Litecoin Wallet"
+            } else if (wallet_withdraw_coin.value == 2) {
+                wallet_withdraw_label.innerHTML = "<i class=\"cc ETH-alt\"></i>";
+                wallet_withdraw_limit.innerHTML = "Ethereum Wallet Limit"
+                wallet_withdraw_available.innerHTML = "$" + eth_limit;
+                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + eth_limit + " from your Ethereum Wallet"
+            } else {
+                wallet_withdraw_label.innerHTML = "<i class=\"cc BTC-alt\"></i>";
+                wallet_withdraw_limit.innerHTML = "Bitcoin Wallet Limit"
+                wallet_withdraw_available.innerHTML = "$" + btc_limit;
+                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + btc_limit + " from your Bitcoin Wallet"
+            }
+        }
+        function amountWithdrawCheck() {
+            if (withdraw_amount.value < 2000) {
+                withdraw_submit.disabled = true;
+                withdraw_submit.innerHTML = "Amount too low";
+            } else if (isNaN(withdraw_amount.value)) {
+                withdraw_submit.disabled = true;
+                withdraw_submit.innerHTML = "Invalid amount";
+            }
+            else if (wallet_withdraw_coin.value == 1 && withdraw_amount.value > {{cust.ltc_available|floatformat:2}} || wallet_withdraw_coin.value == 2 && withdraw_amount.value > {{cust.eth_available|floatformat:2}} || wallet_withdraw_coin.value == 3 && withdraw_amount.value > {{cust.btc_available|floatformat:2}}) {
+                withdraw_submit.disabled = true;
+                withdraw_submit.innerHTML = "Insufficient funds";
+            } else {
+                withdraw_submit.disabled = true;
+                withdraw_submit.innerHTML = "Withdraw Not Available";
+            }
+        }
+    </script>
+</body>
+{% endblock %}

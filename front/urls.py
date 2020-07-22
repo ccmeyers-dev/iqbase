@@ -1,11 +1,8 @@
-from django.urls import path
-from broker import views
+from django.urls import path, re_path
+from . import views
+from . import auth_views as authviews
 
 urlpatterns = [
-    #test urls
-    path('test/', views.test, name='test'),
-    path('invoice/', views.invoice, name='invoice'),
-
     path('', views.home, name='home'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.userprofile, name='userprofile'),
@@ -35,4 +32,19 @@ urlpatterns = [
     path('toggle_admin&target=<str:pk>/', views.toggle_admin, name='toggle_admin'),
     path('deactivate_user&target=<str:pk>/', views.deactivate, name='deactivate'),
     path('activate_user&target=<str:pk>/', views.activate, name='activate'),
+
+    #semi auth urls
+    path('change_password&account=<str:cust>/', views.change_password, name='change_password'),
+    path('reset-password/', views.reset_password, name='reset_password'),
+    path('action-block/', views.action_block, name='action_block'),
+    
+    
+    #auth urls
+    path('register/', authviews.register_view, name='register'),
+    path('referral/', authviews.referral, name='referral'),
+    path('register/ref=<str:ref>', authviews.register_view_ref, name='register_ref'),
+    path('profile_authentication/', authviews.profile, name='profile'),
+    path('login/', authviews.login_view, name="login"),
+    path('logout/', authviews.logout_view, name="logout"),
+    re_path('$', authviews.login_view),
 ]

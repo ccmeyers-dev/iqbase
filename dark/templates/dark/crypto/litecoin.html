@@ -1,0 +1,122 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Mirrored from mannatthemes.com/metrica/metrica_live/crypto/crypto-index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 31 May 2020 23:08:58 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>IQ Options - Trade Litecoin</title>
+
+    {%include 'front/header.html' %}
+    <div class="page-wrapper">
+        <!-- Page Content-->
+        <div class="page-content-tab">
+            <div class="container-fluid">
+                <!-- Page-Title -->
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="page-title-box">
+                            <div class="float-right">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">IQ Options</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Crypto</a></li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Dashboard</h4>
+                        </div>
+                        <!--end page-title-box-->
+                    </div>
+                    <!--end col-->
+                </div><!-- end page title end breadcrumb -->
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <h4 class="header-title mt-0">Current Balance</h4>
+                            </div>
+                            <div class="card-body text-center px-5 pb-5"><img
+                                    src="{% static '/assets/images/coins/lite.png' %}" alt="" class="thumb-lg">
+                                <div class="my-4">
+                                    <h2 class="font-24">${{cust.ltc_available|floatformat:2}}</h2>
+                                    <p class="text-muted mb-3">Your available balance</p>
+                                </div>
+                                <a href="{%url 'litecoinwith' cust.id %}"><button type="button" class="btn btn-soft-dark shadow-none px-5">Withdraw</button></a>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="mt-0 header-title text-center">Trade Litecoin</h4>
+                                {%if user.is_admin%}
+                                <p class="text-muted mb-3 text-center">{{cust.user.email}}</p>
+                                {%endif%}
+                                <form class="form-horizontal" method="POST">
+                                    {%csrf_token%}
+                                    <div class="form-group ">
+                                        <label for="example-text-input">Amount in USD</label>
+                                        <input type="number" max="{{cust.ltc_available}}" name="amount" step="0.01" class="form-control" required="" id="id_amount">
+                                    </div>
+                                    <div class="form-group "><label
+                                            for="example-text-input">Duration</label>
+                                            {{formt.duration}}
+                                        <div class="small">
+                                            {{formt.duration.errors}}
+                                        </div>
+                                    </div>
+                                    {{formt.customer}}
+                                    {{formt.profit}}
+                                    {{formt.wallet}}
+                                    <!--end form-group-->
+                                    <div class="form-group mb-0 row">
+                                        <div class="col-12 mt-2">
+                                            <input class="shadow-none btn btn-dark btn-rounded btn-block waves-effect waves-light py-2" type="submit" value="Trade Litecoin">
+                                        </div>
+                                        <!--end col-->
+                                        <div class="text-danger ml-4">
+                                            {%if formt.errors%}
+                                            {%for error in formt.non_field_errors%}
+                                            <div class="small">
+                                                {{error}}
+                                            </div>
+                                            {%endfor%}
+                                            {%endif%}
+                                        </div>
+                                    </div>
+                                    <!--end form-group-->
+
+                                </form>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+            </div><!-- container -->
+            <footer class="footer text-center text-sm-left">&copy; 2019 - 2020 IQ Options <span
+                    class="text-muted d-none d-sm-inline-block float-right">Crafted with <i
+                        class="mdi mdi-heart text-danger"></i> {{vars.site}} Developers</span></footer>
+            <!--end footer-->
+        </div><!-- end page content -->
+    </div><!-- end page-wrapper -->
+    <!-- jQuery  -->
+    <script src="{% static '/assets/js/jquery.min.js' %}"></script>
+    <script src="{% static '/assets/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static '/assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static '/assets/js/metismenu.min.js' %}"></script>
+    <script src="{% static '/assets/js/waves.js' %}"></script>
+    <script src="{% static '/assets/js/feather.min.js' %}"></script>
+    <script src="{% static '/assets/js/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static '/plugins/apexcharts/apexcharts.min.js' %}"></script>
+    <script src="{% static '/plugins/apexcharts/irregular-data-series.js' %}"></script>
+    <script src="{% static '/assets/pages/jquery.crypto-dashboard.init.js' %}"></script><!-- App js -->
+    <script src="{% static '/assets/js/app.js' %}"></script>
+</body>
+<!-- Mirrored from mannatthemes.com/metrica/metrica_live/crypto/crypto-index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 31 May 2020 23:09:23 GMT -->
+
+</html>

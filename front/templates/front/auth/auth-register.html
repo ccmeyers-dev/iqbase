@@ -9,14 +9,14 @@
         <meta charset="utf-8" />
         <title>
             {%if referrer%}
-            Register | IQ Options - {{referrer.user.first_name}}
+            Register | {{vars.site}} - {{referrer.user.first_name}}
             {%elif not referrer%}
-            Register | IQ Options
+            Register | {{vars.site}}
             {%endif%}
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="IQ Options - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
-        <meta content="IQ Options" name="author" />
+        <meta content="{{vars.site}} - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
+        <meta content="{{vars.site}}" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="{% static 'front/assets/images/coin.ico' %}">
 
@@ -123,7 +123,7 @@
                         </div>
                         <div class="mt-5 text-center">
                             <p>Already have an account ? <a href="{%url 'login'%}" class="font-weight-medium text-primary"> Login</a> </p>
-                            <p>2020 © IQ Options.</p>
+                            <p>2020 © {{vars.site}}.</p>
                         </div>
 
                     </div>

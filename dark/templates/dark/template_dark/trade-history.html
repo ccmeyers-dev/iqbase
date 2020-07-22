@@ -1,0 +1,69 @@
+{%extends 'dark/template_dark/dashboard.html'%}
+{%load static%}
+{% block head %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+{%include 'dark/template_dark/header.html'%}
+
+        <div class="content-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header border-0 pb-0">
+                                <h4 class="card-title">Trade History</h4>
+                            </div>
+                            <div class="card-body">
+                                {%if trade%}
+                                <div class="transaction-table">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 table-responsive-sm">
+                                            <tbody>
+                                                {%for trade in trade%}
+                                                <tr>
+                                                    <td><span class="sold-thumb"><i class="la la-arrow-up"></i></span>
+                                                    </td>
+                                                    <td class="text-danger">-{{trade.amount|floatformat:2}} USD</td>
+                                                    <td class="text-success">+{{trade.current|floatformat:2}} USD</td>
+
+                                                    <td>
+                                                        <span class="badge badge-warning">{{trade.progress}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <i class="cc {{trade.wallet.code}}"></i> {{trade.wallet.coin}}
+                                                    </td>
+                                                </tr>
+                                                {%endfor%}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {%else%}
+                                <div class="text-center">
+                                    <span>No Trades yet</span>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {%include 'dark/template_dark/index-footer.html'%}
+
+    </div>
+
+
+
+    <script src="{% static 'static_dark/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/waves/waves.min.js' %}"></script>
+    <script src="{% static 'static_dark/js/scripts.js' %}"></script>
+    <script src="{% static 'static_dark/js/settings.js' %}"></script>
+    <script src="{% static 'static_dark/js/quixnav-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/styleSwitcher.js' %}"></script>
+</body>
+{% endblock %}

@@ -2,7 +2,3 @@ __pycache__
 *.sqlite3
 .env
 /assets/
-front/templates/front/template_light/
-front/templates/front/template_dark/
-front_id/
-back_id/

@@ -31,6 +31,8 @@ INSTALLED_APPS = [
     'account',
     'broker',
     'front',
+    'light',
+    'dark',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'account.context_processors.site'
             ],
         },
     },
@@ -136,3 +139,7 @@ EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+#SITE Configuration
+SITE_NAME = os.getenv('SITE_NAME')
+SITE_URL = os.getenv('SITE_URL')

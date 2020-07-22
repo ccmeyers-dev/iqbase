@@ -1,0 +1,130 @@
+{%extends 'dark/template_dark/dashboard.html'%}
+{%load static%}
+{% block head %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
+<body>
+
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+
+        <div class="authincation section-padding">
+            <div class="container h-100">
+                <div class="row justify-content-center h-100 align-items-center">
+                    <div class="col-xl-5 col-md-6">
+                        <div class="mini-logo text-center my-5">
+                            <img src="{% static 'static_dark/images/m_logo.png' %}" alt="">
+                        </div>
+                        <div class="auth-form card">
+                            <div class="card-header pb-4 justify-content-center">
+                                <h4 class="card-title">Register</h4>
+                            </div>
+                            {%if referrer%}
+                            <div class="container text-center px-4 pt-2 pb-0 justify-content-center">
+                                <span class="small">Register under <b>{{referrer.user.first_name}} {{referrer.user.last_name}}</b> you both get <b>25%</b> back after your first Trade</span>
+                            </div>
+                            {%else%}
+                            <div class="container text-center px-4 pt-2 pb-0 justify-content-center">
+                                <p>Do you have a referral code? <a class="text-primary" href="{%url 'referral'%}">Click here</a>
+                                </p>
+                            </div>
+                            {%endif%}
+                            <div class="card-body pt-3">
+                                <form method="POST" name="myform" class="signup_validate">
+                                    {%csrf_token%}
+                                    <div class="form-row">
+                                        <div class="form-group col-xl-12">
+                                            <label><span class="small">Email</span></label>
+                                            <input type="email" class="form-control" placeholder="Email Address" name="email" onkeyup="this.value = this.value.toLowerCase();">
+                                            <span class="small text-danger">
+                                                {%if form.email.errors%}
+                                                {{form.email.errors}}
+                                                {%endif%}
+                                            </span>
+                                        </div>
+                                        <div class="form-group col-xl-6">
+                                            <label><span class="small">First Name</span></label>
+                                            <input type="text" class="form-control" placeholder="First Name" name="first_name">
+                                            <span class="small text-danger">
+                                                {%if form.first_name.errors%}
+                                                {{form.first_name.errors}}
+                                                {%endif%}
+                                            </span>
+                                        </div>
+                                        <div class="form-group col-xl-6">
+                                            <label><span class="small">Last Name</span></label>
+                                            <input type="text" class="form-control" placeholder="Last Name" name="last_name">
+                                            <span class="small text-danger">
+                                                {%if form.last_name.errors%}
+                                                {{form.last_name.errors}}
+                                                {%endif%}
+                                            </span>
+                                        </div>
+                                        <div class="form-group col-xl-6">
+                                            <label><span class="small">Password</span></label>
+                                            <input type="password" class="form-control" placeholder="Password" name="password1">
+                                            <span class="small text-danger">
+                                                {%if form.password1.errors%}
+                                                {{form.password1.errors}}
+                                                {%endif%}
+                                            </span>
+                                        </div>
+                                        <div class="form-group col-xl-6">
+                                            <label><span class="small">Confirm Password</span></label>
+                                            <input type="password" class="form-control" placeholder="Confirm Password" name="passworld">
+                                            <span class="small text-danger">
+                                                {%if form.passworld.errors%}
+                                                {{form.passworld.errors}}
+                                                {%endif%}
+                                            </span>
+                                        </div>
+                                            {{form.referrer}}
+                                        {%if form.errors%}
+                                        <div class="form-group col-xl-6">
+                                            <span class="small text-danger">
+                                                    {%for error in form.non_field_errors%}
+                                                        {{error}}
+                                                    {%endfor%}
+                                            </span>
+                                        </div>
+                                        {%endif%}
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-success btn-block">Register</button>
+                                    </div>
+                                </form>
+                                <div class="new-account text-center mt-3">
+                                    <p>Already have an account? <a class="text-primary" href="{%url 'login'%}">Sign in</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="{% static 'static_dark/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/waves/waves.min.js' %}"></script>
+
+    <script src="{% static 'static_dark/vendor/validator/jquery.validate.js' %}"></script>
+    <script src="{% static 'static_dark/vendor/validator/validator-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/scripts.js' %}"></script>
+    <script src="{% static 'static_dark/js/settings.js' %}"></script>
+    <script src="{% static 'static_dark/js/quixnav-init.js' %}"></script>
+    <script src="{% static 'static_dark/js/styleSwitcher.js' %}"></script>
+</body>
+{% endblock %}

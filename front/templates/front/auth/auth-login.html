@@ -7,10 +7,10 @@
 <head>
 
         <meta charset="utf-8" />
-        <title>Login | IQ Options</title>
+        <title>Login | {{vars.site}}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="IQ Options - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
-        <meta content="IQ Options" name="author" />
+        <meta content="{{vars.site}} - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
+        <meta content="{{vars.site}}" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="{% static 'front/assets/images/coin.ico' %}">
 
@@ -99,7 +99,7 @@
                         <div class="mt-5 text-center">
                             <p class="mb-0">Don't have an account ? <a href="{% url 'register'%}" class="font-weight-medium text-primary"> Signup now </a> </p>
                             <a href="{% url 'reset_password'%}" class="font-weight-medium text-primary"> Forgot Password ?</a>
-                            <p>2020 © IQ Options LLC.</p>
+                            <p>2020 © {{vars.site}} LLC.</p>
                         </div>
 
                     </div>
