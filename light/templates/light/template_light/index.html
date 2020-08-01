@@ -8,6 +8,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta content="{{vars.site}} - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
+    <meta content="{{vars.site}}" name="author" />
     {% block title %}
     <title>{{vars.site}} </title>
     {% endblock %}
@@ -82,7 +84,7 @@
                         <div class="intro-content">
                             <h2>Buy and sell <br>cryptocurrency</h2>
                             <p>Fast and secure way to purchase or exchange 150+ cryptocurrencies</p>
-                            
+
                             <a href="{%url 'login'%}" class="btn btn-primary">Sign In</a>
                             <a href="{%url 'register'%}" class="btn btn-outline-primary">Sign Up</a>
                         </div>
@@ -196,7 +198,7 @@
                             <span><i class="fa fa-shield"></i></span>
                             <h4>Secure storage</h4>
                             <p>We store the vast majority of the digital assets in secure offline storage.</p>
-                            
+
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -204,7 +206,7 @@
                             <span><i class="fa fa-cubes"></i></span>
                             <h4>Protected by insurance</h4>
                             <p>Cryptocurrency stored on our servers is covered by our insurance policy.</p>
-                            
+
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -212,7 +214,7 @@
                             <span><i class="fa fa-life-ring"></i></span>
                             <h4>Industry best practices</h4>
                             <p>{{vars.site}} supports a variety of the most popular digital currencies.</p>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -287,6 +289,7 @@
                             <ul>
                                 <li><i class="fa fa-map-marker"></i> California, USA</li>
                                 <li><i class="fa fa-envelope"></i>{{vars.email}}</li>
+
                             </ul>
                         </div>
                     </div>
@@ -349,7 +352,7 @@
                     Use</a> and <a href="{%url 'privacy_policy'%}">Privacy
                     Policy</a>
             </p>
-            <button class="btn btn-success btn-block">Accept</button>
+            <button data-dismiss="alert" class="btn btn-success btn-block">Accept</button>
         </div>
     </div>
 

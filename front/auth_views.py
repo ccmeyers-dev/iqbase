@@ -32,6 +32,8 @@ def profile(request):
                     subject = 'Welcome to ' + settings.SITE_NAME + ' Trade'
                     html_message = render_to_string('front/mail.html', {
                         'name': name,
+                        'site': settings.SITE_NAME,
+                        'url': settings.SITE_URL
                         })
                     plain_message = strip_tags(html_message)
                     from_email = settings.EMAIL_HOST_USER
@@ -75,7 +77,7 @@ def register_view(request):
 def register_view_ref(request, ref):
     user = request.user
     context = {}
-    
+
     try:
         referrer = Customer.objects.get(unique_id=ref)
     except Customer.DoesNotExist:

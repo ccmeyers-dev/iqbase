@@ -66,6 +66,7 @@
                             </div>
                             <div class="card-body">
                                 <form method="post" name="myform" class="currency_validate">
+                                    {%csrf_token%}
                                     <div class="form-group">
                                         <label class="mr-sm-2">Wallet</label>
                                         <div class="input-group mb-3">
@@ -181,7 +182,7 @@
             </div>
         </div>
 
-        
+
         {%include 'light/template_light/index-footer.html'%}
         </div>
     </div>
@@ -204,7 +205,7 @@
             alert("Copied " + id + " wallet address");
             }
         }
-        
+
         var wallet_withdraw_coin = document.getElementById('wallet_withdraw_coin');
         var wallet_withdraw_label = document.getElementById('wallet_withdraw_label');
         var wallet_withdraw_limit = document.getElementById('wallet_withdraw_limit');
@@ -215,7 +216,7 @@
         var btc_limit = "{{cust.btc_available|floatformat:2}}";
         var eth_limit = "{{cust.eth_available|floatformat:2}}";
         var ltc_limit = "{{cust.ltc_available|floatformat:2}}";
-        
+
         function walletWithdrawChange() {
             amountWithdrawCheck();
             if (wallet_withdraw_coin.value == 1) {

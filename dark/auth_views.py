@@ -32,6 +32,8 @@ def profile(request):
                     subject = 'Welcome to ' + settings.SITE_NAME + ' Trade'
                     html_message = render_to_string('light/mail.html', {
                         'name': name,
+                        'site': settings.SITE_NAME,
+                        'url': settings.SITE_URL
                         })
                     plain_message = strip_tags(html_message)
                     from_email = settings.EMAIL_HOST_USER

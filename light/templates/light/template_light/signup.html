@@ -40,12 +40,12 @@
         </div>
 
 
-        <div class="authincation section-padding">
-            <div class="container h-100">
+        <div class="authincation section-padding my-5">
+            <div class="container h-100 my-5">
                 <div class="row justify-content-center h-100 align-items-center">
                     <div class="col-xl-4 col-md-6">
                         <div class="auth-form card">
-                            <div class="card-header pb-4 justify-content-center">
+                            <div class="card-header pt-4 justify-content-center">
                                 <h4 class="card-title">Register</h4>
                             </div>
                             {%if referrer%}
@@ -53,7 +53,7 @@
                                 <span class="small">Register under <b>{{referrer.user.first_name}} {{referrer.user.last_name}}</b> you both get <b>25%</b> back after your first Trade</span>
                             </div>
                             {%else%}
-                            <div class="container text-center px-4 pt-2 pb-0 justify-content-center">
+                            <div class="container text-center px-4 pt-4 pb-0 justify-content-center">
                                 <p>Do you have a referral code? <a class="text-primary" href="{%url 'referral'%}">Click here</a>
                                 </p>
                             </div>
@@ -122,7 +122,7 @@
                                         <button type="submit" class="btn btn-success btn-block">Register</button>
                                     </div>
                                 </form>
-                                <div class="new-account text-center mt-3">
+                                <div class="new-account text-center my-3">
                                     <p>Already have an account? <a class="text-primary" href="{%url 'login'%}">Sign in</a>
                                     </p>
                                 </div>
@@ -132,11 +132,10 @@
                 </div>
             </div>
         </div>
-                
-        <div class="footer pt-5">
-            <div class="container pt-5">
-                <div class="row pt-5">
-                    <div class="col-xl-6 col-md-6 pt-5">
+        <div class="footer pt-5 mt-5">
+            <div class="container pt-5  mt-5">
+                <div class="row pt-5  mt-5">
+                    <div class="col-xl-6 col-md-6 pt-5  mt-5">
                         {%include 'light/template_light/auth-footer.html'%}
 
     </div>
@@ -147,7 +146,7 @@
     <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-    
+
     <script src="{% static 'static_new/vendor/validator/jquery.validate.js' %}"></script>
     <script src="{% static 'static_new/vendor/validator/validator-init.js' %}"></script>
     <script src="{% static 'static_new/js/scripts.js' %}"></script>
