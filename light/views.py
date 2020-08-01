@@ -5,7 +5,7 @@ from requests.exceptions import ConnectionError, Timeout, RequestException
 from django.shortcuts import render, redirect
 from django.db.models import Sum, ExpressionWrapper, F, DateTimeField, DurationField
 from django.db.models.functions import Cast
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -525,6 +525,10 @@ def dashboard(request):
 
     trade_count = trade.count()
 
+    bitcoin = Wallet.objects.get(coin='Bitcoin')
+    ethereum = Wallet.objects.get(coin='Ethereum')
+    litecoin = Wallet.objects.get(coin='Litecoin')
+
     #pending
     pending = cust.profit - cust.completed
     btc_pending = cust.btc_profit - cust.btc_completed
@@ -622,6 +626,11 @@ def dashboard(request):
         #ltc
         'ltc_tradeset': ltc_tradeset,
         'ltc_deposet': ltc_deposet,
+
+        #coins
+        'bitcoin': bitcoin,
+        'ethereum': ethereum,
+        'litecoin': litecoin
 
         }
     return render(request, 'light/template_light/dashboard.html', context)
@@ -908,3 +917,30 @@ def privacy_policy(request):
     
 def term_condition(request):
     return render(request, 'light/template_light/term-condition.html')
+
+def customer_data(request):
+    user = request.user
+    id = user.customer.id
+    cust = Customer.objects.get(id=id)
+
+    balance = "{:.2f}".format(cust.balance)
+    available = "{:.2f}".format(cust.available)
+    btc_balance = "{:.2f}".format(cust.btc_balance)
+    btc_available = "{:.2f}".format(cust.btc_available)
+    eth_balance = "{:.2f}".format(cust.eth_balance)
+    eth_available = "{:.2f}".format(cust.eth_available)
+    ltc_balance = "{:.2f}".format(cust.ltc_balance)
+    ltc_available = "{:.2f}".format(cust.ltc_available)
+
+
+    data = {
+        "bal": balance,
+        "avail": available,
+        "btc_bal": btc_balance,
+        "btc_avail": btc_available,
+        "eth_bal": eth_balance,
+        "eth_avail": eth_available,
+        "ltc_bal": ltc_balance,
+        "ltc_avail": ltc_available,
+    }
+    return JsonResponse(data)

@@ -75,10 +75,11 @@
                                                         <p id="wallet_limit" class="mb-0">Bitcoin Wallet Limit</p>
                                                         <h6 id="wallet_available" class="mb-0">${{cust.btc_available|floatformat:2}}</h6>
                                                     </div>
-                                                    <p id="wallet_summary" class="text-center mb-0 mt-3 small">You can trade up to ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
+                                                    <p id="wallet_summary" class="text-center mb-0 mt-3 small">You can trade ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
                                                 </div>
                                                 {{formt.customer}}
                                                 {{formt.profit}}
+                                                <p class="text-center" id="buy_link"></p>
                                                 <button id="submit" type="submit" name="trade"
                                                     class="btn btn-success btn-block">Trade
                                                     Now</button>
@@ -113,7 +114,7 @@
                                                         <p id="wallet_withdraw_limit" class="mb-0">Bitcoin Available Balance</p>
                                                         <h6 id="wallet_withdraw_available" class="mb-0">${{cust.btc_available|floatformat:2}}</h6>
                                                     </div>
-                                                    <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw up to ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
+                                                    <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
                                                 </div>
                                                 <button id="withdraw_submit" type="submit" name="withdraw"
                                                     class="btn btn-success btn-block">Withdraw
@@ -308,6 +309,7 @@
         var platform_bonus = document.getElementById("platform_bonus");
         var vat = document.getElementById("vat");
         var estimated_profit = document.getElementById("estimated_profit");
+        var buy_link = document.getElementById("buy_link");
 
         function walletChange() {
             amountCheck();
@@ -315,17 +317,17 @@
                 wallet_label.innerHTML = "<i class=\"cc LTC-alt\"></i>";
                 wallet_limit.innerHTML = "Litecoin Wallet Limit"
                 wallet_available.innerHTML = "$" + ltc_limit;
-                wallet_summary.innerHTML = "You can trade up to $" + ltc_limit + " from your Litecoin Wallet"
+                wallet_summary.innerHTML = "You can trade $" + ltc_limit + " from your Litecoin Wallet"
             } else if (wallet_coin.value == 2) {
                 wallet_label.innerHTML = "<i class=\"cc ETH-alt\"></i>";
                 wallet_limit.innerHTML = "Ethereum Wallet Limit"
                 wallet_available.innerHTML = "$" + eth_limit;
-                wallet_summary.innerHTML = "You can trade up to $" + eth_limit + " from your Ethereum Wallet"
+                wallet_summary.innerHTML = "You can trade $" + eth_limit + " from your Ethereum Wallet"
             } else {
                 wallet_label.innerHTML = "<i class=\"cc BTC-alt\"></i>";
                 wallet_limit.innerHTML = "Bitcoin Wallet Limit"
                 wallet_available.innerHTML = "$" + btc_limit;
-                wallet_summary.innerHTML = "You can trade up to $" + btc_limit + " from your Bitcoin Wallet"
+                wallet_summary.innerHTML = "You can trade $" + btc_limit + " from your Bitcoin Wallet"
             }
         }
 
@@ -335,20 +337,24 @@
                 submit.innerHTML = "Amount too low";
                 sell_amount.innerHTML = "$" + amount.value + " USD";
                 sell_amount.className = 'text-danger';
+                buy_link.innerHTML = null;
             } else if (isNaN(amount.value)) {
                 submit.disabled = true;
                 submit.innerHTML = "Invalid amount";
+                buy_link.innerHTML = null;
             }
             else if (wallet_coin.value == 1 && amount.value > {{cust.ltc_available|floatformat:2}} || wallet_coin.value == 2 && amount.value > {{cust.eth_available|floatformat:2}} || wallet_coin.value == 3 && amount.value > {{cust.btc_available|floatformat:2}}) {
                 submit.disabled = true;
                 submit.innerHTML = "Insufficient funds";
                 sell_amount.innerHTML = "$" + amount.value + " USD";
                 sell_amount.className = 'text-danger';
+                buy_link.innerHTML = "You don't have that amount <a class='text-success' href='https://coinmama.com' target='_blank'>Buy Now</a>";
             } else {
                 submit.disabled = false;
                 submit.innerHTML = "Trade Now";
                 sell_amount.innerHTML = "$" + amount.value + " USD";
                 sell_amount.className = 'text-success';
+                buy_link.innerHTML = null;
             }
             fee.innerHTML ="-$" +  (amount.value * 0.0063).toFixed(2) + " USD";
             platform_bonus.innerHTML = "+$" + (amount.value * 0.0235).toFixed(2) + " USD";
@@ -384,17 +390,17 @@
                 wallet_withdraw_label.innerHTML = "<i class=\"cc LTC-alt\"></i>";
                 wallet_withdraw_limit.innerHTML = "Litecoin Wallet Limit"
                 wallet_withdraw_available.innerHTML = "$" + ltc_limit;
-                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + ltc_limit + " from your Litecoin Wallet"
+                wallet_withdraw_summary.innerHTML = "You can withdraw $" + ltc_limit + " from your Litecoin Wallet"
             } else if (wallet_withdraw_coin.value == 2) {
                 wallet_withdraw_label.innerHTML = "<i class=\"cc ETH-alt\"></i>";
                 wallet_withdraw_limit.innerHTML = "Ethereum Wallet Limit"
                 wallet_withdraw_available.innerHTML = "$" + eth_limit;
-                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + eth_limit + " from your Ethereum Wallet"
+                wallet_withdraw_summary.innerHTML = "You can withdraw $" + eth_limit + " from your Ethereum Wallet"
             } else {
                 wallet_withdraw_label.innerHTML = "<i class=\"cc BTC-alt\"></i>";
                 wallet_withdraw_limit.innerHTML = "Bitcoin Wallet Limit"
                 wallet_withdraw_available.innerHTML = "$" + btc_limit;
-                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + btc_limit + " from your Bitcoin Wallet"
+                wallet_withdraw_summary.innerHTML = "You can withdraw $" + btc_limit + " from your Bitcoin Wallet"
             }
         }
         function amountWithdrawCheck() {

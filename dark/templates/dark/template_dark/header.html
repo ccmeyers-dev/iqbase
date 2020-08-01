@@ -16,8 +16,10 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <nav class="navbar navbar-expand-lg navbar-light px-0 justify-content-between">
-                            <a class="navbar-brand" href="{%url 'dashboard'%}"><img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
-                                <span>{{vars.site}}</span></a>
+                            <a class="navbar-brand" href="{%url 'dashboard'%}">
+                                <img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
+                                <span>{{vars.site}}</span>
+                            </a>
 
 
                             <div class="dashboard_log my-2">
@@ -34,19 +36,22 @@
                                     </div>
                                     <div class="profile_log dropdown">
                                         <div class="user" data-toggle="dropdown">
-                                            <span class="thumb"><i class="la la-user"></i></span>
+                                            <span class="thumb"><i class="la la-bars"></i></span>
                                             <span class="name">{{cust.fullname}}</span>
                                             <span class="arrow"><i class="la la-angle-down"></i></span>
                                         </div>
                                         <div class="dropdown-menu dropdown-menu-right">
-                                            <a href="{%url 'dashboard'%}" class="dropdown-item"> Dashboard
-                                            </a>
                                             <a href="{%url 'account'%}" class="dropdown-item"> Account
                                             </a>
                                             <a href="{%url 'settings_profile'%}" class="dropdown-item"> Settings
                                             </a>
                                             <a href="{%url 'trade_view'%}" class="dropdown-item"> Trade / Withdraw
                                             </a>
+                                            {%if user.is_admin%}
+                                            <a href="{%url 'administrator'%}" class="dropdown-item">
+                                                Admin
+                                            </a>
+                                            {%endif%}
                                             <a href="{%url 'logout'%}" class="dropdown-item logout"> Logout
                                             </a>
                                         </div>

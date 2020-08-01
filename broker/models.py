@@ -34,26 +34,40 @@ class Customer(models.Model):
     
     def fullname(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
+
     #bitcoin transactions
     @property
     def btc_trade_amount(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Bitcoin').aggregate(Sum('amount'))['amount__sum'] or 0
+        trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
+        return sum([trade.amount for trade in trade_set])
 
     @property
     def btc_depo_amount(self):
-        return Deposit.objects.filter(customer=self, wallet__coin='Bitcoin').aggregate(Sum('amount'))['amount__sum'] or 0
+        depo_set = self.deposit_set.filter(wallet__coin='Bitcoin')
+        return sum([depo.amount for depo in depo_set])
 
     @property
     def btc_profit(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Bitcoin').aggregate(Sum('profit'))['profit__sum'] or 0
+        trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
+        return sum([trade.profit for trade in trade_set])
 
     @property
     def btc_completed(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Bitcoin', withdrawal_date__lte=timezone.now()).aggregate(Sum('profit'))['profit__sum'] or 0
-    
+        trade_set = self.trade_set.filter(wallet__coin='Bitcoin', withdrawal_date__lte=timezone.now())
+        return sum([trade.profit for trade in trade_set])
+
+    @property
+    def btc_current(self):
+        trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
+        return sum([trade.current for trade in trade_set])
+
+    @property
+    def btc_total(self):
+        return self.btc_depo_amount - self.btc_trade_amount + self.btc_profit
+        
     @property
     def btc_balance(self):
-        return self.btc_depo_amount - self.btc_trade_amount + self.btc_profit
+        return float(self.btc_depo_amount - self.btc_trade_amount) + self.btc_current
         
     @property
     def btc_available(self):
@@ -62,48 +76,74 @@ class Customer(models.Model):
     #ethereum transactions
     @property
     def eth_trade_amount(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Ethereum').aggregate(Sum('amount'))['amount__sum'] or 0
+        trade_set = self.trade_set.filter(wallet__coin='Ethereum')
+        return sum([trade.amount for trade in trade_set])
 
     @property
     def eth_depo_amount(self):
-        return Deposit.objects.filter(customer=self, wallet__coin='Ethereum').aggregate(Sum('amount'))['amount__sum'] or 0
+        depo_set = self.deposit_set.filter(wallet__coin='Ethereum')
+        return sum([depo.amount for depo in depo_set])
 
     @property
     def eth_profit(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Ethereum').aggregate(Sum('profit'))['profit__sum'] or 0
+        trade_set = self.trade_set.filter(wallet__coin='Ethereum')
+        return sum([trade.profit for trade in trade_set])
 
     @property
     def eth_completed(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Ethereum', withdrawal_date__lte=timezone.now()).aggregate(Sum('profit'))['profit__sum'] or 0
-    
+        trade_set = self.trade_set.filter(wallet__coin='Ethereum', withdrawal_date__lte=timezone.now())
+        return sum([trade.profit for trade in trade_set])
+
     @property
-    def eth_balance(self):
+    def eth_current(self):
+        trade_set = self.trade_set.filter(wallet__coin='Ethereum')
+        return sum([trade.current for trade in trade_set])
+
+    @property
+    def eth_total(self):
         return self.eth_depo_amount - self.eth_trade_amount + self.eth_profit
         
     @property
+    def eth_balance(self):
+        return float(self.eth_depo_amount - self.eth_trade_amount) + self.eth_current
+        
+    @property
     def eth_available(self):
-        return self.eth_depo_amount - self.eth_trade_amount + self.eth_completed
+        return self.eth_depo_amount - self.eth_trade_amount + self.ltc_completed
 
     #litecoin transactions
     @property
     def ltc_trade_amount(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Litecoin').aggregate(Sum('amount'))['amount__sum'] or 0
+        trade_set = self.trade_set.filter(wallet__coin='Litecoin')
+        return sum([trade.amount for trade in trade_set])
 
     @property
     def ltc_depo_amount(self):
-        return Deposit.objects.filter(customer=self, wallet__coin='Litecoin').aggregate(Sum('amount'))['amount__sum'] or 0
+        depo_set = self.deposit_set.filter(wallet__coin='Litecoin')
+        return sum([depo.amount for depo in depo_set])
 
     @property
     def ltc_profit(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Litecoin').aggregate(Sum('profit'))['profit__sum'] or 0
+        trade_set = self.trade_set.filter(wallet__coin='Litecoin')
+        return sum([trade.profit for trade in trade_set])
 
     @property
     def ltc_completed(self):
-        return Trade.objects.filter(customer=self, wallet__coin='Litecoin', withdrawal_date__lte=timezone.now()).aggregate(Sum('profit'))['profit__sum'] or 0
-    
+        trade_set = self.trade_set.filter(wallet__coin='Litecoin', withdrawal_date__lte=timezone.now())
+        return sum([trade.profit for trade in trade_set])
+
+    @property
+    def ltc_current(self):
+        trade_set = self.trade_set.filter(wallet__coin='Litecoin')
+        return sum([trade.current for trade in trade_set])
+
+    @property
+    def ltc_total(self):
+        return self.ltc_depo_amount - self.ltc_trade_amount + self.ltc_profit
+        
     @property
     def ltc_balance(self):
-        return self.ltc_depo_amount - self.ltc_trade_amount + self.ltc_profit
+        return float(self.ltc_depo_amount - self.ltc_trade_amount) + self.ltc_current
         
     @property
     def ltc_available(self):
@@ -125,6 +165,14 @@ class Customer(models.Model):
     @property
     def completed(self):
         return self.btc_completed + self.eth_completed + self.ltc_completed
+        
+    @property
+    def current(self):
+        return self.btc_current + self.eth_current + self.ltc_current
+        
+    @property
+    def total(self):
+        return self.btc_total + self.eth_total + self.ltc_total
 
     @property
     def balance(self):

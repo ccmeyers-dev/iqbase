@@ -92,7 +92,7 @@
                                             <p id="wallet_withdraw_limit" class="mb-0">Bitcoin Available Balance</p>
                                             <h6 id="wallet_withdraw_available" class="mb-0">${{cust.btc_available|floatformat:2}}</h6>
                                         </div>
-                                        <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw up to ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
+                                        <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
                                     </div>
                                     <button id="withdraw_submit" type="submit" name="submit"
                                         class="btn btn-success btn-block">Withdraw
@@ -108,33 +108,33 @@
                                 <h4 class="card-title">Wallets</h4>
                             </div>
                             <div class="card-body">
-                                    <p class="font-weight-bold"><i class="cc BTC mr-2"></i><span>Bitcoin wallet address</span></p>
-                                    <div class="form-group">
-                                        <div class="input-group mb-3">
-                                            <input readonly id="Bitcoin" type="text" class="form-control" value="{{bitcoin.address}}">
-                                            <div class="input-group-append">
-                                                <button onclick="copyWallet('Bitcoin')" class="input-group-text"><span class="small">copy</span></button>
-                                            </div>
+                                <p class="font-weight-bold"><i class="cc BTC mr-2"></i><span>Bitcoin wallet address</span></p>
+                                <div class="form-group">
+                                    <div class="input-group mb-3">
+                                        <input readonly id="Bitcoin" type="text" class="form-control" value="{{bitcoin.address}}">
+                                        <div class="input-group-append">
+                                            <button onclick="copyWallet('Bitcoin')" class="input-group-text"><span class="small">copy</span></button>
                                         </div>
                                     </div>
-                                    <p class="font-weight-bold"><i class="cc ETH mr-2"></i><span>Ethereum wallet address</span></p>
-                                    <div class="form-group">
-                                        <div class="input-group mb-3">
-                                            <input readonly id="Ethereum" type="text" class="form-control" value="{{ethereum.address}}">
-                                            <div class="input-group-append">
-                                                <button onclick="copyWallet('Ethereum')" class="input-group-text"><span class="small">copy</span></button>
-                                            </div>
+                                </div>
+                                <p class="font-weight-bold"><i class="cc ETH mr-2"></i><span>Ethereum wallet address</span></p>
+                                <div class="form-group">
+                                    <div class="input-group mb-3">
+                                        <input readonly id="Ethereum" type="text" class="form-control" value="{{ethereum.address}}">
+                                        <div class="input-group-append">
+                                            <button onclick="copyWallet('Ethereum')" class="input-group-text"><span class="small">copy</span></button>
                                         </div>
                                     </div>
-                                    <p class="font-weight-bold"><i class="cc LTC mr-2"></i><span>Litecoin wallet address</span></p>
-                                    <div class="form-group">
-                                        <div class="input-group mb-3">
-                                            <input readonly id="Litecoin" type="text" class="form-control" value="{{litecoin.address}}">
-                                            <div class="input-group-append">
-                                                <button onclick="copyWallet('Litecoin')" class="input-group-text"><span class="small">copy</span></button>
-                                            </div>
+                                </div>
+                                <p class="font-weight-bold"><i class="cc LTC mr-2"></i><span>Litecoin wallet address</span></p>
+                                <div class="form-group">
+                                    <div class="input-group mb-3">
+                                        <input readonly id="Litecoin" type="text" class="form-control" value="{{litecoin.address}}">
+                                        <div class="input-group-append">
+                                            <button onclick="copyWallet('Litecoin')" class="input-group-text"><span class="small">copy</span></button>
                                         </div>
                                     </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -223,17 +223,17 @@
                 wallet_withdraw_label.innerHTML = "<i class=\"cc LTC-alt\"></i>";
                 wallet_withdraw_limit.innerHTML = "Litecoin Wallet Limit"
                 wallet_withdraw_available.innerHTML = "$" + ltc_limit;
-                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + ltc_limit + " from your Litecoin Wallet"
+                wallet_withdraw_summary.innerHTML = "You can withdraw $" + ltc_limit + " from your Litecoin Wallet"
             } else if (wallet_withdraw_coin.value == 2) {
                 wallet_withdraw_label.innerHTML = "<i class=\"cc ETH-alt\"></i>";
                 wallet_withdraw_limit.innerHTML = "Ethereum Wallet Limit"
                 wallet_withdraw_available.innerHTML = "$" + eth_limit;
-                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + eth_limit + " from your Ethereum Wallet"
+                wallet_withdraw_summary.innerHTML = "You can withdraw $" + eth_limit + " from your Ethereum Wallet"
             } else {
                 wallet_withdraw_label.innerHTML = "<i class=\"cc BTC-alt\"></i>";
                 wallet_withdraw_limit.innerHTML = "Bitcoin Wallet Limit"
                 wallet_withdraw_available.innerHTML = "$" + btc_limit;
-                wallet_withdraw_summary.innerHTML = "You can withdraw up to $" + btc_limit + " from your Bitcoin Wallet"
+                wallet_withdraw_summary.innerHTML = "You can withdraw $" + btc_limit + " from your Bitcoin Wallet"
             }
         }
         function amountWithdrawCheck() {

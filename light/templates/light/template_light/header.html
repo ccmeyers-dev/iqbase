@@ -37,6 +37,11 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="{%url 'settings_profile'%}">Settings</a>
                                     </li>
+                                    {%if user.is_admin%}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{%url 'administrator'%}">Admin</a>
+                                    </li>
+                                    {%endif%}
                                 </ul>
                             </div>
                             <div class="dashboard_log my-2">
@@ -67,6 +72,11 @@
                                             <a href="{%url 'trade_view'%}" class="dropdown-item">
                                                 <i class="la la-bar-chart"></i> Trade / Withdraw
                                             </a>
+                                            {%if user.is_admin%}
+                                            <a href="{%url 'administrator'%}" class="dropdown-item">
+                                                <i class="la la-cogs"></i> Admin
+                                            </a>
+                                            {%endif%}
                                             <a href="{%url 'logout'%}" class="dropdown-item logout">
                                                 <i class="la la-sign-out"></i> Logout
                                             </a>

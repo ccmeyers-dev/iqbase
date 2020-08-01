@@ -23,10 +23,10 @@
                                             <tbody>
                                                 {%for trade in trade%}
                                                 <tr>
-                                                    <td><span class="sold-thumb"><i class="la la-arrow-up"></i></span>
+                                                    <td><span class="buy-thumb"><i class="la la-arrow-up"></i></span>
                                                     </td>
-                                                    <td class="text-danger">-{{trade.amount|floatformat:2}} USD</td>
                                                     <td class="text-success">+{{trade.current|floatformat:2}} USD</td>
+                                                    <td class="text-danger">-{{trade.amount|floatformat:2}} USD</td>
 
                                                     <td>
                                                         <span class="badge badge-warning">{{trade.progress}}</span>
