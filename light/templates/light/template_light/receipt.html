@@ -1,4 +1,10 @@
+{% extends 'light/template_light/index.html'%}
 {%load static%}
+{% block title %}
+    <title>{{vars.site}} </title>
+{% endblock %}
+
+{% block body %}
 <body class="dashboard">
 
     <div id="preloader">
@@ -96,10 +102,66 @@
                     <div class="col-xl-12">
                         <div class="page_title-content">
                             <p>Welcome,
-                                <span> {{cust.fullname}}</span>
+                                <span> {{cust}}</span>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="homepage mb-80">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="card balance-widget">
+                            <div class="card-header pb-0 border-0">
+                                <h5>Withdrawal successful</h5>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="balance-widget">
+                                    <div class="text-center my-4">
+                                        <h3>$ {{amount}}</h3>
+                                        <p class="mt-4">{{cust}}, withdrawal from your {{wallet}} wallet was successful.</p>
+                                    </div>
+                                    <div class="text-center my-4 display-4">
+                                        <i class="fa fa-check-circle fa-3x text-success"></i>
+                                    </div>
+                                    <ul class="list-unstyled">
+                                        <li class="media">
+                                            <a href="{%url 'administrator'%}" class="btn btn-success btn-block">Continue to dashboard</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        {%include 'light/template_light/index-footer.html'%}
+
+    </div>
+
+
+
+    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
+
+    <script src="{% static 'static_new/vendor/circle-progress/circle-progress.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/circle-progress/circle-progress-init.js' %}"></script>
+
+
+    <!--  flot-chart js -->
+    <script src="{% static 'static_new/vendor/apexchart/apexcharts.min.js' %}"></script>
+    <script src="{% static 'static_new/vendor/apexchart/apexchart-init.js' %}"></script>
+
+
+    <!-- <script src="{% static 'static_new/./js/dashboard.js"></script> -->
+    <script src="{% static 'static_new/js/scripts.js' %}"></script>
+
+</body>
+{% endblock %}

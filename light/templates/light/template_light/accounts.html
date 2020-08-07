@@ -15,8 +15,8 @@
                             <div class="card-body">
                                 <div class="media">
                                     <div class="media-body">
-                                        <p class="mb-2">User ID <span class="font-weight-bold ml-4">{{cust.unique_id}}</span></p>
-                                        <p class="mb-2">Full Name <span class="font-weight-bold ml-4">{{cust.fullname}}</span></p>
+                                        <p class="mb-2">User ID: <span class="font-weight-bold ml-4">{{cust.unique_id}}</span></p>
+                                        <p class="mb-2">Full Name: <span class="font-weight-bold ml-4">{{cust.fullname}}</span></p>
                                         <p class="mb-1"> <span><i class="fa fa-phone mr-2 text-primary"></i></span>
                                             {{cust.phone_number}}</p>
                                         <p class="mb-1"> <span><i class="fa fa-envelope mr-2 text-primary"></i></span>
@@ -27,19 +27,23 @@
 
                                 <ul class="card-profile__info">
                                     <li>
-                                        <h5 class="text-dark mr-4">Address</h5>
+                                        <h5 class="text-dark mr-2">Address:</h5>
                                         <span class="text-muted">{{cust.address}}</span>
                                     </li>
                                     <li>
-                                        <h5 class="text-dark mr-4">Region</h5>
-                                        <span class="text-muted">{{cust.city}}, {{cust.country}}</span>
+                                        <h5 class="text-dark mr-2">City:</h5>
+                                        <span class="text-muted">{{cust.city}}</span>
                                     </li>
                                     <li>
-                                        <h5 class="text-dark mr-4">Gender</h5>
+                                        <h5 class="text-dark mr-2">Region:</h5>
+                                        <span class="text-muted">{{cust.country}}</span>
+                                    </li>
+                                    <li>
+                                        <h5 class="text-dark mr-2">Gender:</h5>
                                         <span class="text-muted">{{cust.gender}}</span>
                                     </li>
                                     <li class="mb-1">
-                                        <h5 class="text-dark mr-4">Date of Birth</h5>
+                                        <h5 class="text-dark mr-2">Date of Birth:</h5>
                                         <span class="text-muted">{{cust.date_of_birth}}</span>
                                     </li>
                                 </ul>

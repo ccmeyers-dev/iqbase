@@ -12,7 +12,7 @@ urlpatterns = [
     #user
     path('', views.home, name='home'),
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('customer-data-ref-5678395-httpget/', views.customer_data, name='customer_data'),
+    path('customer-data/', views.customer_data, name='customer_data'),
     path('trade-view/', views.trade_view, name='trade_view'),
     path('trade&query=all/', views.trade_history, name='trade_history'),
     path('deposit&query=all/', views.deposit_history, name='deposit_history'),

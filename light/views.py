@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from broker.models import Customer, Wallet, Trade, Deposit
 from account.models import Account
 from broker.decorators import *
@@ -282,24 +283,20 @@ def activate(request, pk):
 @admin_only
 @verified_only
 def receipt(request):
-    context = {}
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    wallet = Wallet.objects.get(coin='Bitcoin')
-
     if request.POST:
-        client = request.POST['user']
+        cust = request.POST['user']
         amount = request.POST['amount']
         wallet = request.POST['wallet']
         context = {
-            'client': client,
+            'cust': cust,
             'amount': amount,
             'wallet': wallet,
-            'cust': cust
         }
-        return render(request, 'light/receipt.html', context)
+        return render(request, 'light/template_light/receipt.html', context)
     return render(request, 'light/generate.html', {'cust' : cust})
 
 #admin and user
@@ -918,6 +915,9 @@ def privacy_policy(request):
 def term_condition(request):
     return render(request, 'light/template_light/term-condition.html')
 
+@login_required(login_url='login')
+@setup_only
+@verified_only
 def customer_data(request):
     user = request.user
     id = user.customer.id
@@ -931,7 +931,6 @@ def customer_data(request):
     eth_available = "{:.2f}".format(cust.eth_available)
     ltc_balance = "{:.2f}".format(cust.ltc_balance)
     ltc_available = "{:.2f}".format(cust.ltc_available)
-
 
     data = {
         "bal": balance,

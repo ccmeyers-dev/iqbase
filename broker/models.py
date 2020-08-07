@@ -223,7 +223,7 @@ class Trade(models.Model):
         ratio = elapsed / span
         if ratio > 1:
             ratio = 1
-        ratio = "{:.2f}%".format(ratio*100)
+        ratio = "{:.2f}".format(ratio*100)
         return ratio
 
     @property

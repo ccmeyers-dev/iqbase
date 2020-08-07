@@ -6,5 +6,5 @@ from django.conf import settings
 
 urlpatterns = [
     path('ccmeyers100/', admin.site.urls),
-    path('', include('front.urls')),
+    path('', include('light.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

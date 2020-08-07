@@ -7,7 +7,8 @@ from broker.models import Customer
 
 class UserForm(forms.ModelForm):
     date_of_birth = forms.DateField(
-        input_formats=['%d-%m-%Y']
+        input_formats=['%d-%m-%Y'],
+        error_messages = {'invalid': 'Enter date in format dd-mm-yyy ie (01-01-1900)'}
     )
     phone_number = forms.CharField(min_length=9, error_messages = {'invalid': 'Enter Phone number in international format'})
     class Meta:
@@ -25,7 +26,8 @@ class UserForm(forms.ModelForm):
   
 class CustomerForm(forms.ModelForm):
     date_of_birth = forms.DateField(
-        input_formats=['%d-%m-%Y']
+        input_formats=['%d-%m-%Y'],
+        error_messages = {'invalid': 'Enter date in format dd-mm-yyy ie (01-01-1900)'}
     )
     phone_number = forms.CharField(min_length=9, error_messages = {'invalid': 'Enter Phone number in international format'})
     class Meta:

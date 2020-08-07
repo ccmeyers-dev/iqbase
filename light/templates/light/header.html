@@ -3,7 +3,7 @@
 <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
 <meta content="" name="author">
 <meta http-equiv="X-UA-Compatible" content="IE=edge"><!-- App favicon -->
-<link rel="shortcut icon" href="{% static 'front/assets/images/coin.ico' %}">
+<link rel="shortcut icon" href="{% static 'light/assets/images/coin.ico' %}">
 <!-- DataTables -->
 <link href="{% static '/plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
 <link href="{% static '/plugins/datatables/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
@@ -38,8 +38,7 @@
 <body>
 <!-- leftbar-tab-menu -->
 <div class="leftbar-tab-menu">
-    <div class="main-icon-menu"><a class="logo logo-metrica d-block text-center"><span><img
-                    src="{% static 'front/assets/images/coinimage.png' %}" alt="logo-small" class="logo-sm"></span></a>
+    <div class="main-icon-menu">
         
     </div>
     <!--end main-icon-menu-->
@@ -61,7 +60,7 @@
                         {%endif%}
                     </li>
                     <li class="nav-item">
-                        {%if user.id == 1%}
+                        {%if user.is_superuser%}
                         <a class="nav-link" href="{%url 'admin:index'%}">Django Admin <i class="dripicons-star text-info ml-2"></i></a>
                         {%endif%}
                     </li>
@@ -97,7 +96,7 @@
                         {%if user.is_admin%}
                         <a class="dropdown-item" href="{%url 'administrator'%}"><i class="dripicons-star text-muted mr-2"></i>Visit Admin</a>
                         {%endif%}
-                        {%if user.id == 1%}
+                        {%if user.is_superuser%}
                         <a class="dropdown-item" href="{%url 'admin:index'%}"><i class="dripicons-star text-info mr-2"></i>Django Admin</a>
                         {%endif%}
                     <div class="dropdown-divider"></div>
@@ -108,8 +107,9 @@
 
         <!--end topbar-nav-->
         <ul class="list-unstyled topbar-nav mb-0">
-                <li><a ><span class="responsive-logo"><img src="{% static 'front/assets/images/coinimage.png' %}"
-                                alt="logo-small" class="logo-sm align-self-center" height="34"></span></a></li>
+                <li>
+                    
+                </li>
                 <li><button class="button-menu-mobile nav-link waves-effect waves-light"><i data-feather="menu"
                             class="align-self-center"></i></button></li>
                 <ul class="list-unstyled topbar-nav mb-0">

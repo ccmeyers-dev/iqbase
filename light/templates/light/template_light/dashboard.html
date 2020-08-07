@@ -24,7 +24,7 @@
                                         <li class="media">
                                             <i class="cc BTC mr-3"></i>
                                             <div class="media-body">
-                                                <a href="{%url 'account'%}"><h5 class="m-0">Bitcoin</h5></a>
+                                                <a href="{%url 'trade_view'%}"><h5 class="m-0">Bitcoin</h5></a>
                                             </div>
                                             <div class="text-right">
                                                 <h5 id="btc_bal">{{cust.btc_balance|floatformat:2}} USD</h5>
@@ -34,7 +34,7 @@
                                         <li class="media">
                                             <i class="cc ETH mr-3"></i>
                                             <div class="media-body">
-                                                <a href="{%url 'account'%}"><h5 class="m-0">Ethereum</h5></a>
+                                                <a href="{%url 'trade_view'%}"><h5 class="m-0">Ethereum</h5></a>
                                             </div>
                                             <div class="text-right">
                                                 <h5 id="eth_bal">{{cust.eth_balance|floatformat:2}} USD</h5>
@@ -44,7 +44,7 @@
                                         <li class="media">
                                             <i class="cc LTC mr-3"></i>
                                             <div class="media-body">
-                                                <a href="{%url 'account'%}"><h5 class="m-0">Litecoin</h5></a>
+                                                <a href="{%url 'trade_view'%}"><h5 class="m-0">Litecoin</h5></a>
                                             </div>
                                             <div class="text-right">
                                                 <h5 id="ltc_bal">{{cust.ltc_balance|floatformat:2}} USD</h5>
@@ -97,49 +97,67 @@
                 <div class="row">
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
-                            <div class="card-header border-0 pb-0">
-                                <h4 class="card-title">Trade History</h4>
+                            <div class="card-body">
+                                <div class="mb-5 d-flex justify-content-between align-items-center">
+                                <h5>Trade History</h5>
                                 {%if trade.count >= 5%}
                                 <a href="{%url 'trade_history'%}">View More </a>
                                 {%endif%}
-                            </div>
-                            <div class="card-body">
-                                {%if trade%}
-                                <div class="transaction-table">
-                                    <div class="table-responsive">
-                                        <table class="table mb-0 table-responsive-sm">
-                                            <tbody>
-                                                {%for trade in trade%}
-                                                <tr>
-                                                    <td><span class="buy-thumb"><i class="la la-arrow-up"></i></span>
-                                                    </td>
-                                                    <td class="text-success">+{{trade.current|floatformat:2}} USD</td>
-                                                    <td class="text-danger">-{{trade.amount|floatformat:2}} USD</td>
-
-                                                    <td>
-                                                        <span class="badge badge-warning">{{trade.progress}}</span>
-                                                    </td>
-                                                    <td>
-                                                        <i class="cc {{trade.wallet.code}}"></i> {{trade.wallet.coin}}
-                                                    </td>
-                                                </tr>
-                                                {%endfor%}
-                                            </tbody>
-                                        </table>
+                                </div>
+                                <div class="balance-widget">
+                                    {%if trade%}
+                                    <ul class="list-unstyled">
+                                        {%for trade in trade%}
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <a href="#">
+                                                    <h5>
+                                                        <i class="cc {{trade.wallet.code}} mr-3"></i>
+                                                        {{trade.wallet.coin}}
+                                                    </h5>
+                                                </a>
+                                                <h5><span class="small">Profit: </span>+{{trade.current|floatformat:2}} USD</h5>
+                                            </div>
+                                            <div class="progress my-4" style="border-radius: 12px; height: 24px;">
+                                                {%if trade.progress == "100.00" %}
+                                                <div 
+                                                class="progress-bar bg-success"
+                                                role="progressbar" 
+                                                style="width: {{trade.progress}}%; border-radius: 12px;"
+                                                aria-valuenow="{{trade.progress}}" aria-valuemin="0" aria-valuemax="100"
+                                                >complete
+                                                {%else%}
+                                                <div 
+                                                class="progress-bar progress-bar-striped progress-bar-animated bg-{{trade.wallet.hue}}"
+                                                role="progressbar" 
+                                                style="width: {{trade.progress}}%; border-radius: 12px;"
+                                                aria-valuenow="{{trade.progress}}" aria-valuemin="0" aria-valuemax="100"
+                                                >{{trade.progress}}%
+                                                {%endif%}</div>
+                                            </div>
+                                            <div class="mt-2 d-flex justify-content-between align-items-center">
+                                                <p class="small">Capital: {{trade.amount|floatformat:2}} USD</p>
+                                                <p class="small">Duration: {{trade.duration}} {%if trade.duration > 1 %}days{%else%}day{%endif%}</p>
+                                            </div>
+                                            <hr>
+                                        </div>
+                                        {%endfor%}
+                                    </ul>
+                                    <a href="{%url 'account'%}" class="btn btn-success btn-block">Withdraw Profit</a>
+                                    {%else%}
+                                    <div class="text-center mb-5">
+                                        <span>No Trades yet</span>
                                     </div>
+                                    <a href="{%url 'trade_view'%}" class="btn btn-success btn-block">Trade Now</a>
+                                    {%endif%}
                                 </div>
-                                {%else%}
-                                <div class="text-center">
-                                    <span>No Trades yet</span>
-                                </div>
-                                {%endif%}
                             </div>
                         </div>
                     </div>
                     <div class="col-xl-12 col-lg-12">
                         <div class="card">
                             <div class="card-header border-0 pb-0">
-                                <h4 class="card-title">Deposit History</h4>
+                                <h5>Deposit History</h5>
                                 {%if deposit.count >= 5%}
                                 <a href="{%url 'deposit_history'%}">View More </a>
                                 {%endif%}
@@ -219,11 +237,11 @@
         window.onload = () => {
             setInterval(() => {
             lazyLoadBalances()
-        }, 15000)}
+        }, 4000)}
 
         setInterval(() => {
             updateBalance()
-        }, 5000)
+        }, 2000)
 
         function copyWallet(id) {
             var copyText = document.getElementById(id);

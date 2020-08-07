@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class FrontConfig(AppConfig):
-    name = 'front'
+class DarkConfig(AppConfig):
+    name = 'dark'

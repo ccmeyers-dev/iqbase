@@ -282,24 +282,20 @@ def activate(request, pk):
 @admin_only
 @verified_only
 def receipt(request):
-    context = {}
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    wallet = Wallet.objects.get(coin='Bitcoin')
-
     if request.POST:
-        client = request.POST['user']
+        cust = request.POST['user']
         amount = request.POST['amount']
         wallet = request.POST['wallet']
         context = {
-            'client': client,
+            'cust': cust,
             'amount': amount,
             'wallet': wallet,
-            'cust': cust
         }
-        return render(request, 'dark/receipt.html', context)
+        return render(request, 'dark/template_dark/receipt.html', context)
     return render(request, 'dark/generate.html', {'cust' : cust})
 
 #admin and user
@@ -918,6 +914,9 @@ def privacy_policy(request):
 def term_condition(request):
     return render(request, 'dark/template_dark/term-condition.html')
 
+@login_required(login_url='login')
+@setup_only
+@verified_only
 def customer_data(request):
     user = request.user
     id = user.customer.id

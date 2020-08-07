@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'account',
     'broker',
-    'front',
     'light',
     'dark',
 ]
