@@ -746,7 +746,7 @@ def home(request):
         else:
             try:
                 subject = 'Customer message from: ' + \
-                    fullname + ' (' + settings.SITE_NAME + ')'
+                    fullname + " - " + email + ' (' + settings.SITE_NAME + ')'
                 plain_message = message
                 from_email = settings.EMAIL_HOST_USER
                 to = settings.EMAIL_HOST_USER
