@@ -66,6 +66,9 @@ class Customer(models.Model):
     def fullname(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
+    def fullname_caps(self):
+        return "{} {}".format(self.user.first_name.upper(), self.user.last_name.upper())
+
     # bitcoin transactions
     @property
     def btc_trade_amount(self):
