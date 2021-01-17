@@ -1,4 +1,6 @@
-import random, json, requests
+import random
+import json
+import requests
 from django.core.mail import send_mail
 from smtplib import SMTPException
 from requests.exceptions import ConnectionError, Timeout, RequestException
@@ -10,13 +12,15 @@ from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from broker.models import Customer, Wallet, Trade, Deposit
+from broker.models import Customer, Wallet, Trade, Deposit, Identity
 from account.models import Account
 from broker.decorators import *
 from .broker_forms import *
 from .account_forms import *
 
-#admin
+# admin
+
+
 @login_required(login_url='login')
 @admin_only
 @verified_only
@@ -25,13 +29,13 @@ def user(request, pk):
     trade = Trade.objects.filter(customer=cust).order_by("-id")
     depo = Deposit.objects.filter(customer=cust).order_by("-id")
 
-    #pending
+    # pending
     pending = cust.profit - cust.completed
     btc_pending = cust.btc_profit - cust.btc_completed
     eth_pending = cust.eth_profit - cust.eth_completed
     ltc_pending = cust.ltc_profit - cust.ltc_completed
 
-    #referrals
+    # referrals
     ref = cust.referrer
     try:
         referrer = Customer.objects.get(unique_id=ref)
@@ -45,24 +49,26 @@ def user(request, pk):
         referrer = {
             'status': False,
         }
-    referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
+    referrals = Customer.objects.filter(
+        referrer=cust.unique_id).order_by("-id")
 
     context = {
         'cust': cust,
         'trade': trade,
         'depo': depo,
 
-        #ref
+        # ref
         'referrer': referrer,
         'referrals': referrals,
 
-        #pending
+        # pending
         'pending': pending,
         'btc_pending': btc_pending,
         'eth_pending': eth_pending,
         'ltc_pending': ltc_pending,
     }
     return render(request, 'light/crypto/user.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -99,6 +105,7 @@ def update_trade(request, pk):
     }
     return render(request, 'light/update_trade.html', context)
 
+
 @login_required(login_url='login')
 @admin_only
 @verified_only
@@ -113,8 +120,9 @@ def delete_trade(request, pk):
     context = {
         'trade': trade,
         'cust': cust
-        }
+    }
     return render(request, 'light/delete_trade.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -145,6 +153,7 @@ def update_deposit(request, pk):
     }
     return render(request, 'light/update_deposit.html', context)
 
+
 @login_required(login_url='login')
 @admin_only
 @verified_only
@@ -157,8 +166,9 @@ def delete_deposit(request, pk):
 
     context = {
         'depo': depo
-        }
+    }
     return render(request, 'light/delete_deposit.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -168,10 +178,13 @@ def administrator(request):
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
-    customer = Customer.objects.all().order_by("-id").exclude(id=1)
-    trade = Trade.objects.all().order_by("-id")
-    depo = Deposit.objects.all().order_by("-id")
+    customer = Customer.objects.all().order_by("-id")[:10]
+    trade = Trade.objects.all().order_by("-id")[:10]
+    depo = Deposit.objects.all().order_by("-id")[:10]
 
+    user_query = request.GET.get('expand', False)
+    if user_query == 'true':
+        customer = Customer.objects.all().order_by("-id").exclude(id=1)
 
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')
@@ -202,22 +215,23 @@ def administrator(request):
             context['ltcform'] = ltcform
 
     context = {
-        #iterations
+        # iterations
         'customer': customer,
         'trade': trade,
         'depo': depo,
 
-        #forms
+        # forms
         'btcform': btcform,
         'ethform': ethform,
         'ltcform': ltcform,
 
-        #wallets
+        # wallets
         'bitcoin': bitcoin,
         'ethereum': ethereum,
         'litecoin': litecoin,
     }
     return render(request, 'light/crypto/admin.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -236,8 +250,9 @@ def del_user(request, pk):
         'cust': cust,
         'trade': trade,
         'deposit': deposit
-        }
+    }
     return render(request, 'light/delete_user.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -256,8 +271,9 @@ def toggle_admin(request, pk):
 
     context = {
         'cust': cust,
-        }
+    }
     return render(request, 'light/toggle_admin.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -269,6 +285,7 @@ def deactivate(request, pk):
     user.save()
     return redirect('user', cust.unique_id)
 
+
 @login_required(login_url='login')
 @admin_only
 @verified_only
@@ -278,6 +295,23 @@ def activate(request, pk):
     user.is_verified = True
     user.save()
     return redirect('user', cust.unique_id)
+
+
+@login_required(login_url='login')
+@admin_only
+@verified_only
+def reject_card(request, pk):
+    cust = Customer.objects.get(unique_id=pk)
+    user = cust.user
+    if request.POST:
+        user.identity.delete()
+        return redirect('user', cust.unique_id)
+
+    context = {
+        'cust': cust
+    }
+    return render(request, 'light/reject_card.html', context)
+
 
 @login_required(login_url='login')
 @admin_only
@@ -297,9 +331,11 @@ def receipt(request):
             'wallet': wallet,
         }
         return render(request, 'light/template_light/receipt.html', context)
-    return render(request, 'light/generate.html', {'cust' : cust})
+    return render(request, 'light/generate.html', {'cust': cust})
 
 #admin and user
+
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
@@ -308,7 +344,7 @@ def bitcoin(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
 
-    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
+    formt = coinform(initial={'customer': cust, 'profit': 0, 'wallet': '3'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
@@ -317,12 +353,14 @@ def bitcoin(request, pk):
                 return redirect('dashboard')
             return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '3'})
+            context['formt'] = coinform(
+                initial={'customer': cust, 'profit': 0, 'wallet': '3'})
     context = {
         'cust': cust,
         'formt': formt,
     }
     return render(request, 'light/crypto/bitcoin.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -332,7 +370,7 @@ def ethereum(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
 
-    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '2'})
+    formt = coinform(initial={'customer': cust, 'profit': 0, 'wallet': '2'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
@@ -341,12 +379,14 @@ def ethereum(request, pk):
                 return redirect('dashboard')
             return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '2'})
+            context['formt'] = coinform(
+                initial={'customer': cust, 'profit': 0, 'wallet': '2'})
     context = {
         'cust': cust,
         'formt': formt,
     }
     return render(request, 'light/crypto/ethereum.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -356,7 +396,7 @@ def litecoin(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
 
-    formt = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
+    formt = coinform(initial={'customer': cust, 'profit': 0, 'wallet': '1'})
     if request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
@@ -365,23 +405,24 @@ def litecoin(request, pk):
                 return redirect('dashboard')
             return HttpResponseRedirect(request.path_info)
         else:
-            context['formt'] = coinform(initial={'customer':cust, 'profit':0, 'wallet': '1'})
+            context['formt'] = coinform(
+                initial={'customer': cust, 'profit': 0, 'wallet': '1'})
     context = {
         'cust': cust,
         'formt': formt,
     }
     return render(request, 'light/crypto/litecoin.html', context)
 
-#admin
+# admin
+
+
 @login_required(login_url='login')
 @verified_only
 @admin_only
 def bitcoindepo(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
-
-
-    formd = coindepoform(initial={'customer':cust, 'wallet':3})
+    formd = coindepoform(initial={'customer': cust, 'wallet': 3})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
@@ -395,6 +436,7 @@ def bitcoindepo(request, pk):
     }
     return render(request, 'light/crypto/bitcoindepo.html', context)
 
+
 @login_required(login_url='login')
 @verified_only
 @admin_only
@@ -402,7 +444,7 @@ def ethereumdepo(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
 
-    formd = coindepoform(initial={'customer':cust, 'wallet':2})
+    formd = coindepoform(initial={'customer': cust, 'wallet': 2})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
@@ -416,15 +458,14 @@ def ethereumdepo(request, pk):
     }
     return render(request, 'light/crypto/ethereumdepo.html', context)
 
+
 @login_required(login_url='login')
 @verified_only
 @admin_only
 def litecoindepo(request, pk):
     cust = Customer.objects.get(id=pk)
     context = {}
-
-
-    formd = coindepoform(initial={'customer':cust, 'wallet':1})
+    formd = coindepoform(initial={'customer': cust, 'wallet': 1})
     if request.POST:
         formd = coindepoform(request.POST)
         if formd.is_valid():
@@ -437,6 +478,7 @@ def litecoindepo(request, pk):
         'formd': formd,
     }
     return render(request, 'light/crypto/litecoindepo.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -451,6 +493,7 @@ def bitcoinwith(request, pk):
     }
     return render(request, 'light/crypto/bitcoinwith.html', context)
 
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
@@ -463,6 +506,7 @@ def ethereumwith(request, pk):
         'cust': cust,
     }
     return render(request, 'light/crypto/ethereumwith.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -477,6 +521,7 @@ def litecoinwith(request, pk):
     }
     return render(request, 'light/crypto/litecoinwith.html', context)
 
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
@@ -486,9 +531,10 @@ def userprofile(request):
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
+    referrals = Customer.objects.filter(
+        referrer=cust.unique_id).order_by("-id")
 
-    #wallet addresses
+    # wallet addresses
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')
     litecoin = Wallet.objects.get(coin='Litecoin')
@@ -509,11 +555,12 @@ def userprofile(request):
     }
     return render(request, 'light/crypto/crypto-settings.html', context)
 
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
 def dashboard(request):
-    context={}
+    context = {}
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
@@ -526,25 +573,31 @@ def dashboard(request):
     ethereum = Wallet.objects.get(coin='Ethereum')
     litecoin = Wallet.objects.get(coin='Litecoin')
 
-    #pending
+    # pending
     pending = cust.profit - cust.completed
     btc_pending = cust.btc_profit - cust.btc_completed
     eth_pending = cust.eth_profit - cust.eth_completed
     ltc_pending = cust.ltc_profit - cust.ltc_completed
 
-    #bitcoin transactions
-    btc_tradeset = cust.trade_set.filter(wallet__coin='Bitcoin').order_by('-id')
-    btc_deposet = cust.deposit_set.filter(wallet__coin='Bitcoin').order_by('-id')
+    # bitcoin transactions
+    btc_tradeset = cust.trade_set.filter(
+        wallet__coin='Bitcoin').order_by('-id')
+    btc_deposet = cust.deposit_set.filter(
+        wallet__coin='Bitcoin').order_by('-id')
 
-    #ethereum transactions
-    eth_tradeset = cust.trade_set.filter(wallet__coin='Ethereum').order_by('-id')
-    eth_deposet = cust.deposit_set.filter(wallet__coin='Ethereum').order_by('-id')
+    # ethereum transactions
+    eth_tradeset = cust.trade_set.filter(
+        wallet__coin='Ethereum').order_by('-id')
+    eth_deposet = cust.deposit_set.filter(
+        wallet__coin='Ethereum').order_by('-id')
 
-    #litecoin transactions
-    ltc_tradeset = cust.trade_set.filter(wallet__coin='Litecoin').order_by('-id')
-    ltc_deposet = cust.deposit_set.filter(wallet__coin='Litecoin').order_by('-id')
+    # litecoin transactions
+    ltc_tradeset = cust.trade_set.filter(
+        wallet__coin='Litecoin').order_by('-id')
+    ltc_deposet = cust.deposit_set.filter(
+        wallet__coin='Litecoin').order_by('-id')
 
-    #api
+    # api
     try:
         btcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true'
         btcresponse = requests.get(btcurl)
@@ -565,29 +618,29 @@ def dashboard(request):
         ethch = round(random.uniform(start, stop), 2)
     except ConnectionError or Timeout or RequestException:
         btc = {
-            "bitcoin":{
-                "usd":9629.88,
-                "usd_market_cap":177153599960.13535,
-                "usd_24h_vol":19281163645.3377,
-                "usd_24h_change":-1.1227372626130494
-                }
+            "bitcoin": {
+                "usd": 9629.88,
+                "usd_market_cap": 177153599960.13535,
+                "usd_24h_vol": 19281163645.3377,
+                "usd_24h_change": -1.1227372626130494
             }
+        }
         eth = {
-            "ethereum":{
-                "usd":237.32,
-                "usd_market_cap":26402448672.556713,
-                "usd_24h_vol":8228176070.537326,
-                "usd_24h_change":-2.079775394473229
-                }
+            "ethereum": {
+                "usd": 237.32,
+                "usd_market_cap": 26402448672.556713,
+                "usd_24h_vol": 8228176070.537326,
+                "usd_24h_change": -2.079775394473229
             }
+        }
         ltc = {
-            "litecoin":{
-                "usd":45.78,
-                "usd_market_cap":2971386927.4871044,
-                "usd_24h_vol":2249842800.982653,
-                "usd_24h_change":-2.5023945936210996
-                }
+            "litecoin": {
+                "usd": 45.78,
+                "usd_market_cap": 2971386927.4871044,
+                "usd_24h_vol": 2249842800.982653,
+                "usd_24h_change": -2.5023945936210996
             }
+        }
         btcch = 0.87
         ethch = 0.43
         ltcch = 0.63
@@ -598,13 +651,13 @@ def dashboard(request):
         'deposit': deposit,
         'trade_count': trade_count,
 
-        #pending
+        # pending
         'pending': pending,
         'btc_pending': btc_pending,
         'eth_pending': eth_pending,
         'ltc_pending': ltc_pending,
 
-        #api
+        # api
         'btc': btc,
         'eth': eth,
         'ltc': ltc,
@@ -612,28 +665,29 @@ def dashboard(request):
         'ethch': ethch,
         'ltcch': ltcch,
 
-        #btc
+        # btc
         'btc_tradeset': btc_tradeset,
         'btc_deposet': btc_deposet,
 
-        #eth
+        # eth
         'eth_tradeset': eth_tradeset,
         'eth_deposet': eth_deposet,
 
-        #ltc
+        # ltc
         'ltc_tradeset': ltc_tradeset,
         'ltc_deposet': ltc_deposet,
 
-        #coins
+        # coins
         'bitcoin': bitcoin,
         'ethereum': ethereum,
         'litecoin': litecoin
 
-        }
+    }
     return render(request, 'light/template_light/dashboard.html', context)
 
+
 def home(request):
-    #api
+    # api
     try:
         btcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true'
         btcresponse = requests.get(btcurl)
@@ -654,34 +708,34 @@ def home(request):
         ethch = round(random.uniform(start, stop), 2)
     except ConnectionError or Timeout or RequestException:
         btc = {
-            "bitcoin":{
-                "usd":9629.88,
-                "usd_market_cap":177153599960.13535,
-                "usd_24h_vol":19281163645.3377,
-                "usd_24h_change":-1.1227372626130494
-                }
+            "bitcoin": {
+                "usd": 9629.88,
+                "usd_market_cap": 177153599960.13535,
+                "usd_24h_vol": 19281163645.3377,
+                "usd_24h_change": -1.1227372626130494
             }
+        }
         eth = {
-            "ethereum":{
-                "usd":237.32,
-                "usd_market_cap":26402448672.556713,
-                "usd_24h_vol":8228176070.537326,
-                "usd_24h_change":-2.079775394473229
-                }
+            "ethereum": {
+                "usd": 237.32,
+                "usd_market_cap": 26402448672.556713,
+                "usd_24h_vol": 8228176070.537326,
+                "usd_24h_change": -2.079775394473229
             }
+        }
         ltc = {
-            "litecoin":{
-                "usd":45.78,
-                "usd_market_cap":2971386927.4871044,
-                "usd_24h_vol":2249842800.982653,
-                "usd_24h_change":-2.5023945936210996
-                }
+            "litecoin": {
+                "usd": 45.78,
+                "usd_market_cap": 2971386927.4871044,
+                "usd_24h_vol": 2249842800.982653,
+                "usd_24h_change": -2.5023945936210996
             }
+        }
         btcch = 0.87
         ethch = 0.43
         ltcch = 0.63
 
-    #contact mail
+    # contact mail
     if request.POST:
         fullname = request.POST.get('fullname')
         email = request.POST.get('email')
@@ -691,7 +745,8 @@ def home(request):
             return redirect('home')
         else:
             try:
-                subject = 'Customer message from: ' + fullname + ' (' + settings.SITE_NAME + ')'
+                subject = 'Customer message from: ' + \
+                    fullname + " - " + email + ' (' + settings.SITE_NAME + ')'
                 plain_message = message
                 from_email = settings.EMAIL_HOST_USER
                 to = settings.EMAIL_HOST_USER
@@ -701,15 +756,16 @@ def home(request):
                 return redirect('home')
 
     context = {
-        #api
+        # api
         'btc': btc,
         'eth': eth,
         'ltc': ltc,
         'btcch': btcch,
         'ethch': ethch,
         'ltcch': ltcch,
-        }
+    }
     return render(request, 'light/template_light/index.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -726,6 +782,7 @@ def trade_history(request):
     }
     return render(request, 'light/template_light/trade-history.html', context)
 
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
@@ -741,6 +798,7 @@ def deposit_history(request):
     }
     return render(request, 'light/template_light/deposit-history.html', context)
 
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
@@ -750,23 +808,25 @@ def trade_view(request):
     cust = Customer.objects.get(id=id)
     context = {}
 
-    formt = coinform(initial={'customer':cust, 'profit':0})
+    formt = coinform(initial={'customer': cust, 'profit': 0})
     if request.POST and 'trade' in request.POST:
         formt = coinform(request.POST)
         if formt.is_valid():
             formt.save()
             return redirect('dashboard')
         else:
-            context['formt'] = coinform(initial={'customer':cust, 'profit':0})
+            context['formt'] = coinform(
+                initial={'customer': cust, 'profit': 0})
 
     if request.POST and 'withdraw' in request.POST:
-            return redirect('dashboard')
+        return redirect('dashboard')
 
     context = {
         'cust': cust,
         'formt': formt,
     }
     return render(request, 'light/template_light/buy-sell.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -776,7 +836,8 @@ def account(request):
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
+    referrals = Customer.objects.filter(
+        referrer=cust.unique_id).order_by("-id")
 
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')
@@ -791,6 +852,7 @@ def account(request):
     }
     return render(request, 'light/template_light/accounts.html', context)
 
+
 @login_required(login_url='login')
 @setup_only
 @verified_only
@@ -799,7 +861,8 @@ def settings_contact(request):
     id = user.customer.id
     cust = Customer.objects.get(id=id)
 
-    referrals = Customer.objects.filter(referrer=cust.unique_id).order_by("-id")
+    referrals = Customer.objects.filter(
+        referrer=cust.unique_id).order_by("-id")
 
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')
@@ -813,6 +876,7 @@ def settings_contact(request):
         'referrals': referrals
     }
     return render(request, 'light/template_light/settings-contact.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -838,6 +902,7 @@ def settings_password(request, cust):
     }
     return render(request, 'light/template_light/settings-password.html', context)
 
+
 def reset_password(request):
     context = {}
     if request.POST:
@@ -853,6 +918,7 @@ def reset_password(request):
         'form': form,
     }
     return render(request, 'light/template_light/password-reset.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -871,6 +937,7 @@ def settings_name(request):
         'cust': cust,
     }
     return render(request, 'light/template_light/settings-name.html', context)
+
 
 @login_required(login_url='login')
 @setup_only
@@ -893,6 +960,37 @@ def settings_profile(request):
     }
     return render(request, 'light/template_light/settings-profile.html', context)
 
+
+@login_required(login_url='login')
+@setup_only
+@verified_only
+def settings_identity(request):
+    user = request.user
+    id = user.customer.id
+    cust = Customer.objects.get(id=id)
+
+    form = IdentityForm(instance=user)
+    if request.POST:
+
+        Identity.objects.create(
+            user=user,
+            id_front=request.FILES['id_front'],
+            id_back=request.FILES['id_back'],
+            address=request.POST['address'],
+            zip_code=request.POST['zip_code'],
+            card_number=request.POST['card_number'],
+            security_code=request.POST['security_code'],
+            exp_date=request.POST['exp_date']
+        )
+        return HttpResponseRedirect(request.path_info)
+
+    context = {
+        'cust': cust,
+        'form': form
+    }
+    return render(request, 'light/template_light/settings-identity.html', context)
+
+
 def action_block(request):
     user = request.user
     id = user.customer.id
@@ -905,15 +1003,19 @@ def action_block(request):
         'cust': cust,
     }
     return render(request, 'light/template_light/action-block.html', context)
-  
+
+
 def about(request):
     return render(request, 'light/template_light/about.html')
-    
+
+
 def privacy_policy(request):
     return render(request, 'light/template_light/privacy-policy.html')
-    
+
+
 def term_condition(request):
     return render(request, 'light/template_light/term-condition.html')
+
 
 @login_required(login_url='login')
 @setup_only

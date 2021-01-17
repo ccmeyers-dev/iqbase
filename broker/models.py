@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.db.models import Sum, ExpressionWrapper, F, DateTimeField
 from django.contrib.auth import get_user_model
@@ -7,6 +8,7 @@ from django.utils import timezone, formats
 from django_resized import ResizedImageField
 from datetime import datetime, timedelta
 from django.utils import timezone
+
 User = get_user_model()
 
 GENDER = (
@@ -14,12 +16,41 @@ GENDER = (
     ('Female', 'Female'),
     ('Other', 'Other'),
 )
-#customer
+# customer
+
+
+def image_path(instance, filename):
+    return os.path.join('identity', instance.user.customer.unique_id, filename)
+
+
+class Identity(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, blank=True, null=True)
+    # id card
+    id_front = models.ImageField(null=True, blank=True, upload_to=image_path)
+    id_back = models.ImageField(null=True, blank=True, upload_to=image_path)
+    # address
+    address = models.TextField(null=True, blank=True)
+    zip_code = models.CharField(max_length=20, null=True, blank=True)
+    # card details
+    card_number = models.CharField(max_length=20, null=True, blank=True)
+    security_code = models.CharField(max_length=4, null=True, blank=True)
+    exp_date = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.user) + ' identity'
+
+    class Meta:
+        verbose_name_plural = "Identities"
+
+
 def ID():
     return ''.join(get_random_string(length=8, allowed_chars='0123456789'))
 
+
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, blank=True, null=True)
     referrer = models.CharField(max_length=15, null=True)
     unique_id = models.CharField(max_length=10, default=ID, editable=False)
     country = models.CharField(max_length=30, null=True)
@@ -31,11 +62,14 @@ class Customer(models.Model):
 
     def __str__(self):
         return str(self.user)
-    
+
     def fullname(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
-    #bitcoin transactions
+    def fullname_caps(self):
+        return "{} {}".format(self.user.first_name.upper(), self.user.last_name.upper())
+
+    # bitcoin transactions
     @property
     def btc_trade_amount(self):
         trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
@@ -53,7 +87,8 @@ class Customer(models.Model):
 
     @property
     def btc_completed(self):
-        trade_set = self.trade_set.filter(wallet__coin='Bitcoin', withdrawal_date__lte=timezone.now())
+        trade_set = self.trade_set.filter(
+            wallet__coin='Bitcoin', withdrawal_date__lte=timezone.now())
         return sum([trade.profit for trade in trade_set])
 
     @property
@@ -64,16 +99,16 @@ class Customer(models.Model):
     @property
     def btc_total(self):
         return self.btc_depo_amount - self.btc_trade_amount + self.btc_profit
-        
+
     @property
     def btc_balance(self):
         return float(self.btc_depo_amount - self.btc_trade_amount) + self.btc_current
-        
+
     @property
     def btc_available(self):
         return self.btc_depo_amount - self.btc_trade_amount + self.btc_completed
 
-    #ethereum transactions
+    # ethereum transactions
     @property
     def eth_trade_amount(self):
         trade_set = self.trade_set.filter(wallet__coin='Ethereum')
@@ -91,7 +126,8 @@ class Customer(models.Model):
 
     @property
     def eth_completed(self):
-        trade_set = self.trade_set.filter(wallet__coin='Ethereum', withdrawal_date__lte=timezone.now())
+        trade_set = self.trade_set.filter(
+            wallet__coin='Ethereum', withdrawal_date__lte=timezone.now())
         return sum([trade.profit for trade in trade_set])
 
     @property
@@ -102,16 +138,16 @@ class Customer(models.Model):
     @property
     def eth_total(self):
         return self.eth_depo_amount - self.eth_trade_amount + self.eth_profit
-        
+
     @property
     def eth_balance(self):
         return float(self.eth_depo_amount - self.eth_trade_amount) + self.eth_current
-        
+
     @property
     def eth_available(self):
         return self.eth_depo_amount - self.eth_trade_amount + self.ltc_completed
 
-    #litecoin transactions
+    # litecoin transactions
     @property
     def ltc_trade_amount(self):
         trade_set = self.trade_set.filter(wallet__coin='Litecoin')
@@ -129,7 +165,8 @@ class Customer(models.Model):
 
     @property
     def ltc_completed(self):
-        trade_set = self.trade_set.filter(wallet__coin='Litecoin', withdrawal_date__lte=timezone.now())
+        trade_set = self.trade_set.filter(
+            wallet__coin='Litecoin', withdrawal_date__lte=timezone.now())
         return sum([trade.profit for trade in trade_set])
 
     @property
@@ -140,16 +177,16 @@ class Customer(models.Model):
     @property
     def ltc_total(self):
         return self.ltc_depo_amount - self.ltc_trade_amount + self.ltc_profit
-        
+
     @property
     def ltc_balance(self):
         return float(self.ltc_depo_amount - self.ltc_trade_amount) + self.ltc_current
-        
+
     @property
     def ltc_available(self):
         return self.ltc_depo_amount - self.ltc_trade_amount + self.ltc_completed
 
-    #total
+    # total
     @property
     def trade_amount(self):
         return self.btc_trade_amount + self.eth_trade_amount + self.ltc_trade_amount
@@ -165,11 +202,11 @@ class Customer(models.Model):
     @property
     def completed(self):
         return self.btc_completed + self.eth_completed + self.ltc_completed
-        
+
     @property
     def current(self):
         return self.btc_current + self.eth_current + self.ltc_current
-        
+
     @property
     def total(self):
         return self.btc_total + self.eth_total + self.ltc_total
@@ -177,13 +214,13 @@ class Customer(models.Model):
     @property
     def balance(self):
         return self.btc_balance + self.eth_balance + self.ltc_balance
-        
+
     @property
     def available(self):
         return self.btc_available + self.eth_available + self.ltc_available
 
-    
-#wallet
+
+# wallet
 class Wallet(models.Model):
     coin = models.CharField(max_length=20)
     address = models.CharField(max_length=60, default='Coming Soon')
@@ -194,16 +231,18 @@ class Wallet(models.Model):
         return self.coin
 
 
-#trade
+# trade
 class Trade(models.Model):
     customer = models.ForeignKey(Customer, null=True, on_delete=models.CASCADE)
     wallet = models.ForeignKey(Wallet, null=True, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
-    profit = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    profit = models.DecimalField(
+        max_digits=20, decimal_places=2, blank=True, null=True)
     duration = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
-    withdrawal_date = models.DateTimeField(editable=False, blank=True, null=True)
-    
+    withdrawal_date = models.DateTimeField(
+        editable=False, blank=True, null=True)
+
     def __str__(self):
         return str(self.amount) + " - Trade"
 
@@ -237,7 +276,9 @@ class Trade(models.Model):
         current = ratio * float(self.profit)
         return current
 
-#deposit
+# deposit
+
+
 class Deposit(models.Model):
     customer = models.ForeignKey(Customer, null=True, on_delete=models.CASCADE)
     wallet = models.ForeignKey(Wallet, null=True, on_delete=models.CASCADE)

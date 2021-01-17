@@ -152,6 +152,14 @@
                                     </table>
                                     <!--end /table-->
                                 </div>
+                                
+                                <div class="mt-4">
+                                    {% if request.GET.expand %}
+                                        <a href="?"><span class="small badge-pill badge-boxed badge-primary mx-2 pr-4 pl-3 py-1">View less</span></a>
+                                    {%else%}
+                                        <a href="?expand=true"><span class="small badge-pill badge-boxed badge-primary mx-2 pr-4 pl-3 py-1">View all</span></a>
+                                    {%endif%}
+                                </div>
                                 <!--end /tableresponsive-->
                             </div>
                         </div><!--end card-body-->

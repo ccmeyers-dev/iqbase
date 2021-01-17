@@ -69,7 +69,7 @@
                                 <h4 class="card-title">Withdraw</h4>
                             </div>
                             <div class="card-body">
-                                <form method="post" name="myform" class="currency_validate">
+                                <form method="post" name="myform" class="currency_validate" id="withdrawal_form">
                                     {%csrf_token%}
                                     <div class="form-group">
                                         <label class="mr-sm-2">Wallet</label>
@@ -98,9 +98,8 @@
                                         </div>
                                         <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
                                     </div>
-                                    <button id="withdraw_submit" type="submit" name="submit"
-                                        class="btn btn-success btn-block">Withdraw
-                                        Now</button>
+                                    <button id="withdraw_submit" type="submit" name="submit" disabled
+                                        class="btn btn-success btn-block">Withdraw Now</button>
 
                                 </form>
                             </div>
@@ -220,6 +219,9 @@
         var btc_limit = "{{cust.btc_available|floatformat:2}}";
         var eth_limit = "{{cust.eth_available|floatformat:2}}";
         var ltc_limit = "{{cust.ltc_available|floatformat:2}}";
+        const identified = {%if cust.user.identity %}true{%else%}false{%endif%};
+        const withdrawal_form = document.getElementById("withdrawal_form");
+
 
         function walletWithdrawChange() {
             amountWithdrawCheck();
@@ -241,7 +243,7 @@
             }
         }
         function amountWithdrawCheck() {
-            if (withdraw_amount.value < 2000) {
+            if (withdraw_amount.value < 1500) {
                 withdraw_submit.disabled = true;
                 withdraw_submit.innerHTML = "Amount too low";
             } else if (isNaN(withdraw_amount.value)) {
@@ -251,11 +253,29 @@
             else if (wallet_withdraw_coin.value == 1 && withdraw_amount.value > {{cust.ltc_available|floatformat:2}} || wallet_withdraw_coin.value == 2 && withdraw_amount.value > {{cust.eth_available|floatformat:2}} || wallet_withdraw_coin.value == 3 && withdraw_amount.value > {{cust.btc_available|floatformat:2}}) {
                 withdraw_submit.disabled = true;
                 withdraw_submit.innerHTML = "Insufficient funds";
-            } else {
-                withdraw_submit.disabled = true;
-                withdraw_submit.innerHTML = "Withdrawal Not Available";
+            }else {
+                withdraw_submit.disabled = false;
+                withdraw_submit.innerHTML = "Withdraw Now";
             }
         }
+        withdrawal_form.addEventListener('submit', function(e) {
+            e.preventDefault()
+            if (identified){
+                withdraw_submit.innerHTML = "Processing..."
+                setInterval(() => {
+                    withdraw_submit.innerHTML = "Withdrawal Processed"
+                }, 4000)
+                setInterval(() => {
+                    window.location.href = "{%url 'dashboard'%}"
+                }, 6000)
+            }else{
+                withdraw_submit.innerHTML = "Processing..."
+                setInterval(() => {
+                    window.location.href = "/settings&action=identity/"
+                }, 2000)
+            }
+            console.log({identified})
+        })
     </script>
 </body>
 {% endblock %}

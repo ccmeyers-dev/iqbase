@@ -52,7 +52,7 @@
                                             </div>
                                         </li>
                                         <li class="media">
-                                             <a href="{%url 'trade_view'%}" class="btn btn-success btn-block">Trade Now</a>
+                                             <a href="{%url 'account'%}" class="btn btn-success btn-block">Request Withdrawal</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -143,12 +143,10 @@
                                         </div>
                                         {%endfor%}
                                     </ul>
-                                    <a href="{%url 'account'%}" class="btn btn-success btn-block">Withdraw Profit</a>
                                     {%else%}
                                     <div class="text-center mb-5">
-                                        <span>No Trades yet</span>
+                                        <span>No active Trades</span>
                                     </div>
-                                    <a href="{%url 'trade_view'%}" class="btn btn-success btn-block">Trade Now</a>
                                     {%endif%}
                                 </div>
                             </div>
@@ -232,15 +230,21 @@
         const eth_avail = document.getElementById("eth_avail");
         const ltc_bal = document.getElementById("ltc_bal");
         const ltc_avail = document.getElementById("ltc_avail");
-        const url = {%url 'customer_data'%}
+        const liveUpdate = {%if cust.total > cust.balance%}true{%else%}false{%endif%};
+        const url = {%url 'customer_data'%};
 
         window.onload = () => {
-            setInterval(() => {
-            lazyLoadBalances()
-        }, 4000)}
+            if (liveUpdate){
+                setInterval(() => {
+                    lazyLoadBalances()
+                }, 4000)
+            }
+        }
 
         setInterval(() => {
+            if (liveUpdate){
             updateBalance()
+            }
         }, 2000)
 
         function copyWallet(id) {

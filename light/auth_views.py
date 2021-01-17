@@ -11,11 +11,12 @@ from broker.models import Customer
 from broker.decorators import *
 from .account_forms import *
 
+
 @login_required(login_url='login')
 def profile(request):
     user = request.user
     ref = user.referrer
-    if  user.is_setup:
+    if user.is_setup:
         return redirect('dashboard')
     cust = user.customer
     if request.POST:
@@ -34,11 +35,12 @@ def profile(request):
                         'name': name,
                         'site': settings.SITE_NAME,
                         'url': settings.SITE_URL
-                        })
+                    })
                     plain_message = strip_tags(html_message)
                     from_email = settings.EMAIL_HOST_USER
                     to = user.email
-                    send_mail(subject, plain_message, from_email, [to], html_message=html_message)
+                    send_mail(subject, plain_message, from_email,
+                              [to], html_message=html_message)
                     return redirect('dashboard')
                 except SMTPException:
                     return redirect('dashboard')
@@ -46,6 +48,7 @@ def profile(request):
         form = CustomerForm(initial={'user': user, 'referrer': ref})
     context = {'form': form}
     return render(request, 'light/template_light/signup-profile.html', context)
+
 
 def register_view(request):
     context = {}
@@ -73,6 +76,7 @@ def register_view(request):
         form = RegistrationForm()
         context['form'] = form
     return render(request, 'light/template_light/signup.html', context)
+
 
 def register_view_ref(request, ref):
     user = request.user
@@ -113,6 +117,7 @@ def register_view_ref(request, ref):
     }
     return render(request, 'light/template_light/signup.html', context)
 
+
 def login_view(request):
     context = {}
     user = request.user
@@ -139,11 +144,13 @@ def login_view(request):
         context['form'] = LoginForm()
     return render(request, 'light/template_light/signin.html', context)
 
+
 def referral(request):
     if request.POST:
         ref = request.POST['ref']
         return redirect('register_ref', ref)
     return render(request, 'light/template_light/referral.html')
+
 
 def logout_view(request):
     logout(request)

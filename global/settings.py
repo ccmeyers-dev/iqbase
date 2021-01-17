@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+from distutils.util import strtobool
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -7,8 +9,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-from distutils.util import strtobool
-from dotenv import load_dotenv
 load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'account',
     'broker',
     'light',
-    'dark',
 ]
 
 MIDDLEWARE = [
@@ -130,9 +129,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 MEDIA_URL = '/images/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-#SMTP Configuration
+# SMTP Configuration
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = os.getenv('EMAIL_PORT')
@@ -140,6 +139,6 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-#SITE Configuration
+# SITE Configuration
 SITE_NAME = os.getenv('SITE_NAME')
 SITE_URL = os.getenv('SITE_URL')
