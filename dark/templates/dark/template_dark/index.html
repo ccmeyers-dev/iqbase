@@ -2,6 +2,14 @@
 
 {%load static humanize%}
 
+{% block style %}
+    <style>
+        .chart_height {
+            min-height: 508px;
+        }
+    </style>
+{%endblock%}
+
 {% block body %}
 
     <div id="preloader">
@@ -90,8 +98,8 @@
                         </div>
                     </div>
                     <div class="col-xl-5 col-md-6 py-md-5">
-                        <div class="card">
-                            <div class="card-body px-0">
+                        <div class="card chart_height">
+                            {% comment %} <div class="card-body px-0">
                                 <div class="buy-sell-widget">
                                     <div name="myform" class="currency_validate">
                                         <div class="form-group">
@@ -141,12 +149,168 @@
                                         
                                     </div>
                                 </div>
-                            </div>
+                            </div> {% endcomment %}
+                            <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+  {
+  "colorTheme": "dark",
+  "dateRange": "12M",
+  "showChart": true,
+  "locale": "in",
+  "width": "100%",
+  "height": "508",
+  "largeChartUrl": "",
+  "isTransparent": false,
+  "showSymbolLogo": true,
+  "plotLineColorGrowing": "rgba(25, 118, 210, 1)",
+  "plotLineColorFalling": "rgba(25, 118, 210, 1)",
+  "gridLineColor": "rgba(42, 46, 57, 1)",
+  "scaleFontColor": "rgba(120, 123, 134, 1)",
+  "belowLineFillColorGrowing": "rgba(33, 150, 243, 0.12)",
+  "belowLineFillColorFalling": "rgba(33, 150, 243, 0.12)",
+  "symbolActiveColor": "rgba(33, 150, 243, 0.12)",
+  "tabs": [
+    {
+      "title": "Cryptocurrencies",
+      "symbols": [
+        {
+          "s": "BITBAY:BTCUSD",
+          "d": "BTC"
+        },
+        {
+          "s": "KRAKEN:ETHUSD",
+          "d": "ETH"
+        },
+        {
+          "s": "KRAKEN:LTCUSD",
+          "d": "LTC"
+        },
+        {
+          "s": "BITFINEX:XRPUSD",
+          "d": "XRP"
+        },
+        {
+          "s": "BINANCE:BNBUSD",
+          "d": "BNB"
+        },
+        {
+          "s": "KRAKEN:BCHUSD",
+          "d": "BCH"
+        }
+      ],
+      "originalTitle": "Indices"
+    },
+    {
+      "title": "Bonds",
+      "symbols": [
+        {
+          "s": "CME:GE1!",
+          "d": "Eurodollar"
+        },
+        {
+          "s": "CBOT:ZB1!",
+          "d": "T-Bond"
+        },
+        {
+          "s": "CBOT:UB1!",
+          "d": "Ultra T-Bond"
+        },
+        {
+          "s": "EUREX:FGBL1!",
+          "d": "Euro Bund"
+        },
+        {
+          "s": "EUREX:FBTP1!",
+          "d": "Euro BTP"
+        },
+        {
+          "s": "EUREX:FGBM1!",
+          "d": "Euro BOBL"
+        }
+      ],
+      "originalTitle": "Bonds"
+    },
+    {
+      "title": "Forex",
+      "symbols": [
+        {
+          "s": "FX:EURUSD"
+        },
+        {
+          "s": "FX:GBPUSD"
+        },
+        {
+          "s": "FX:USDJPY"
+        },
+        {
+          "s": "FX:USDCHF"
+        },
+        {
+          "s": "FX:AUDUSD"
+        },
+        {
+          "s": "FX:USDCAD"
+        }
+      ],
+      "originalTitle": "Forex"
+    }
+  ]
+}
+  </script>
+</div>
+<!-- TradingView Widget END -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+         <!-- TradingView Widget BEGIN -->
+                        <div class="tradingview-widget-container">
+                            <div class="tradingview-widget-container__widget"></div>
+                            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+                            {
+                            "symbols": [
+                                {
+                                "description": "BTC",
+                                "proName": "COINBASE:BTCUSD"
+                                },
+                                {
+                                "description": "ETH",
+                                "proName": "BITSTAMP:ETHUSD"
+                                },
+                                {
+                                "description": "LTC",
+                                "proName": "BINANCE:LTCUSDT"
+                                },
+                                {
+                                "description": "XRP",
+                                "proName": "BITFINEX:XRPUSD"
+                                },
+                                {
+                                "description": "STELLAR",
+                                "proName": "BSE:STELLAR"
+                                },
+                                {
+                                "description": "USDJPY",
+                                "proName": "OANDA:USDJPY"
+                                },
+                                {
+                                "description": "APPLE",
+                                "proName": "NASDAQ:AAPL"
+                                }
+                            ],
+                            "showSymbolLogo": true,
+                            "colorTheme": "dark",
+                            "isTransparent": false,
+                            "displayMode": "adaptive",
+                            "locale": "in"
+                            }
+                            </script>
+                        </div>
+                        <!-- TradingView Widget END -->
 
         <div class="market section-padding page-section" data-scroll-index="1">
             <div class="container">
@@ -236,6 +400,33 @@
             </div>
         </div>
 
+<div class="section-padding">
+        <!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div id="tradingview_aae8e"></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript">
+  new TradingView.widget(
+  {
+  "width": "100%",
+  "height": 610,
+  "symbol": "BITSTAMP:BTCUSD",
+  "interval": "D",
+  "timezone": "Etc/UTC",
+  "theme": "dark",
+  "style": "1",
+  "locale": "in",
+  "toolbar_bg": "#f1f3f6",
+  "enable_publishing": false,
+  "allow_symbol_change": true,
+  "container_id": "tradingview_aae8e"
+}
+  );
+  </script>
+</div>
+<!-- TradingView Widget END -->
+</div>
+
         <div class="features section-padding">
             <div class="container">
                 <div class="row py-lg-5 justify-content-center">
@@ -275,6 +466,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="portfolio section-padding" data-scroll-index="2">
             <div class="container">

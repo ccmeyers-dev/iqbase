@@ -9387,6 +9387,7 @@ button,
   display: flex;
   justify-content: center;
   align-items: center;
+  /* background: url("../images/background/2.jpg"); */
   background: url("../images/background/bg.jpg");
   background-size: cover;
   background-position: center;
