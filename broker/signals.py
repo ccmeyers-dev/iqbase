@@ -26,14 +26,17 @@ def save_customer(sender, instance, created, **kwargs):
 def referrer_bonus(sender, instance, created, **kwargs):
     if created and instance.referrer:
         bonus = 25
-        bitcoin_wallet = Wallet.objects.get(coin='Bitcoin')
-        referrer_desc = "Referral bonus - " + \
-            str(instance.user.first_name) + \
-            " " + str(instance.user.last_name)
-        ref = instance.referrer
-        if Customer.objects.filter(unique_id=ref).exists():
-            referrer = Customer.objects.get(unique_id=ref)
-            Bonus.objects.create(customer=referrer, amount=bonus,
-                                 wallet=bitcoin_wallet, description=referrer_desc)
-            Bonus.objects.create(customer=instance, amount=bonus,
-                                 wallet=bitcoin_wallet, description="Referral bonus")
+        try:
+            bitcoin_wallet = Wallet.objects.get(coin='Bitcoin')
+            referrer_desc = "Referral bonus - " + \
+                str(instance.user.first_name) + \
+                " " + str(instance.user.last_name)
+            ref = instance.referrer
+            if Customer.objects.filter(unique_id=ref).exists():
+                referrer = Customer.objects.get(unique_id=ref)
+                Bonus.objects.create(customer=referrer, amount=bonus,
+                                     wallet=bitcoin_wallet, description=referrer_desc)
+                Bonus.objects.create(customer=instance, amount=bonus,
+                                     wallet=bitcoin_wallet, description="Referral bonus")
+        except:
+            print("No bitcoin wallet")
