@@ -1,5 +1,6 @@
 from django.conf import settings
 
+
 def site(request):
     vars = {
         'site': settings.SITE_NAME,
