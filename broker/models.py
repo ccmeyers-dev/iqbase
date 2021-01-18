@@ -57,7 +57,7 @@ class Customer(models.Model):
     city = models.CharField(max_length=30, null=True)
     address = models.TextField(null=True)
     phone_number = models.CharField(max_length=15, null=True)
-    date_of_birth = models.DateField(null=True)
+    date_of_birth = models.CharField(max_length=15, null=True)
     gender = models.CharField(null=True, max_length=10, choices=GENDER)
 
     def __str__(self):
@@ -71,153 +71,99 @@ class Customer(models.Model):
 
     # bitcoin transactions
     @property
-    def btc_trade_amount(self):
-        trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
-        return sum([trade.amount for trade in trade_set])
+    def btc_deposit(self):
+        deposits = self.deposit_set.filter(wallet__coin='Bitcoin')
+        return sum([deposit.amount for deposit in deposits])
 
     @property
-    def btc_depo_amount(self):
-        depo_set = self.deposit_set.filter(wallet__coin='Bitcoin')
-        return sum([depo.amount for depo in depo_set])
+    def btc_bonus(self):
+        bonuses = self.bonus_set.filter(wallet__coin='Bitcoin')
+        return sum([bonus.amount for bonus in bonuses])
+
+    @property
+    def btc_trade(self):
+        trades = self.trade_set.filter(wallet__coin='Bitcoin')
+        return sum([trade.amount for trade in trades])
 
     @property
     def btc_profit(self):
-        trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
-        return sum([trade.profit for trade in trade_set])
-
-    @property
-    def btc_completed(self):
-        trade_set = self.trade_set.filter(
-            wallet__coin='Bitcoin', withdrawal_date__lte=timezone.now())
-        return sum([trade.profit for trade in trade_set])
-
-    @property
-    def btc_current(self):
-        trade_set = self.trade_set.filter(wallet__coin='Bitcoin')
-        return sum([trade.current for trade in trade_set])
+        trades = self.trade_set.filter(wallet__coin='Bitcoin')
+        return sum([trade.profit for trade in trades])
 
     @property
     def btc_total(self):
-        return self.btc_depo_amount - self.btc_trade_amount + self.btc_profit
-
-    @property
-    def btc_balance(self):
-        return float(self.btc_depo_amount - self.btc_trade_amount) + self.btc_current
-
-    @property
-    def btc_available(self):
-        return self.btc_depo_amount - self.btc_trade_amount + self.btc_completed
+        return self.btc_deposit + self.btc_bonus - self.btc_trade + self.btc_profit
 
     # ethereum transactions
     @property
-    def eth_trade_amount(self):
-        trade_set = self.trade_set.filter(wallet__coin='Ethereum')
-        return sum([trade.amount for trade in trade_set])
+    def eth_deposit(self):
+        deposits = self.deposit_set.filter(wallet__coin='Ethereum')
+        return sum([deposit.amount for deposit in deposits])
 
     @property
-    def eth_depo_amount(self):
-        depo_set = self.deposit_set.filter(wallet__coin='Ethereum')
-        return sum([depo.amount for depo in depo_set])
+    def eth_bonus(self):
+        bonuses = self.bonus_set.filter(wallet__coin='Ethereum')
+        return sum([bonus.amount for bonus in bonuses])
+
+    @property
+    def eth_trade(self):
+        trades = self.trade_set.filter(wallet__coin='Ethereum')
+        return sum([trade.amount for trade in trades])
 
     @property
     def eth_profit(self):
-        trade_set = self.trade_set.filter(wallet__coin='Ethereum')
-        return sum([trade.profit for trade in trade_set])
-
-    @property
-    def eth_completed(self):
-        trade_set = self.trade_set.filter(
-            wallet__coin='Ethereum', withdrawal_date__lte=timezone.now())
-        return sum([trade.profit for trade in trade_set])
-
-    @property
-    def eth_current(self):
-        trade_set = self.trade_set.filter(wallet__coin='Ethereum')
-        return sum([trade.current for trade in trade_set])
+        trades = self.trade_set.filter(wallet__coin='Ethereum')
+        return sum([trade.profit for trade in trades])
 
     @property
     def eth_total(self):
-        return self.eth_depo_amount - self.eth_trade_amount + self.eth_profit
-
-    @property
-    def eth_balance(self):
-        return float(self.eth_depo_amount - self.eth_trade_amount) + self.eth_current
-
-    @property
-    def eth_available(self):
-        return self.eth_depo_amount - self.eth_trade_amount + self.ltc_completed
+        return self.eth_deposit + self.eth_bonus - self.eth_trade + self.eth_profit
 
     # litecoin transactions
     @property
-    def ltc_trade_amount(self):
-        trade_set = self.trade_set.filter(wallet__coin='Litecoin')
-        return sum([trade.amount for trade in trade_set])
+    def ltc_deposit(self):
+        deposits = self.deposit_set.filter(wallet__coin='Litecoin')
+        return sum([deposit.amount for deposit in deposits])
 
     @property
-    def ltc_depo_amount(self):
-        depo_set = self.deposit_set.filter(wallet__coin='Litecoin')
-        return sum([depo.amount for depo in depo_set])
+    def ltc_bonus(self):
+        bonuses = self.bonus_set.filter(wallet__coin='Litecoin')
+        return sum([bonus.amount for bonus in bonuses])
+
+    @property
+    def ltc_trade(self):
+        trades = self.trade_set.filter(wallet__coin='Litecoin')
+        return sum([trade.amount for trade in trades])
 
     @property
     def ltc_profit(self):
-        trade_set = self.trade_set.filter(wallet__coin='Litecoin')
-        return sum([trade.profit for trade in trade_set])
-
-    @property
-    def ltc_completed(self):
-        trade_set = self.trade_set.filter(
-            wallet__coin='Litecoin', withdrawal_date__lte=timezone.now())
-        return sum([trade.profit for trade in trade_set])
-
-    @property
-    def ltc_current(self):
-        trade_set = self.trade_set.filter(wallet__coin='Litecoin')
-        return sum([trade.current for trade in trade_set])
+        trades = self.trade_set.filter(wallet__coin='Litecoin')
+        return sum([trade.profit for trade in trades])
 
     @property
     def ltc_total(self):
-        return self.ltc_depo_amount - self.ltc_trade_amount + self.ltc_profit
-
-    @property
-    def ltc_balance(self):
-        return float(self.ltc_depo_amount - self.ltc_trade_amount) + self.ltc_current
-
-    @property
-    def ltc_available(self):
-        return self.ltc_depo_amount - self.ltc_trade_amount + self.ltc_completed
+        return self.ltc_deposit + self.ltc_bonus - self.ltc_trade + self.ltc_profit
 
     # total
     @property
-    def trade_amount(self):
-        return self.btc_trade_amount + self.eth_trade_amount + self.ltc_trade_amount
+    def deposit(self):
+        return self.btc_deposit + self.eth_deposit + self.ltc_deposit
 
     @property
-    def deposit_amount(self):
-        return self.btc_depo_amount + self.eth_depo_amount + self.ltc_depo_amount
+    def bonus(self):
+        return self.btc_bonus + self.eth_bonus + self.ltc_bonus
+
+    @property
+    def trade(self):
+        return self.btc_trade + self.eth_trade + self.ltc_trade
 
     @property
     def profit(self):
         return self.btc_profit + self.eth_profit + self.ltc_profit
 
     @property
-    def completed(self):
-        return self.btc_completed + self.eth_completed + self.ltc_completed
-
-    @property
-    def current(self):
-        return self.btc_current + self.eth_current + self.ltc_current
-
-    @property
     def total(self):
         return self.btc_total + self.eth_total + self.ltc_total
-
-    @property
-    def balance(self):
-        return self.btc_balance + self.eth_balance + self.ltc_balance
-
-    @property
-    def available(self):
-        return self.btc_available + self.eth_available + self.ltc_available
 
 
 # wallet
@@ -240,19 +186,9 @@ class Trade(models.Model):
         max_digits=20, decimal_places=2, blank=True, null=True)
     duration = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
-    withdrawal_date = models.DateTimeField(
-        editable=False, blank=True, null=True)
 
     def __str__(self):
         return str(self.amount) + " - Trade"
-
-    def save(self, *args, **kwargs):
-        span = timedelta(days=self.duration)
-        if self.date_created is not None:
-            self.withdrawal_date = self.date_created + span
-        else:
-            self.withdrawal_date = timezone.now() + span
-        super(Trade, self).save(*args, **kwargs)
 
     @property
     def progress(self):
@@ -265,16 +201,6 @@ class Trade(models.Model):
         ratio = "{:.2f}".format(ratio*100)
         return ratio
 
-    @property
-    def current(self):
-        withdate = self.date_created + timedelta(days=self.duration)
-        elapsed = timezone.now() - self.date_created
-        span = withdate - self.date_created
-        ratio = elapsed / span
-        if ratio > 1:
-            ratio = 1
-        current = ratio * float(self.profit)
-        return current
 
 # deposit
 
@@ -288,3 +214,14 @@ class Deposit(models.Model):
 
     def __str__(self):
         return str(self.amount) + " - Deposit"
+
+
+class Bonus(models.Model):
+    customer = models.ForeignKey(Customer, null=True, on_delete=models.CASCADE)
+    wallet = models.ForeignKey(Wallet, null=True, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=20, decimal_places=2)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.amount) + " - Bonus"

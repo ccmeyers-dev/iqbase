@@ -1,140 +1,54 @@
-{% extends 'light/template_light/index.html'%}
+{% extends 'light/template_light/layouts/base_dashboard.html'%}
+
 {%load static%}
-{% block title %}
-    <title>{{vars.site}} </title>
-{% endblock %}
 
-{% block body %}
-{%include 'light/template_light/header.html'%}
+{% block content %}
 
-        <div class="accounts mb-80">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-4 col-lg-4 col-md-6">
-                        <div class="card profile_card">
-                            <div class="card-body">
-                                <div class="media">
-                                    <div class="media-body">
-                                        <p class="mb-2">User ID: <span class="font-weight-bold ml-4">{{cust.unique_id}}</span></p>
-                                        <p class="mb-2">Full Name: <span class="font-weight-bold ml-4">{{cust.fullname}}</span></p>
-                                        <p class="mb-1"> <span><i class="fa fa-phone mr-2 text-primary"></i></span>
-                                            {{cust.phone_number}}</p>
-                                        <p class="mb-1"> <span><i class="fa fa-envelope mr-2 text-primary"></i></span>
-                                            {{cust}}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <ul class="card-profile__info">
-                                    <li>
-                                        <h5 class="text-dark mr-2">Address:</h5>
-                                        <span class="text-muted">{{cust.address}}</span>
-                                    </li>
-                                    <li>
-                                        <h5 class="text-dark mr-2">City:</h5>
-                                        <span class="text-muted">{{cust.city}}</span>
-                                    </li>
-                                    <li>
-                                        <h5 class="text-dark mr-2">Region:</h5>
-                                        <span class="text-muted">{{cust.country}}</span>
-                                    </li>
-                                    <li>
-                                        <h5 class="text-dark mr-2">Gender:</h5>
-                                        <span class="text-muted">{{cust.gender}}</span>
-                                    </li>
-                                    <li class="mb-1">
-                                        <h5 class="text-dark mr-2">Date of Birth:</h5>
-                                        <span class="text-muted">{{cust.date_of_birth}}</span>
-                                    </li>
-                                </ul>
-                                <div class="social-icons">
-                                    <span class="text-muted">Referrals</span>
-                                    <p class="text-center mb-0 mt-2 small">Your <b>User ID</b> is your <b>Referral Code</b>, share your code or copy link below</p>
-                                    <p class="text-center my-2 text-muted small">{{request.get_host}}/register/ref={{user.customer.unique_id}}</p>
-                                    <div class="form-group">
-                                        <div class="input-group mb-3">
-                                            <input readonly id="ref" type="text" value="{{request.get_host}}/register/ref={{user.customer.unique_id}}" class="form-control">
-                                            <div class="input-group-append">
-                                                <button onclick="copyWallet('ref')" class="input-group-text"><span class="small">copy</span></button>
-                                            </div>
-                                        </div>
-                                    </div>
+    <div class="accounts mb-80">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-md-6">
+                    <div class="card profile_card">
+                        <div class="card-body">
+                            <div class="media">
+                                <div class="media-body">
+                                    <p class="mb-2">User ID: <span class="font-weight-bold ml-4">{{cust.unique_id}}</span></p>
+                                    <p class="mb-2">Full Name: <span class="font-weight-bold ml-4">{{cust.fullname}}</span></p>
+                                    <p class="mb-1"> <span><i class="fa fa-phone mr-2 text-primary"></i></span>
+                                        {{cust.phone_number}}</p>
+                                    <p class="mb-1"> <span><i class="fa fa-envelope mr-2 text-primary"></i></span>
+                                        {{cust}}
+                                    </p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Withdraw</h4>
-                            </div>
-                            <div class="card-body">
-                                <form method="post" name="myform" class="currency_validate" id="withdrawal_form">
-                                    {%csrf_token%}
-                                    <div class="form-group">
-                                        <label class="mr-sm-2">Wallet</label>
-                                        <div class="input-group mb-3">
-                                            <div class="input-group-prepend">
-                                                <label id="wallet_withdraw_label" class="input-group-text">
-                                                    <i class="cc BTC-alt"></i>
-                                                </label>
-                                            </div>
-                                            <select id="wallet_withdraw_coin" onchange="walletWithdrawChange()" name='currency' class="form-control">
-                                                <option selected value="3">Bitcoin</option>
-                                                <option value="2">Ethereum</option>
-                                                <option value="1">Litecoin</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="mr-sm-2">Enter amount</label>
-                                        <div class="input-group">
-                                            <input id="withdraw_amount" onkeyup="amountWithdrawCheck()" type="text" name="currency_amount" class="form-control"
-                                                placeholder="Amount in USD">
-                                        </div>
-                                        <div class="d-flex justify-content-between mt-3">
-                                            <p id="wallet_withdraw_limit" class="mb-0">Bitcoin Available Balance</p>
-                                            <h6 id="wallet_withdraw_available" class="mb-0">${{cust.btc_available|floatformat:2}}</h6>
-                                        </div>
-                                        <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
-                                    </div>
-                                    <button id="withdraw_submit" type="submit" name="submit" disabled
-                                        class="btn btn-success btn-block">Withdraw Now</button>
 
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Wallets</h4>
-                            </div>
-                            <div class="card-body">
-                                <p class="font-weight-bold"><i class="cc BTC mr-2"></i><span>Bitcoin wallet address</span></p>
+                            <ul class="card-profile__info">
+                                <li>
+                                    <h5 class="text-dark mr-2">Address:</h5>
+                                    <span class="text-muted">{{cust.address}}</span>
+                                </li>
+                                <li>
+                                    <h5 class="text-dark mr-2">City:</h5>
+                                    <span class="text-muted">{{cust.city}}</span>
+                                </li>
+                                <li>
+                                    <h5 class="text-dark mr-2">Region:</h5>
+                                    <span class="text-muted">{{cust.country}}</span>
+                                </li>
+                                <li>
+                                    <h5 class="text-dark mr-2">Gender:</h5>
+                                    <span class="text-muted">{{cust.gender}}</span>
+                                </li>
+                            </ul>
+                            <div class="social-icons">
+                                <span class="text-muted">Referrals</span>
+                                <p class="text-center mb-0 mt-2 small">Your <b>User ID</b> is your <b>Referral Code</b>, share your code or copy link below</p>
+                                <p class="text-center my-2 text-muted small">{{request.get_host}}/register/ref/{{user.customer.unique_id}}</p>
                                 <div class="form-group">
                                     <div class="input-group mb-3">
-                                        <input readonly id="Bitcoin" type="text" class="form-control" value="{{bitcoin.address}}">
+                                        <input readonly id="ref" type="text" value="{{request.get_host}}/register/ref/{{user.customer.unique_id}}" class="form-control">
                                         <div class="input-group-append">
-                                            <button onclick="copyWallet('Bitcoin')" class="input-group-text"><span class="small">copy</span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="font-weight-bold"><i class="cc ETH mr-2"></i><span>Ethereum wallet address</span></p>
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
-                                        <input readonly id="Ethereum" type="text" class="form-control" value="{{ethereum.address}}">
-                                        <div class="input-group-append">
-                                            <button onclick="copyWallet('Ethereum')" class="input-group-text"><span class="small">copy</span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="font-weight-bold"><i class="cc LTC mr-2"></i><span>Litecoin wallet address</span></p>
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
-                                        <input readonly id="Litecoin" type="text" class="form-control" value="{{litecoin.address}}">
-                                        <div class="input-group-append">
-                                            <button onclick="copyWallet('Litecoin')" class="input-group-text"><span class="small">copy</span></button>
+                                            <button onclick="copyWallet('ref')" class="input-group-text"><span class="small">copy</span></button>
                                         </div>
                                     </div>
                                 </div>
@@ -142,60 +56,135 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                <div class="col-xl-4 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Withdraw</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="post" name="myform" class="currency_validate" id="withdrawal_form">
+                                {%csrf_token%}
+                                <div class="form-group">
+                                    <label class="mr-sm-2">Wallet</label>
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <label id="wallet_withdraw_label" class="input-group-text">
+                                                <i class="cc BTC-alt"></i>
+                                            </label>
+                                        </div>
+                                        <select id="wallet_withdraw_coin" onchange="walletWithdrawChange()" name='currency' class="form-control">
+                                            <option selected value="3">Bitcoin</option>
+                                            <option value="2">Ethereum</option>
+                                            <option value="1">Litecoin</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="mr-sm-2">Enter amount</label>
+                                    <div class="input-group">
+                                        <input id="withdraw_amount" onkeyup="amountWithdrawCheck()" type="text" name="currency_amount" class="form-control"
+                                            placeholder="Amount in USD">
+                                    </div>
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <p id="wallet_withdraw_limit" class="mb-0">Bitcoin Available Balance</p>
+                                        <h6 id="wallet_withdraw_available" class="mb-0">${{cust.btc_total|floatformat:2}}</h6>
+                                    </div>
+                                    <p id="wallet_withdraw_summary" class="text-center mb-0 mt-3 small">You can withdraw ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
+                                </div>
+                                <button id="withdraw_submit" type="submit" name="submit" disabled
+                                    class="btn btn-success btn-block">Withdraw Now</button>
 
-        <div class="row">
-            <div class="col-xl-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header border-0 pb-0">
-                        <h4 class="card-title">Referrals</h4>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        {%if referrals%}
-                        <div class="transaction-table">
-                            <div class="table-responsive">
-                                <table class="table mb-0 table-responsive-sm">
-                                    <tbody>
-                                        {%for referral in referrals%}
-                                        <tr>
-                                            <td>{{referral.fullname}}</td>
-                                            <td>{{referral}}</td>
-
-                                            <td>
-                                                {%if referral.deposit_amount > 0%}
-                                                <span class="badge badge-success">Active</span>
-                                                {%else%}
-                                                <span class="badge badge-warning">Inactive</span>
-                                                {%endif%}
-                                            </td>
-                                        </tr>
-                                        {%endfor%}
-                                    </tbody>
-                                </table>
+                </div>
+                <div class="col-xl-4 col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Wallets</h4>
+                        </div>
+                        <div class="card-body">
+                            <p class="font-weight-bold"><i class="cc BTC mr-2"></i><span>Bitcoin wallet address</span></p>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input readonly id="Bitcoin" type="text" class="form-control" value="{{bitcoin.address}}">
+                                    <div class="input-group-append">
+                                        <button onclick="copyWallet('Bitcoin')" class="input-group-text"><span class="small">copy</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="font-weight-bold"><i class="cc ETH mr-2"></i><span>Ethereum wallet address</span></p>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input readonly id="Ethereum" type="text" class="form-control" value="{{ethereum.address}}">
+                                    <div class="input-group-append">
+                                        <button onclick="copyWallet('Ethereum')" class="input-group-text"><span class="small">copy</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="font-weight-bold"><i class="cc LTC mr-2"></i><span>Litecoin wallet address</span></p>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input readonly id="Litecoin" type="text" class="form-control" value="{{litecoin.address}}">
+                                    <div class="input-group-append">
+                                        <button onclick="copyWallet('Litecoin')" class="input-group-text"><span class="small">copy</span></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        {%else%}
-                        <div class="text-center">
-                            <span>No Referrals yet</span>
-                        </div>
-                        {%endif%}
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-header border-0 pb-0">
+                            <h4 class="card-title">Referrals</h4>
+                        </div>
+                        <div class="card-body">
+                            {%if referrals%}
+                            <div class="transaction-table">
+                                <div class="table-responsive">
+                                    <table class="table mb-0 table-responsive-sm">
+                                        <tbody>
+                                            {%for referral in referrals%}
+                                            <tr>
+                                                <td>{{referral.fullname}}</td>
+                                                <td>{{referral}}</td>
 
-
-        {%include 'light/template_light/index-footer.html'%}
+                                                <td>
+                                                    {%if referral.user.is_setup%}
+                                                    <span class="badge badge-success">Active</span>
+                                                    {%else%}
+                                                    <span class="badge badge-warning">Inactive</span>
+                                                    {%endif%}
+                                                </td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {%else%}
+                            <div class="text-center">
+                                <span>No Referrals yet</span>
+                            </div>
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
+    
+    
+{% endblock %}
 
+{%block scripts%}
 
-    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-    <script src="{% static 'static_new/js/scripts.js' %}"></script>
+{{block.super}}
+
     <script>
         function copyWallet(id) {
             var copyText = document.getElementById(id);
@@ -216,9 +205,9 @@
         var wallet_withdraw_summary = document.getElementById('wallet_withdraw_summary');
         var withdraw_amount = document.getElementById('withdraw_amount');
         var withdraw_submit = document.getElementById('withdraw_submit');
-        var btc_limit = "{{cust.btc_available|floatformat:2}}";
-        var eth_limit = "{{cust.eth_available|floatformat:2}}";
-        var ltc_limit = "{{cust.ltc_available|floatformat:2}}";
+        var btc_limit = "{{cust.btc_total|floatformat:2}}";
+        var eth_limit = "{{cust.eth_total|floatformat:2}}";
+        var ltc_limit = "{{cust.ltc_total|floatformat:2}}";
         const identified = {%if cust.user.identity %}true{%else%}false{%endif%};
         const withdrawal_form = document.getElementById("withdrawal_form");
 
@@ -242,15 +231,16 @@
                 wallet_withdraw_summary.innerHTML = "You can withdraw $" + btc_limit + " from your Bitcoin Wallet"
             }
         }
+
         function amountWithdrawCheck() {
-            if (withdraw_amount.value < 1500) {
+            if (withdraw_amount.value < 1000) {
                 withdraw_submit.disabled = true;
                 withdraw_submit.innerHTML = "Amount too low";
             } else if (isNaN(withdraw_amount.value)) {
                 withdraw_submit.disabled = true;
                 withdraw_submit.innerHTML = "Invalid amount";
             }
-            else if (wallet_withdraw_coin.value == 1 && withdraw_amount.value > {{cust.ltc_available|floatformat:2}} || wallet_withdraw_coin.value == 2 && withdraw_amount.value > {{cust.eth_available|floatformat:2}} || wallet_withdraw_coin.value == 3 && withdraw_amount.value > {{cust.btc_available|floatformat:2}}) {
+            else if (wallet_withdraw_coin.value == 1 && withdraw_amount.value > {{cust.ltc_total|floatformat:2}} || wallet_withdraw_coin.value == 2 && withdraw_amount.value > {{cust.eth_total|floatformat:2}} || wallet_withdraw_coin.value == 3 && withdraw_amount.value > {{cust.btc_total|floatformat:2}}) {
                 withdraw_submit.disabled = true;
                 withdraw_submit.innerHTML = "Insufficient funds";
             }else {
@@ -258,6 +248,7 @@
                 withdraw_submit.innerHTML = "Withdraw Now";
             }
         }
+
         withdrawal_form.addEventListener('submit', function(e) {
             e.preventDefault()
             if (identified){
@@ -271,11 +262,10 @@
             }else{
                 withdraw_submit.innerHTML = "Processing..."
                 setInterval(() => {
-                    window.location.href = "/settings&action=identity/"
+                    window.location.href = "/settings-identity/"
                 }, 2000)
             }
             console.log({identified})
         })
     </script>
-</body>
-{% endblock %}
+{%endblock%}

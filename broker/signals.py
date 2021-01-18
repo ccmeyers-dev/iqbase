@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from account.models import Account
-from .models import Customer, Trade, Deposit
+from .models import Customer, Bonus, Wallet
 from django.utils import timezone
 
 # create customer
@@ -19,15 +19,21 @@ def create_customer(sender, instance, created, **kwargs):
 def save_customer(sender, instance, created, **kwargs):
     instance.customer.save()
 
-# #referrer bonus
-# @receiver(pre_save, sender=Trade)
-# def referrer_bonus(sender, instance, **kwargs):
-#     trade_count = instance.customer.trade_set.all().count()
-#     bonus = float(instance.amount) * 0.25
-#     desc = "Referral bonus - " + str(instance.customer.user.first_name) + " " + str(instance.customer.user.last_name)
-#     ref = instance.customer.referrer
-#     if Customer.objects.filter(unique_id=ref).exists():
-#         referrer = Customer.objects.get(unique_id=ref)
-#         if trade_count ==  0:
-#             Deposit.objects.create(customer=referrer, amount=bonus, wallet=instance.wallet, description=desc)
-#             Deposit.objects.create(customer=instance.customer, amount=bonus, wallet=instance.wallet, description="Referral bonus")
+# referrer bonus
+
+
+@receiver(post_save, sender=Customer)
+def referrer_bonus(sender, instance, created, **kwargs):
+    if created and instance.referrer:
+        bonus = 25
+        bitcoin_wallet = Wallet.objects.get(coin='Bitcoin')
+        referrer_desc = "Referral bonus - " + \
+            str(instance.user.first_name) + \
+            " " + str(instance.user.last_name)
+        ref = instance.referrer
+        if Customer.objects.filter(unique_id=ref).exists():
+            referrer = Customer.objects.get(unique_id=ref)
+            Bonus.objects.create(customer=referrer, amount=bonus,
+                                 wallet=bitcoin_wallet, description=referrer_desc)
+            Bonus.objects.create(customer=instance, amount=bonus,
+                                 wallet=bitcoin_wallet, description="Referral bonus")

@@ -135,7 +135,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {%for cust in customer%}
+                                            {%for cust in customers%}
                                             <tr>
                                                 <th scope="row">{{cust.unique_id}}</th>
                                                 <td>{{cust.user.first_name}}</td>
@@ -174,7 +174,7 @@
                             <div class="card-body"><a class="float-right text-info">View All</a>
                                 <h4 class="header-title mt-0 mb-3">Trade History</h4>
                                 <ul class="list-unsyled m-0 pl-0 transaction-history">
-                                    {%for trade in trade%}
+                                    {%for trade in trades%}
                                     <li class="align-items-center d-flex justify-content-between">
                                         <div class="media">
                                             <div class="transaction-icon"><i class="mdi mdi-arrow-up-thick"></i>
@@ -206,7 +206,7 @@
                             <div class="card-body"><a class="float-right text-info">View All</a>
                                 <h4 class="header-title mt-0 mb-3">Deposit History</h4>
                                 <ul class="list-unsyled m-0 pl-0 transaction-history">
-                                    {%for deposit in depo%}
+                                    {%for deposit in deposits%}
                                     <li class="align-items-center d-flex justify-content-between">
                                         <div class="media">
                                             <div class="transaction-icon"><i class="mdi mdi-arrow-down-thick"></i>

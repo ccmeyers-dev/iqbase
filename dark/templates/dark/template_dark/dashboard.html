@@ -1,0 +1,268 @@
+{% extends 'dark/template_dark/layouts/base_dashboard.html'%}
+
+{%load static%}
+
+{% block content %}
+
+    <div class="content-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4">
+                    <div class="card balance-widget">
+                        <div class="card-header pb-0 border-0">
+                            <h5>Your Balances </h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="balance-widget">
+                               <div class="text-center my-4">
+                                    <h3>${{cust.total|floatformat:2}}</h3>
+                                    <h6 class="mt-2">Total balance</h6>
+                                </div>
+
+                                <ul class="list-unstyled">
+
+                                    <li class="media">
+                                        {% comment %} <i class="cc BTC mr-3"></i> {% endcomment %}
+                                        <div class="media-body">
+                                            <a><h5 class="m-0">Deposit</h5></a>
+                                        </div>
+                                        <div class="text-right">
+                                            <h5>{{cust.deposit|floatformat:2}} USD</h5>
+                                            {% comment %} <span id="eth_avail" class="small">Available: {{cust.eth_available|floatformat:2}} USD</span> {% endcomment %}
+                                        </div>
+                                    </li>
+                                    <li class="media">
+                                        {% comment %} <i class="cc LTC mr-3"></i> {% endcomment %}
+                                        <div class="media-body">
+                                            <a><h5 class="m-0">Bonus</h5></a>
+                                        </div>
+                                        <div class="text-right">
+                                            <h5>{{cust.bonus|floatformat:2}} USD</h5>
+                                            {% comment %} <span id="ltc_avail" class="small">Available: {{cust.ltc_available|floatformat:2}} USD</span> {% endcomment %}
+                                        </div>
+                                    </li>
+                                    <li class="media">
+                                        {% comment %} <i class="cc LTC mr-3"></i> {% endcomment %}
+                                        <div class="media-body">
+                                            <a><h5 class="m-0">Profit</h5></a>
+                                        </div>
+                                        <div class="text-right">
+                                            <h5>{{cust.profit|floatformat:2}} USD</h5>
+                                            {% comment %} <span id="ltc_avail" class="small">Available: {{cust.ltc_available|floatformat:2}} USD</span> {% endcomment %}
+                                        </div>
+                                    </li>
+                                    <a href="{%url 'account'%}" class="btn btn-success btn-block mt-4">Withdraw</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-4 col-lg-4">
+                    <div class="card balance-widget">
+                        <div class="card-header pb-0 border-0">
+                            <h5>Your Wallets </h5>
+                        </div>
+                        <div class="card-body pt-4">
+                            <div class="balance-widget">
+
+                                <ul class="list-unstyled">
+                                    <li class="media">
+                                        <i class="cc BTC mr-3"></i>
+                                        <div class="media-body">
+                                            <a href="{%url 'trade_view'%}"><h5 class="m-0">Bitcoin</h5></a>
+                                        </div>
+                                        <div class="text-right">
+                                            <h5>{{btc_amount}} BTC</h5>
+                                            <span class="small">{{cust.btc_total|floatformat:2}} USD</span>
+                                        </div>
+                                    </li>
+                                    <li class="media">
+                                        <i class="cc ETH mr-3"></i>
+                                        <div class="media-body">
+                                            <a href="{%url 'trade_view'%}"><h5 class="m-0">Ethereum</h5></a>
+                                        </div>
+                                        <div class="text-right">
+                                            <h5>{{eth_amount}} ETH</h5>
+                                            <span class="small">{{cust.eth_total|floatformat:2}} USD</span>
+                                        </div>
+                                    </li>
+                                    <li class="media">
+                                        <i class="cc LTC mr-3"></i>
+                                        <div class="media-body">
+                                            <a href="{%url 'trade_view'%}"><h5 class="m-0">Litecoin</h5></a>
+                                        </div>
+                                        <div class="text-right">
+                                            <h5>{{ltc_amount}} LTC</h5>
+                                            <span class="small">{{cust.ltc_total|floatformat:2}} USD</span>
+                                        </div>
+                                    </li>
+                                    <a href="{%url 'trade_view'%}" class="btn btn-success btn-block mt-4">Trade</a>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-4 col-lg-4">
+                    <div class="card profile_chart py-2">
+                        <div class="card-body">
+                            <p class="font-weight-bold"><i class="cc BTC mr-2"></i><span>Bitcoin wallet address</span></p>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input readonly id="Bitcoin" type="text" class="form-control" value="{{bitcoin.address}}">
+                                    <div class="input-group-append">
+                                        <button onclick="copyWallet('Bitcoin')" class="input-group-text"><span class="small">copy</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="font-weight-bold"><i class="cc ETH mr-2"></i><span>Ethereum wallet address</span></p>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input readonly id="Ethereum" type="text" class="form-control" value="{{ethereum.address}}">
+                                    <div class="input-group-append">
+                                        <button onclick="copyWallet('Ethereum')" class="input-group-text"><span class="small">copy</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="font-weight-bold"><i class="cc LTC mr-2"></i><span>Litecoin wallet address</span></p>
+                            <div class="form-group">
+                                <div class="input-group mb-3">
+                                    <input readonly id="Litecoin" type="text" class="form-control" value="{{litecoin.address}}">
+                                    <div class="input-group-append">
+                                        <button onclick="copyWallet('Litecoin')" class="input-group-text"><span class="small">copy</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="http://coinmama.com" target="_blank" class="btn btn-success btn-block mt-4">Buy Crypto</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-5 d-flex justify-content-between align-items-center">
+                            <h5>Trade History</h5>
+                            {%if trades.count >= 5%}
+                            <a href="{%url 'trade_history'%}">View More </a>
+                            {%endif%}
+                            </div>
+                            <div class="balance-widget">
+                                {%if trades%}
+                                <ul class="list-unstyled">
+                                    {%for trade in trades%}
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="#">
+                                                <h5>
+                                                    <i class="cc {{trade.wallet.code}} mr-3"></i>
+                                                    {{trade.wallet.coin}}
+                                                </h5>
+                                            </a>
+                                            <h5><span class="small">Profit: </span>+{{trade.profit|floatformat:2}} USD</h5>
+                                        </div>
+                                        <div class="progress my-4" style="border-radius: 12px; height: 24px;">
+                                            {%if trade.progress == "100.00" %}
+                                            <div 
+                                            class="progress-bar bg-success"
+                                            role="progressbar" 
+                                            style="width: {{trade.progress}}%; border-radius: 12px;"
+                                            aria-valuenow="{{trade.progress}}" aria-valuemin="0" aria-valuemax="100"
+                                            >complete
+                                            {%else%}
+                                            <div 
+                                            class="progress-bar progress-bar-striped progress-bar-animated bg-{{trade.wallet.hue}}"
+                                            role="progressbar" 
+                                            style="width: {{trade.progress}}%; border-radius: 12px;"
+                                            aria-valuenow="{{trade.progress}}" aria-valuemin="0" aria-valuemax="100"
+                                            >{{trade.progress}}%
+                                            {%endif%}</div>
+                                        </div>
+                                        <div class="mt-2 d-flex justify-content-between align-items-center">
+                                            <p class="small">Capital: {{trade.amount|floatformat:2}} USD</p>
+                                            <p class="small">Duration: {{trade.duration}} {%if trade.duration > 1 %}days{%else%}day{%endif%}</p>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    {%endfor%}
+                                </ul>
+                                {%else%}
+                                <div class="text-center mb-5">
+                                    <span>No active Trades</span>
+                                </div>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-12 col-lg-12">
+                    <div class="card">
+                        <div class="card-header border-0 pb-0">
+                            <h5>Deposit History</h5>
+                            {%if deposits.count >= 5%}
+                            <a href="{%url 'deposit_history'%}">View More </a>
+                            {%endif%}
+                        </div>
+                        <div class="card-body">
+                            {%if deposits%}
+                            <div class="transaction-table">
+                                <div class="table-responsive">
+                                    <table class="table mb-0 table-responsive-sm">
+                                        <tbody>
+                                            {%for deposit in deposits%}
+                                            <tr>
+                                                <td><span class="buy-thumb"><i class="la la-arrow-down"></i></span>
+                                                </td>
+                                                <td class="text-success">+{{deposit.amount|floatformat:2}} USD</td>
+                                                <td>
+                                                    <i class="cc {{deposit.wallet.code}}"></i> {{deposit.wallet.coin}}
+                                                </td>
+                                                <td>
+                                                    {%if deposit.description is not None%}
+                                                    <span class="badge badge-success">
+                                                        {{deposit.description}}
+                                                    </span>
+                                                    {%endif%}
+                                                </td>
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            {%else%}
+                            <div class="text-center">
+                                <span>No Deposits yet</span>
+                            </div>
+                            {%endif%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+    
+
+{%block scripts%}
+
+{{block.super}}
+
+   <script>
+        function copyWallet(id) {
+            var copyText = document.getElementById(id);
+            copyText.select();
+            copyText.setSelectionRange(0,99999);
+            document.execCommand("copy");
+            if (id == "ref") {
+                alert("Copied Referral Link. Share with a friend");
+            } else {
+            alert("Copied " + id + " wallet address");
+            }
+        }
+    </script>
+
+{% endblock %}

@@ -20,12 +20,18 @@ class WalletAdmin(admin.ModelAdmin):
 
 class TradeAdmin(admin.ModelAdmin):
     list_display = ('amount', 'customer', 'wallet',
-                    'profit', 'duration', 'withdrawal_date')
+                    'profit', 'duration',)
     list_filter = ('wallet', 'customer',)
     search_fields = ('customer', 'wallet',)
 
 
 class DepositAdmin(admin.ModelAdmin):
+    list_display = ('amount', 'customer', 'wallet')
+    list_filter = ('wallet', 'customer',)
+    search_fields = ('customer', 'wallet')
+
+
+class BonusAdmin(admin.ModelAdmin):
     list_display = ('amount', 'customer', 'wallet')
     list_filter = ('wallet', 'customer',)
     search_fields = ('customer', 'wallet')
@@ -40,4 +46,5 @@ admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Wallet, WalletAdmin)
 admin.site.register(Trade, TradeAdmin)
 admin.site.register(Deposit, DepositAdmin)
+admin.site.register(Bonus, BonusAdmin)
 admin.site.register(Identity, IdentityAdmin)

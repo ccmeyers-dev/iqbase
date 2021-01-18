@@ -1,0 +1,161 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <meta content="{{vars.site}} - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
+        <meta content="{{vars.site}}" name="author" />
+        {% block title %}
+        <title>{{vars.site}} </title>
+        {% endblock %}
+        <!-- Favicon icon -->
+        <link rel="icon" type="image/png" sizes="16x16" href="{% static 'static_dark/images/favicon.png' %}">
+        <!-- Custom Stylesheet -->
+        <link rel="stylesheet" href="{% static 'static_dark/vendor/waves/waves.min.css' %}">
+        <link rel="stylesheet" href="{% static 'static_dark/vendor/owlcarousel/css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'static_dark/css/style.css' %}">
+        <style>
+            body.dashboard::before {
+                display:none;
+            }
+            .header {
+                left: 0;
+            }
+            .content-body {
+                margin-left: 0px;
+            }
+           @media only screen and (max-width: 991px) {
+            .dashboard_log {
+                position: absolute;
+                right: 48px;
+                top: 15px;
+                margin: 0px !important;
+                } 
+            }
+            .doc {
+                max-width: 100%;
+                height: 480px;
+            }
+            .review {
+                max-width: 100%;
+                height: 160px;
+                width: 160px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+        </style>
+    </head>
+
+    <body data-font="nunito" data-bodybg="color_1" data-primary-color="color_1" class={% block bodyclass %}{% endblock %}>
+
+        {% block body %}
+        {% endblock %}
+
+
+        {%block footer%}
+        {% comment %} <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 col-md-6">
+                        <div class="footer-link text-left">
+                            <a href="#" class="m_logo">
+                                <img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
+                            </a>
+                            <a href="{%url 'about'%}">About</a>
+                            <a href="{%url 'privacy_policy'%}">Privacy Policy</a>
+                            <a href="{%url 'term_condition'%}">Term & Service</a>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-md-6 text-lg-right text-center">
+                        <div class="social">
+                            <a href="#"><i class="fa fa-codepen"></i></a>
+                            <a href="#"><i class="fa fa-stack-overflow"></i></a>
+                            <a href="#"><i class="fa fa-github"></i></a>
+                            <a href="#"><i class="fa fa-reddit"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-xl-12 text-center text-lg-right">
+                        <div class="copy_right text-center text-lg-center">
+                            Copyright © {%now 'Y'%} {{vars.site}}. All Rights Reserved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> {% endcomment %}
+        <div class="footer landing">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-6 col-md-6">
+                        <div class="footer-link text-left">
+                            <a href="#" class="m_logo">
+                                <img src="{% static 'static_dark/images/w_logo.png' %}" alt="">
+                            </a>
+                            <a href="{%url 'about'%}">About</a>
+                            <a href="{%url 'privacy_policy'%}">Privacy Policy</a>
+                            <a href="{%url 'term_condition'%}">Term & Service</a>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-md-6 text-lg-right text-center">
+                        <div class="social">
+                            <a href="#"><i class="fa fa-codepen"></i></a>
+                            <a href="#"><i class="fa fa-stack-overflow"></i></a>
+                            <a href="#"><i class="fa fa-github"></i></a>
+                            <a href="#"><i class="fa fa-reddit"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row align-items-center">
+                    <div class="col-xl-12 text-center text-lg-right">
+                        <div class="copy_right text-center text-lg-center">
+                            Copyright © {%now 'Y'%} {{vars.site}}. All Rights Reserved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endblock%}
+
+
+        {% block scripts %}
+
+        <script src="{% static 'static_dark/vendor/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'static_dark/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'static_dark/vendor/waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'static_dark/vendor/owlcarousel/js/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'static_dark/js/plugins/owl-carousel-init.js' %}"></script>
+        <script src="{% static 'static_dark/vendor/scrollit/scrollIt.js' %}"></script>
+        <script src="{% static 'static_dark/js/plugins/scrollit-init.js' %}"></script>
+
+        <!-- Chart sparkline plugin files -->
+        <script src="{% static 'static_dark/vendor/jquery-sparkline/jquery.sparkline.min.js' %}"></script>
+        <script src="{% static 'static_dark/js/plugins/sparkline-init.js' %}"></script>
+
+        <script src="{% static 'static_dark/vendor/validator/jquery.validate.js' %}"></script>
+        <script src="{% static 'static_dark/vendor/validator/validator-init.js' %}"></script>
+        <script src="{% static 'static_dark/js/scripts.js' %}"></script>
+
+
+        {% comment %}
+       
+        <script src="{% static 'static_dark/vendor/circle-progress/circle-progress.min.js' %}"></script>
+        <script src="{% static 'static_dark/vendor/circle-progress/circle-progress-init.js' %}"></script>
+
+        <!--  flot-chart js -->
+        <script src="{% static 'static_dark/vendor/apexchart/apexcharts.min.js' %}"></script>
+        <script src="{% static 'static_dark/vendor/apexchart/apexchart-init.js' %}"></script>
+        
+        {% endcomment %}
+
+        {% endblock %}
+
+        {%include 'dark/livechat.html'%}
+
+    </body>
+
+</html>

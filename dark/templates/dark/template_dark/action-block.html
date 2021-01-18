@@ -1,0 +1,33 @@
+{% extends 'dark/template_dark/layouts/base_dashboard.html'%}
+
+{%load static%}
+
+{% block content %}
+
+    <div class="verification section-padding">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-xl-4 col-md-6">
+                    <div class="auth-form card">
+                        <div class="card-header">
+                            <h4 class="card-title text-center mx-auto">Account Temporarily Deactivated</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="identity-content">
+                                <span class="icon"><i class="fa fa-lock"></i></span>
+                                <h4>Hello {{cust.user.first_name}}</h4>
+                                <p>We noticed unusual activity from your account. For security reasons your account has been deactivated.
+                                
+                            </div>
+
+                            <div class="text-center">
+                                <a href="mailto:{{vars.email}}" class="btn btn-success pl-5 pr-5">Send us an email</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+{% endblock %}

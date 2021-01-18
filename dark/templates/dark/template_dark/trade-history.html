@@ -1,0 +1,70 @@
+{% extends 'dark/template_dark/layouts/base_dashboard.html'%}
+
+{%load static%}
+
+{% block content %}
+
+        <div class="content-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-5 d-flex justify-content-between align-items-center">
+                                <h5>Trade History</h5>
+                                </div>
+                                <div class="balance-widget">
+                                    {%if trade%}
+                                    <ul class="list-unstyled">
+                                        {%for trade in trade%}
+                                        <div>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <a href="#">
+                                                    <h5>
+                                                        <i class="cc {{trade.wallet.code}} mr-3"></i>
+                                                        {{trade.wallet.coin}}
+                                                    </h5>
+                                                </a>
+                                                <h5><span class="small">Profit: </span>+{{trade.current|floatformat:2}} USD</h5>
+                                            </div>
+                                            <div class="progress my-4" style="border-radius: 12px; height: 24px;">
+                                                {%if trade.progress == "100.00" %}
+                                                <div 
+                                                class="progress-bar bg-success"
+                                                role="progressbar" 
+                                                style="width: {{trade.progress}}%; border-radius: 12px;"
+                                                aria-valuenow="{{trade.progress}}" aria-valuemin="0" aria-valuemax="100"
+                                                >complete
+                                                {%else%}
+                                                <div 
+                                                class="progress-bar progress-bar-striped progress-bar-animated bg-{{trade.wallet.hue}}"
+                                                role="progressbar" 
+                                                style="width: {{trade.progress}}%; border-radius: 12px;"
+                                                aria-valuenow="{{trade.progress}}" aria-valuemin="0" aria-valuemax="100"
+                                                >{{trade.progress}}%
+                                                {%endif%}</div>
+                                            </div>
+                                            <div class="mt-2 d-flex justify-content-between align-items-center">
+                                                <p class="small">Capital: {{trade.amount|floatformat:2}} USD</p>
+                                                <p class="small">Duration: {{trade.duration}} {%if trade.duration > 1 %}days{%else%}day{%endif%}</p>
+                                            </div>
+                                            <hr>
+                                        </div>
+                                        {%endfor%}
+                                    </ul>
+                                    <a href="{%url 'account'%}" class="btn btn-success btn-block">Withdraw Profit</a>
+                                    {%else%}
+                                    <div class="text-center mb-5">
+                                        <span>No Trades yet</span>
+                                    </div>
+                                    <a href="{%url 'trade_view'%}" class="btn btn-success btn-block">Trade Now</a>
+                                    {%endif%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+{% endblock %}

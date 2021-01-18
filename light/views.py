@@ -26,14 +26,8 @@ from .account_forms import *
 @verified_only
 def user(request, pk):
     cust = Customer.objects.get(unique_id=pk)
-    trade = Trade.objects.filter(customer=cust).order_by("-id")
-    depo = Deposit.objects.filter(customer=cust).order_by("-id")
-
-    # pending
-    pending = cust.profit - cust.completed
-    btc_pending = cust.btc_profit - cust.btc_completed
-    eth_pending = cust.eth_profit - cust.eth_completed
-    ltc_pending = cust.ltc_profit - cust.ltc_completed
+    trades = Trade.objects.filter(customer=cust).order_by("-id")
+    deposits = Deposit.objects.filter(customer=cust).order_by("-id")
 
     # referrals
     ref = cust.referrer
@@ -54,18 +48,12 @@ def user(request, pk):
 
     context = {
         'cust': cust,
-        'trade': trade,
-        'depo': depo,
+        'trades': trades,
+        'deposits': deposits,
 
         # ref
         'referrer': referrer,
         'referrals': referrals,
-
-        # pending
-        'pending': pending,
-        'btc_pending': btc_pending,
-        'eth_pending': eth_pending,
-        'ltc_pending': ltc_pending,
     }
     return render(request, 'light/crypto/user.html', context)
 
@@ -178,13 +166,13 @@ def administrator(request):
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
-    customer = Customer.objects.all().order_by("-id")[:10]
-    trade = Trade.objects.all().order_by("-id")[:10]
-    depo = Deposit.objects.all().order_by("-id")[:10]
+    customers = Customer.objects.all().order_by("-id")[:10]
+    trades = Trade.objects.all().order_by("-id")[:10]
+    deposits = Deposit.objects.all().order_by("-id")[:10]
 
     user_query = request.GET.get('expand', False)
     if user_query == 'true':
-        customer = Customer.objects.all().order_by("-id").exclude(id=1)
+        customers = Customer.objects.all().order_by("-id")
 
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')
@@ -216,9 +204,9 @@ def administrator(request):
 
     context = {
         # iterations
-        'customer': customer,
-        'trade': trade,
-        'depo': depo,
+        'customers': customers,
+        'trades': trades,
+        'deposits': deposits,
 
         # forms
         'btcform': btcform,
@@ -564,62 +552,30 @@ def dashboard(request):
     user = request.user
     id = user.customer.id
     cust = Customer.objects.get(id=id)
-    trade = cust.trade_set.all().order_by('-id')[:5]
-    deposit = cust.deposit_set.all().order_by('-id')[:5]
-
-    trade_count = trade.count()
+    trades = cust.trade_set.all().order_by('-id')[:5]
+    deposits = cust.deposit_set.all().order_by('-id')[:5]
 
     bitcoin = Wallet.objects.get(coin='Bitcoin')
     ethereum = Wallet.objects.get(coin='Ethereum')
     litecoin = Wallet.objects.get(coin='Litecoin')
 
-    # pending
-    pending = cust.profit - cust.completed
-    btc_pending = cust.btc_profit - cust.btc_completed
-    eth_pending = cust.eth_profit - cust.eth_completed
-    ltc_pending = cust.ltc_profit - cust.ltc_completed
-
-    # bitcoin transactions
-    btc_tradeset = cust.trade_set.filter(
-        wallet__coin='Bitcoin').order_by('-id')
-    btc_deposet = cust.deposit_set.filter(
-        wallet__coin='Bitcoin').order_by('-id')
-
-    # ethereum transactions
-    eth_tradeset = cust.trade_set.filter(
-        wallet__coin='Ethereum').order_by('-id')
-    eth_deposet = cust.deposit_set.filter(
-        wallet__coin='Ethereum').order_by('-id')
-
-    # litecoin transactions
-    ltc_tradeset = cust.trade_set.filter(
-        wallet__coin='Litecoin').order_by('-id')
-    ltc_deposet = cust.deposit_set.filter(
-        wallet__coin='Litecoin').order_by('-id')
-
     # api
     try:
         btcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true'
         btcresponse = requests.get(btcurl)
-        btc = btcresponse.json
+        btc = btcresponse.json()
 
         ethurl = 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=USD'
         ethresponse = requests.get(ethurl)
-        eth = ethresponse.json
+        eth = ethresponse.json()
 
         ltcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=USD'
         ltcresponse = requests.get(ltcurl)
-        ltc = ltcresponse.json
-
-        start = 1.323
-        stop = -0.555
-        btcch = round(random.uniform(start, stop), 2)
-        ltcch = round(random.uniform(start, stop), 2)
-        ethch = round(random.uniform(start, stop), 2)
+        ltc = ltcresponse.json()
     except ConnectionError or Timeout or RequestException:
         btc = {
             "bitcoin": {
-                "usd": 9629.88,
+                "usd": 35629.88,
                 "usd_market_cap": 177153599960.13535,
                 "usd_24h_vol": 19281163645.3377,
                 "usd_24h_change": -1.1227372626130494
@@ -627,7 +583,7 @@ def dashboard(request):
         }
         eth = {
             "ethereum": {
-                "usd": 237.32,
+                "usd": 1237.32,
                 "usd_market_cap": 26402448672.556713,
                 "usd_24h_vol": 8228176070.537326,
                 "usd_24h_change": -2.079775394473229
@@ -635,47 +591,30 @@ def dashboard(request):
         }
         ltc = {
             "litecoin": {
-                "usd": 45.78,
+                "usd": 145.78,
                 "usd_market_cap": 2971386927.4871044,
                 "usd_24h_vol": 2249842800.982653,
                 "usd_24h_change": -2.5023945936210996
             }
         }
-        btcch = 0.87
-        ethch = 0.43
-        ltcch = 0.63
+
+    btc_price = btc["bitcoin"]["usd"]
+    eth_price = eth["ethereum"]["usd"]
+    ltc_price = ltc["litecoin"]["usd"]
+
+    btc_amount = format(float(cust.btc_total) / float(btc_price), ".8f")
+    eth_amount = format(float(cust.eth_total) / float(eth_price), ".8f")
+    ltc_amount = format(float(cust.ltc_total) / float(ltc_price), ".8f")
 
     context = {
         'cust': cust,
-        'trade': trade,
-        'deposit': deposit,
-        'trade_count': trade_count,
-
-        # pending
-        'pending': pending,
-        'btc_pending': btc_pending,
-        'eth_pending': eth_pending,
-        'ltc_pending': ltc_pending,
+        'trades': trades,
+        'deposits': deposits,
 
         # api
-        'btc': btc,
-        'eth': eth,
-        'ltc': ltc,
-        'btcch': btcch,
-        'ethch': ethch,
-        'ltcch': ltcch,
-
-        # btc
-        'btc_tradeset': btc_tradeset,
-        'btc_deposet': btc_deposet,
-
-        # eth
-        'eth_tradeset': eth_tradeset,
-        'eth_deposet': eth_deposet,
-
-        # ltc
-        'ltc_tradeset': ltc_tradeset,
-        'ltc_deposet': ltc_deposet,
+        'btc_amount': btc_amount,
+        'eth_amount': eth_amount,
+        'ltc_amount': ltc_amount,
 
         # coins
         'bitcoin': bitcoin,
@@ -691,15 +630,15 @@ def home(request):
     try:
         btcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=USD&include_market_cap=true&include_24hr_vol=true&include_last_updated_at=true'
         btcresponse = requests.get(btcurl)
-        btc = btcresponse.json
+        btc = btcresponse.json()
 
         ethurl = 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=USD'
         ethresponse = requests.get(ethurl)
-        eth = ethresponse.json
+        eth = ethresponse.json()
 
         ltcurl = 'https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=USD'
         ltcresponse = requests.get(ltcurl)
-        ltc = ltcresponse.json
+        ltc = ltcresponse.json()
 
         start = 1.323
         stop = -0.555
@@ -709,7 +648,7 @@ def home(request):
     except ConnectionError or Timeout or RequestException:
         btc = {
             "bitcoin": {
-                "usd": 9629.88,
+                "usd": 35629.88,
                 "usd_market_cap": 177153599960.13535,
                 "usd_24h_vol": 19281163645.3377,
                 "usd_24h_change": -1.1227372626130494
@@ -717,7 +656,7 @@ def home(request):
         }
         eth = {
             "ethereum": {
-                "usd": 237.32,
+                "usd": 1237.32,
                 "usd_market_cap": 26402448672.556713,
                 "usd_24h_vol": 8228176070.537326,
                 "usd_24h_change": -2.079775394473229
@@ -725,7 +664,7 @@ def home(request):
         }
         ltc = {
             "litecoin": {
-                "usd": 45.78,
+                "usd": 145.78,
                 "usd_market_cap": 2971386927.4871044,
                 "usd_24h_vol": 2249842800.982653,
                 "usd_24h_change": -2.5023945936210996
@@ -1015,33 +954,3 @@ def privacy_policy(request):
 
 def term_condition(request):
     return render(request, 'light/template_light/term-condition.html')
-
-
-@login_required(login_url='login')
-@setup_only
-@verified_only
-def customer_data(request):
-    user = request.user
-    id = user.customer.id
-    cust = Customer.objects.get(id=id)
-
-    balance = "{:.2f}".format(cust.balance)
-    available = "{:.2f}".format(cust.available)
-    btc_balance = "{:.2f}".format(cust.btc_balance)
-    btc_available = "{:.2f}".format(cust.btc_available)
-    eth_balance = "{:.2f}".format(cust.eth_balance)
-    eth_available = "{:.2f}".format(cust.eth_available)
-    ltc_balance = "{:.2f}".format(cust.ltc_balance)
-    ltc_available = "{:.2f}".format(cust.ltc_available)
-
-    data = {
-        "bal": balance,
-        "avail": available,
-        "btc_bal": btc_balance,
-        "btc_avail": btc_available,
-        "eth_bal": eth_balance,
-        "eth_avail": eth_available,
-        "ltc_bal": ltc_balance,
-        "ltc_avail": ltc_available,
-    }
-    return JsonResponse(data)

@@ -1,90 +1,66 @@
-{% extends 'light/template_light/index.html'%}
+{% extends 'light/template_light/layouts/base_dashboard_settings.html'%}
+
 {%load static%}
-{% block title %}
-    <title>{{vars.site}} </title>
-{% endblock %}
 
-{% block body %}
-{%include 'light/template_light/header.html'%}
+{% block col %}
 
-{%include 'light/template_light/settings-bar.html'%}
-
-                    <div class="col-xl-9 col-md-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Contact Details</h4>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Contact Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div>
+                        <h4 class="card-title mb-3">Email Address</h4>
+                        <form>
+                            <div class="form-row align-items-center">
+                                <div class="form-group col-xl-6">
+                                    <input readonly type="text" class="form-control" placeholder="{{cust}}">
+                                    <button disabled class="btn btn-success mt-4">Verified</button>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div>
-                                            <h4 class="card-title mb-3">Email Address</h4>
-                                            <form>
-                                                <div class="form-row align-items-center">
-                                                    <div class="form-group col-xl-6">
-                                                        <input readonly type="text" class="form-control" placeholder="{{cust}}">
-                                                        <button disabled class="btn btn-success mt-4">Verified</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-12">
-                                        <div class="phone_verified">
-                                            <h5> <span><i class="fa fa-envelope"></i></span>{{cust}}</h5>
-                                            <div class="verify">
-                                                <div class="verified">
-                                                    <span><i class="la la-check"></i></span>
-                                                    <a href="#">Verified</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="phone_verified">
+                        <h5> <span><i class="fa fa-envelope"></i></span>{{cust}}</h5>
+                        <div class="verify">
+                            <div class="verified">
+                                <span><i class="la la-check"></i></span>
+                                <a href="#">Verified</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="phone_verify">
+                        <h4 class="card-title mb-3">Phone Number</h4>
+                        <form>
+                            <div class="form-row align-items-center">
+                                <div class="form-group col-xl-6">
+                                    <input readonly type="text" class="form-control" placeholder="{{cust.phone_number}}">
+                                    <button disabled class="btn btn-success mt-4">Verified</button>
                                 </div>
-                                <div class="row">
-                                    <div class="col-xl-12">
-                                        <div class="phone_verify">
-                                            <h4 class="card-title mb-3">Phone Number</h4>
-                                            <form>
-                                                <div class="form-row align-items-center">
-                                                    <div class="form-group col-xl-6">
-                                                        <input readonly type="text" class="form-control" placeholder="{{cust.phone_number}}">
-                                                        <button disabled class="btn btn-success mt-4">Verified</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-12">
-                                        <div class="phone_verified">
-                                            <h5> <span><i class="fa fa-phone"></i></span>{{cust.phone_number}}</h5>
-                                            <div class="verify">
-                                                <div class="verified">
-                                                    <span><i class="la la-check"></i></span>
-                                                    <a href="#">Verified</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="phone_verified">
+                        <h5> <span><i class="fa fa-phone"></i></span>{{cust.phone_number}}</h5>
+                        <div class="verify">
+                            <div class="verified">
+                                <span><i class="la la-check"></i></span>
+                                <a href="#">Verified</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-        
-        {%include 'light/template_light/index-footer.html'%}
     </div>
-
-
-
-    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-    <script src="{% static 'static_new/js/scripts.js' %}"></script>
-</body>
 {% endblock %}

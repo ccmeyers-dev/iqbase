@@ -1,5 +1,11 @@
-<div class="settings mb-80">
-    <div class="container">
+{% extends 'dark/template_dark/layouts/base_dashboard.html'%}
+
+{%load static%}
+
+{% block content %}
+
+<div class="content-body">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-xl-3 col-md-4">
                 <div class="card settings_menu">
@@ -16,7 +22,7 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{%url 'settings_name'%}" class="nav-link">
-                                    <i class="la la-pencil"></i>
+                                    <i class="la la-pen"></i>
                                     <span>Change Name</span>
                                 </a>
                             </li>
@@ -34,11 +40,21 @@
                             </li>
                             <li class="nav-item">
                                 <a href="{%url 'settings_identity'%}" class="nav-link">
-                                    <i class="la la-user"></i>
-                                    <span>Identification</span>
+                                    <i class="la la-university"></i>
+                                    <span>Withdrawal Method</span>
                                 </a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
+
+            <div class="col-xl-9 col-md-8">
+               {%block col%}
+               {%endblock%}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

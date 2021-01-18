@@ -151,8 +151,14 @@
                                                 class="text-muted font-12">Last login: {{cust.user.last_login|date:'jS F Y, P'}}</span>
                                             <h3 class="text-center pt-4 pb-2">${{cust.total|floatformat:2}}</h3>
                                             <div class="d-flex justify-contents-between">
-                                                <a class="btn btn-soft-warning text-dark font-16 shadow-none px-2 m-2"><small>Available</small> ${{cust.available|floatformat:2}}</a>
-                                                <a class="btn btn-soft-warning text-dark font-16 shadow-none px-2 m-2"><small>Completed</small> ${{cust.completed|floatformat:2}}</a>
+                                                <div class="row d-flex justify-contents-between">
+                                                <a class="btn btn-soft-warning text-dark font-14 shadow-none px-2 m-2"><small>Deposits</small> ${{cust.deposit|floatformat:2}}</a>
+                                                <a class="btn btn-soft-warning text-dark font-14 shadow-none px-2 m-2"><small>Trade</small> ${{cust.trade|floatformat:2}}</a>
+                                                </div>
+                                                <div class="row d-flex justify-contents-between">
+                                                <a class="btn btn-soft-warning text-dark font-14 shadow-none px-2 m-2"><small>Profit</small> ${{cust.profit|floatformat:2}}</a>
+                                                <a class="btn btn-soft-warning text-dark font-14 shadow-none px-2 m-2"><small>Bonus</small> ${{cust.bonus|floatformat:2}}</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -167,8 +173,8 @@
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
                                                     <h3 class="m-0">${{cust.btc_total|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Available: <span class="text-success">${{cust.btc_available|floatformat:2}}</span></p>
-                                                    <p class="text-muted mb-0 small">Completed: <span class="text-danger">${{cust.btc_completed|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Deposit: <span class="text-success">${{cust.btc_deposit|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Profit: <span class="text-danger">${{cust.btc_profit|floatformat:2}}</span></p>
                                                 </div>
                                                 <div class="d-flex justify-content-between mt-2">
                                                     <a class="btn btn-soft-warning btn-sm shadow-none px-3 mx-1" href="{%url 'bitcoindepo' cust.id%}">Deposit</a>
@@ -183,8 +189,8 @@
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
                                                     <h3 class="m-0">${{cust.eth_balance|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Available: <span class="text-success">${{cust.eth_available|floatformat:2}}</span></p>
-                                                    <p class="text-muted mb-0 small">Completed: <span class="text-danger">${{cust.eth_completed|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Deposit: <span class="text-success">${{cust.eth_deposit|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Profit: <span class="text-danger">${{cust.eth_profit|floatformat:2}}</span></p>
                                                 </div>
                                                 <div class="d-flex justify-content-between mt-2">
                                                     <a class="btn btn-soft-purple btn-sm shadow-none px-3 mx-1" href="{%url 'ethereumdepo' cust.id%}">Deposit</a>
@@ -199,8 +205,8 @@
                                             <div class="media-body align-self-center">
                                                 <div class="coin-bal">
                                                     <h3 class="m-0">${{cust.ltc_balance|floatformat:2}}</h3>
-                                                    <p class="text-muted mb-0 small">Available: <span class="text-success">${{cust.ltc_available|floatformat:2}}</span></p>
-                                                    <p class="text-muted mb-0 small">Completed: <span class="text-danger">${{cust.ltc_completed|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Deposit: <span class="text-success">${{cust.ltc_deposit|floatformat:2}}</span></p>
+                                                    <p class="text-muted mb-0 small">Profit: <span class="text-danger">${{cust.ltc_profit|floatformat:2}}</span></p>
                                                 </div>
                                                 <div class="d-flex justify-content-between mt-2">
                                                     <a class="btn btn-soft-dark btn-sm shadow-none px-3 mx-1" href="{%url 'litecoindepo' cust.id%}">Deposit</a>
@@ -222,7 +228,7 @@
                             <div class="card-body"><a class="float-right text-info">View All</a>
                                 <h4 class="header-title mt-0 mb-3">Trade History</h4>
                                 <ul class="list-unsyled m-0 pl-0 transaction-history">
-                                    {%for trade in trade%}
+                                    {%for trade in trades%}
                                     <li class="align-items-center d-flex justify-content-between">
                                         <div class="media">
                                             <div class="transaction-icon"><i class="mdi mdi-arrow-up-thick"></i>
@@ -253,7 +259,7 @@
                             <div class="card-body"><a class="float-right text-info">View All</a>
                                 <h4 class="header-title mt-0 mb-3">Deposit History</h4>
                                 <ul class="list-unsyled m-0 pl-0 transaction-history">
-                                    {%for deposit in depo%}
+                                    {%for deposit in deposits%}
                                     <li class="align-items-center d-flex justify-content-between">
                                         <div class="media">
                                             <div class="transaction-icon"><i class="mdi mdi-arrow-down-thick"></i>

@@ -1,0 +1,60 @@
+{% extends 'light/template_light/layouts/base_dashboard.html'%}
+
+{%load static%}
+
+{% block content %}
+
+<div class="settings mb-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-md-4">
+                <div class="card settings_menu">
+                    <div class="card-header">
+                        <h4 class="card-title">Settings</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <li class="nav-item">
+                                <a href="{%url 'settings_profile'%}" class="nav-link">
+                                    <i class="la la-user"></i>
+                                    <span>Edit Profile</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{%url 'settings_name'%}" class="nav-link">
+                                    <i class="la la-pencil"></i>
+                                    <span>Change Name</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{%url 'change_password' cust.unique_id%}" class="nav-link">
+                                    <i class="la la-lock"></i>
+                                    <span>Change Password</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{%url 'settings_contact'%}" class="nav-link">
+                                    <i class="la la-envelope"></i>
+                                    <span>Contact Details</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{%url 'settings_identity'%}" class="nav-link">
+                                    <i class="la la-university"></i>
+                                    <span>Withdrawal Method</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-9 col-md-8">
+               {%block col%}
+               {%endblock%}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

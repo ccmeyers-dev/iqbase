@@ -1,0 +1,35 @@
+{% extends 'dark/template_dark/layouts/base_dashboard_settings.html'%}
+
+{%load static%}
+
+{% block col %}
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">Change Name</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {%csrf_token%}
+                        <div class="form-row">
+                            <div class="form-group col-xl-12">
+                                <label class="mr-sm-2">First Name</label>
+                                <input required name="first_name" type="text" class="form-control" placeholder="{{cust.user.first_name}}">
+                            </div>
+                            <div class="form-group col-xl-12">
+                                <label class="mr-sm-2">Last Name</label>
+                                <input required name="last_name" type="text" class="form-control" placeholder="{{cust.user.last_name}}">
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-success waves-effect">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

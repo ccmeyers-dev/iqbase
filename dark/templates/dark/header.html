@@ -1,0 +1,124 @@
+{%load static%}
+<meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
+<meta content="" name="author">
+<meta http-equiv="X-UA-Compatible" content="IE=edge"><!-- App favicon -->
+<link rel="shortcut icon" href="{% static 'dark/assets/images/coin.ico' %}">
+<!-- DataTables -->
+<link href="{% static '/plugins/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static '/plugins/datatables/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
+<!-- Responsive datatable examples -->
+<link href="{% static '/plugins/datatables/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css">
+<!-- App css -->
+<link href="{% static '/assets/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static '/assets/css/jquery-ui.min.css' %}" rel="stylesheet">
+<link href="{% static '/assets/css/icons.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static '/assets/css/metisMenu.min.css' %}" rel="stylesheet" type="text/css">
+<link href="{% static '/assets/css/app.min.css' %}" rel="stylesheet" type="text/css">
+<script src='https://kit.fontawesome.com/a076d05399.js'></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/line-awesome/1.3.0/line-awesome/css/line-awesome.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.jsdelivr.net/gh/lykmapipo/themify-icons@0.1.2/css/themify-icons.css" rel="stylesheet" type="text/css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css" rel="stylesheet" type="text/css">
+<link href="https://cdn.jsdelivr.net/npm/dripicons@2.0.0/webfont/webfont.css" rel="stylesheet" type="text/css">
+
+<style>
+    .btn, .form-control {
+        border-radius: 16px;
+    }
+    .card, .met-pro-bg, .table, .table-responsive, .thead-light, .bg-light {
+        border-radius: 12px;
+    }
+    .leftbar-tab-menu .main-icon-menu {
+        background-color: #fff;
+    }
+</style>
+
+</head>
+
+<body>
+<!-- leftbar-tab-menu -->
+<div class="leftbar-tab-menu">
+    <div class="main-icon-menu">
+        
+    </div>
+    <!--end main-icon-menu-->
+    <div class="main-menu-inner active">
+        <!-- LOGO -->
+        <div class="topbar-left"><a class="logo">
+                <span><h6 class="menu-title mt-4">{{vars.site}}</h6></span>
+        </a>
+        </div>
+        <!--end logo-->
+        <div class="menu-body slimscroll">
+            <div id="MetricaCrypto">
+                <ul class="nav mt-4">
+                    <li class="nav-item"><a class="nav-link" href="{%url 'dashboard'%}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{%url 'userprofile'%}">Profile</a></li>
+                    <li class="nav-item">
+                        {%if user.is_admin%}
+                        <a class="nav-link" href="{%url 'administrator'%}">Visit Admin <i class="dripicons-star text-muted ml-2"></i></a>
+                        {%endif%}
+                    </li>
+                    <li class="nav-item">
+                        {%if user.is_superuser%}
+                        <a class="nav-link" href="{%url 'admin:index'%}">Django Admin <i class="dripicons-star text-info ml-2"></i></a>
+                        {%endif%}
+                    </li>
+                    <li class="nav-item"><a class="nav-link text-danger" href="{%url 'logout'%}">Logout <i class="dripicons-exit text-danger ml-2"></i></a></li>
+                </ul>
+            </div><!-- end Crypto -->
+        </div>
+        <!--end menu-body-->
+    </div><!-- end main-menu-inner-->
+</div><!-- end leftbar-tab-menu-->
+<!-- Top Bar Start -->
+<div class="topbar">
+    <!-- Navbar -->
+    <nav class="navbar-custom">
+        <ul class="list-unstyled topbar-nav float-right mb-0">
+            <li class="hidden-sm">
+                    <a class="nav-link dropdown-toggle waves-effect waves-light"
+                    data-toggle="dropdown" href="javascript: void(0);" role="button" aria-haspopup="false"
+                    aria-expanded="false">English <img src="{% static '/assets/images/flags/us_flag.jpg' %}" class="ml-2"
+                        height="16" alt=""></a>
+            </li>
+            <li class="dropdown notification-list"><a
+                    class="nav-link dropdown-toggle arrow-none waves-light waves-effect" href="{%url 'userprofile'%}" role="button" aria-haspopup="false" aria-expanded="false"><i
+                        class="ti-wallet noti-icon"></i>
+                </a>
+            </li>
+            <li class="dropdown"><a class="nav-link dropdown-toggle waves-effect waves-light nav-user"
+                    data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"><i class="fas fa-user fa-lg text-dark mr-3"></i> <span
+                        class="ml-1 nav-user-name hidden-sm">{{user.first_name}} <i class="mdi mdi-chevron-down"></i></span></a>
+                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="{%url 'userprofile'%}"><i
+                            class="dripicons-user text-muted mr-2"></i> Profile</a>
+                        <a class="dropdown-item" href="{%url 'dashboard'%}"><i class="dripicons-home text-muted mr-2"></i>Home</a>
+                        {%if user.is_admin%}
+                        <a class="dropdown-item" href="{%url 'administrator'%}"><i class="dripicons-star text-muted mr-2"></i>Visit Admin</a>
+                        {%endif%}
+                        {%if user.is_superuser%}
+                        <a class="dropdown-item" href="{%url 'admin:index'%}"><i class="dripicons-star text-info mr-2"></i>Django Admin</a>
+                        {%endif%}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger" href="{%url 'logout'%}"><i class="dripicons-exit text-danger mr-2"></i> Logout</a>
+                </div>
+            </li>
+        </ul>
+
+        <!--end topbar-nav-->
+        <ul class="list-unstyled topbar-nav mb-0">
+                <li>
+                    
+                </li>
+                <li><button class="button-menu-mobile nav-link waves-effect waves-light"><i data-feather="menu"
+                            class="align-self-center"></i></button></li>
+                <ul class="list-unstyled topbar-nav mb-0">
+                <li class="hide-phone app-search">
+                        <form role="search" class=""><input type="text" id="AllCompo" placeholder="Search..."
+                                class="form-control"> <a><i class="fas fa-search"></i></a></form>
+                </li>
+        </ul>
+        </nav><!-- end navbar-->
+        <!--end topbar-nav-->
+    </nav><!-- end navbar-->
+</div><!-- Top Bar End -->

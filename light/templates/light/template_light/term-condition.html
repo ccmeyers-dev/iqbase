@@ -1,11 +1,8 @@
-{% extends 'light/template_light/index.html'%}
+{% extends 'light/template_light/layouts/base.html'%}
+
 {%load static%}
-{% block title %}
-    <title>{{vars.site}} </title>
-{% endblock %}
 
 {% block body %}
-<body>
 
     <div id="preloader">
         <div class="sk-three-bounce">
@@ -198,23 +195,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-        <div class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-6 col-md-6">
-                        {%include 'light/template_light/auth-footer.html'%}
-
-
-
-        <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-        <script src="{% static 'static_new/js/scripts.js' %}"></script>
-</body>
+    </div>
 {% endblock %}
 

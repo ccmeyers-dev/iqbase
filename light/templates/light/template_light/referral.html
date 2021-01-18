@@ -1,93 +1,39 @@
-{% extends 'light/template_light/index.html'%}
+{% extends 'light/template_light/layouts/base_auth.html'%}
+
 {%load static%}
-{% block title %}
-    <title>{{vars.site}} </title>
-{% endblock %}
 
-{% block body %}
-<body>
+{% block content %}
 
-    <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
-    </div>
-
-    <div id="main-wrapper">
-
-        <div class="header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <nav class="navbar navbar-expand-lg navbar-light px-0 justify-content-between">
-                            <a class="navbar-brand" href="{%url 'home'%}"><img src="{% static 'static_new/images/w_logo.png' %}" alt="">
-                                <span>{{vars.site}}</span></a>
-
-                            <div class="dashboard_log">
-                                <div class="d-flex align-items-center">
-                                    <div class="header_auth">
-                                        <a href="{%url 'login'%}" class="btn btn-success  mx-2">Sign In</a>
-                                        <a href="{%url 'register'%}" class="btn btn-outline-primary  mx-2">Sign Up</a>
-                                    </div>
+    <div class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-xl-4 col-md-6">
+                    <div class="auth-form card">
+                        <div class="card-header justify-content-center">
+                            <h4 class="card-title">Enter Referral Code</h4>
+                        </div>
+                        <div class="container text-center px-4 pt-2 pb-0 justify-content-center">
+                            <p class="text-center small">Sign Up with a referral Code and get $25 referral bonus.</p>
+                        </div>
+                        <div class="card-body pt-2">
+                            <form method="POST">
+                                {%csrf_token%}
+                                <div class="form-group mb-4">
+                                    <label for="">Referral Code</label>
+                                    <input type="text" name="ref" class="form-control bg-transparent rounded-0" placeholder="Enter Referral Code">
                                 </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="authincation section-padding">
-            <div class="container h-100">
-                <div class="row justify-content-center h-100 align-items-center">
-                    <div class="col-xl-4 col-md-6">
-                        <div class="auth-form card">
-                            <div class="card-header justify-content-center">
-                                <h4 class="card-title">Enter Referral Code</h4>
-                            </div>
-                            <div class="container text-center px-4 pt-2 pb-0 justify-content-center">
-                                <p class="text-center small">Sign Up with a referral Code and get <b>25%</b> back on first Trade.</p>
-                            </div>
-                            <div class="card-body pt-2">
-                                <form method="POST">
-                                    {%csrf_token%}
-                                    <div class="form-group mb-4">
-                                        <label for="">Referral Code</label>
-                                        <input type="text" name="ref" class="form-control bg-transparent rounded-0" placeholder="Enter Referral Code">
-                                    </div>
-                                    <button class="btn-success btn-block btn-lg border-0" type="submit">Redeem</button>
-                                </form>
-                                <div class="new-account text-center mt-3">
-                                    <a class="text-primary" href="{%url 'register'%}">
-                                        <h5>Register directly?</h5>
-                                    </a>
-                                </div>
+                                <button class="btn-success btn-block btn-lg border-0" type="submit">Redeem</button>
+                            </form>
+                            <div class="new-account text-center mt-3">
+                                <a class="text-primary" href="{%url 'register'%}">
+                                    <h5>Register directly?</h5>
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-        <div class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-6 col-md-6">
-                        {%include 'light/template_light/auth-footer.html'%}
-
     </div>
 
-
-    <div class="bg_icons"></div>
-
-    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-    <script src="{% static 'static_new/js/scripts.js' %}"></script>
-</body>
 {% endblock %}

@@ -1,28 +1,8 @@
-{%load static%}
-<!DOCTYPE html>
-<html lang="en">
+{% extends "light/template_light/layouts/base.html"%}
 
-
-<!-- Mirrored from quixlab.com/demo/{{vars.site}}/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 10 Jul 2020 00:52:07 GMT -->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta content="{{vars.site}} - Trade cryptocurrency with the fastest growing cryptocurrency online trade platform" name="description" />
-    <meta content="{{vars.site}}" name="author" />
-    {% block title %}
-    <title>{{vars.site}} </title>
-    {% endblock %}
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'static_new/images/favicon.png' %}">
-    <!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="{% static 'static_new/vendor/waves/waves.min.css' %}">
-    <link rel="stylesheet" href="{% static 'static_new/vendor/owlcarousel/css/owl.carousel.min.css' %}">
-    <link rel="stylesheet" href="{% static 'static_new/css/style.css' %}">
-</head>
+{%load static humanize%}
 
 {% block body %}
-<body>
 
     <div id="preloader">
         <div class="sk-three-bounce">
@@ -61,6 +41,9 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="#" data-scroll-nav="4">Contact</a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{%url 'about'%}">About</a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="dashboard_log">
@@ -77,7 +60,7 @@
             </div>
         </div>
 
-        <div class="intro section-padding position-relative" id="intro" data-scroll-index="0">
+        {% comment %} <div class="intro section-padding position-relative" id="intro" data-scroll-index="0">
             <div class="container">
                 <div class="row align-items-center justify-content-between">
                     <div class="col-xl-6 col-md-6">
@@ -87,6 +70,78 @@
 
                             <a href="{%url 'login'%}" class="btn btn-primary">Sign In</a>
                             <a href="{%url 'register'%}" class="btn btn-outline-primary">Sign Up</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> {% endcomment %}
+
+        <div class="intro section-padding position-relative" id="intro" data-scroll-index="0">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-xl-6 col-md-6">
+                        <div class="intro-content">
+                            <h2>Trade Stocks, Forex and Crypto</h2>
+                            <p>Fast and secure way to trade and invest in cryptocurrencies</p>
+                            <div class="d-flex align-items-center">
+                            <a href="{%url 'register'%}" class="btn">Sign Up</a>
+                            <a href="{%url 'login'%}" class="mx-4 btn">Sign In</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6 py-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="buy-sell-widget">
+                                    <div name="myform" class="currency_validate">
+                                        <div class="form-group">
+                                            <label class="mr-sm-2">Wallet</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text"><i class="cc BTC-alt"></i></label>
+                                                </div>
+                                                <select name='currency' class="form-control">
+                                                    <option value="">Select</option>
+                                                    <option value="bitcoin">Bitcoin</option>
+                                                    <option value="ethereum">Ethereum</option>
+                                                    <option value="litecoin">Litecoin</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="mr-sm-2">Payment Method</label>
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <label class="input-group-text"><i class="fa fa-bank"></i></label>
+                                                </div>
+                                                <select class="form-control" name="method">
+                                                    <option value="">Select</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="mr-sm-2">Enter your amount</label>
+                                            <div class="input-group">
+                                                <input type="text" name="currency_amount" class="form-control"
+                                                    placeholder="0.0214 BTC">
+                                                <input type="text" name="usd_amount" class="form-control"
+                                                    placeholder="125.00 USD">
+                                            </div>
+                                            <div class="d-flex justify-content-between mt-3">
+                                                <p class="mb-0">Wallet Limit</p>
+                                                <h6 class="mb-0">$ ----</h6>
+                                            </div>
+                                        </div>
+
+                                        <a href={%url "dashboard"%}>
+                                            <button  class="btn btn-success btn-block">Trade Now</button>
+                                        </a>
+                                        
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -126,7 +181,7 @@
                                                     </td>
 
                                                     <td>
-                                                        USD {{btc.bitcoin.usd}}
+                                                        {{btc.bitcoin.usd | intcomma}} USD
                                                     </td>
                                                     <td>
                                                         {%if btcch > 0%}
@@ -143,7 +198,7 @@
                                                     </td>
 
                                                     <td>
-                                                        USD {{eth.ethereum.usd}}
+                                                        {{eth.ethereum.usd | intcomma}} USD
                                                     </td>
                                                     <td>
                                                         {%if ethch > 0%}
@@ -160,7 +215,7 @@
                                                     </td>
 
                                                     <td>
-                                                        USD {{ltc.litecoin.usd}}
+                                                        {{ltc.litecoin.usd | intcomma}} USD
                                                     </td>
                                                     <td>
                                                         {%if ltcch > 0%}
@@ -272,6 +327,54 @@
             </div>
         </div>
 
+        <div class="features section-padding">
+            <div class="container">
+                <div class="row py-lg-5 justify-content-center">
+                    <div class="col-xl-7">
+                        <div class="section_heading">
+                            <span>Traders Reviews</span>
+                            <p>This platform is no place for risk. they pay when due, the stop trades when necessary, they are professionals. I currently earn from referrals and get paid.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="features-content">
+                             <img class="review" src="{% static 'reviews/image3.jpg' %}" />
+                            <h4>Rose Walter</h4>
+                            <small>USA</small>
+                            <p>I was a newbie to crypto trading or the Forex market. I was scared so i decided to start up small but everything is working a lot better than what i ever imagined. I am forever grateful to {{vars.site}} for making run trades without losses. With 247 trading I was able to buy my new house.</p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="features-content">
+                             <img class="review" src="{% static 'reviews/image2.jpg' %}" />
+                            <h4>Piere Amie</h4>
+                            <p>My son told me about the whole trading thing and I decided to invest my retirement in it and I it has been amazing, I am even making more money compared to when I was still working. I am very happy with this platform.</p>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="features-content">
+                             <img class="review" src="{% static 'reviews/image1.jpg' %}" />
+                            <h4>Slakov Dimitri</h4>
+                            <p>This platform is no place for risk. they pay when due, the stop trades when necessary, they are professionals. I currently earn from referrals and get paid.</p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form section-padding" data-scroll-index="4">
+            <div class="container">
+                <div class="row justify-content-center">
+                <img class="doc" src="{% static 'docs/upshiftfx.png' %}" />
+                </div>
+            </div>
+        </div>
+
         <div class="contact-form section-padding" data-scroll-index="4">
             <div class="container">
                 <div class="row py-lg-5 justify-content-center">
@@ -333,51 +436,5 @@
                 </div>
             </div>
         </div>
-
-
-
-        <div class="footer">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-6 col-md-6">
-                        {%include 'light/template_light/auth-footer.html'%}
     </div>
-<!--
-    <div class="cookie_alert">
-
-        <div class="alert alert-light fade show">
-            <i class="la la-close" data-dismiss="alert"></i>
-            <p>
-                We use cookies to enhance your experience. By using {{vars.site}}, you agree to our <a href="{%url 'term_condition'%}">Terms of
-                    Use</a> and <a href="{%url 'privacy_policy'%}">Privacy
-                    Policy</a>
-            </p>
-            <button data-dismiss="alert" class="btn btn-success btn-block">Accept</button>
-        </div>
-    </div>
--->
-
-    <!-- <div class="bg_icons"></div> -->
-    {%include 'light/livechat.html'%}
-
-    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-
-    <script src="{% static 'static_new/vendor/owlcarousel/js/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'static_new/js/plugins/owl-carousel-init.js' %}"></script>
-    <script src="{% static 'static_new/vendor/scrollit/scrollIt.js' %}"></script>
-    <script src="{% static 'static_new/js/plugins/scrollit-init.js' %}"></script>
-
-    <!-- Chart sparkline plugin files -->
-    <script src="{% static 'static_new/vendor/jquery-sparkline/jquery.sparkline.min.js' %}"></script>
-    <script src="{% static 'static_new/js/plugins/sparkline-init.js' %}"></script>
-
-    <script src="{% static 'static_new/vendor/validator/jquery.validate.js' %}"></script>
-    <script src="{% static 'static_new/vendor/validator/validator-init.js' %}"></script>
-    <script src="{% static 'static_new/js/scripts.js' %}"></script>
-</body>
 {% endblock %}
-
-<!-- Mirrored from quixlab.com/demo/{{vars.site}}/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 10 Jul 2020 00:52:18 GMT -->
-</html>

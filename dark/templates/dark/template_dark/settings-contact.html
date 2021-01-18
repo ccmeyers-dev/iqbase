@@ -1,0 +1,66 @@
+{% extends 'dark/template_dark/layouts/base_dashboard_settings.html'%}
+
+{%load static%}
+
+{% block col %}
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Contact Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div>
+                        <h4 class="card-title mb-3">Email Address</h4>
+                        <form>
+                            <div class="form-row align-items-center">
+                                <div class="form-group col-xl-6">
+                                    <input readonly type="text" class="form-control" placeholder="{{cust}}">
+                                    <button disabled class="btn btn-success mt-4">Verified</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="phone_verified">
+                        <h5> <span><i class="fa fa-envelope"></i></span>{{cust}}</h5>
+                        <div class="verify">
+                            <div class="verified">
+                                <span><i class="la la-check"></i></span>
+                                <a href="#">Verified</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="phone_verify">
+                        <h4 class="card-title mb-3">Phone Number</h4>
+                        <form>
+                            <div class="form-row align-items-center">
+                                <div class="form-group col-xl-6">
+                                    <input readonly type="text" class="form-control" placeholder="{{cust.phone_number}}">
+                                    <button disabled class="btn btn-success mt-4">Verified</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-12">
+                    <div class="phone_verified">
+                        <h5> <span><i class="fa fa-phone"></i></span>{{cust.phone_number}}</h5>
+                        <div class="verify">
+                            <div class="verified">
+                                <span><i class="la la-check"></i></span>
+                                <a href="#">Verified</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

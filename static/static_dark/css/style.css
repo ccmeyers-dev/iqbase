@@ -7584,8 +7584,9 @@ body {
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5rem;
   background: #3A3361;
-  overflow-x: hidden; }
-  body.dashboard:before {
+  overflow-x: hidden; 
+}
+  /* body.dashboard:before {
     content: "";
     height: 300px;
     top: 0;
@@ -7593,7 +7594,8 @@ body {
     width: 100%;
     position: fixed;
     z-index: -9;
-    background: #7B6FFF; }
+    background: #7B6FFF; 
+  } */
 
 #main-wrapper {
   opacity: 0;

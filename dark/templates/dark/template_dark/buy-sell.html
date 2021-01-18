@@ -1,0 +1,331 @@
+{% extends 'dark/template_dark/layouts/base_dashboard.html'%}
+
+{%load static%}
+
+{% block content %}
+
+    <div class="content-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-5 col-lg-5 col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="buy-sell-widget">
+                                <ul class="nav nav-tabs">
+                                    <li class="nav-item"><a class="nav-link active">Trade</a>
+                                    </li>
+                                    <li class="nav-item"><a class="nav-link" href="{% url "account" %}">Withdraw</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content tab-content-default">
+                                    <div class="tab-pane fade show active" id="buy" role="tabpanel">
+                                        <form method="post" name="myform" class="currency_validate">
+                                            {%csrf_token%}
+                                            <div class="form-group">
+                                                <label class="mr-sm-2">Wallet</label>
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <label id="wallet_label" class="input-group-text">
+                                                            <i class="cc BTC-alt"></i>
+                                                        </label>
+                                                    </div>
+                                                    <select id="wallet_coin" onchange="walletChange()" name='wallet' class="form-control">
+                                                        <option selected value="3">Bitcoin</option>
+                                                        <option value="2">Ethereum</option>
+                                                        <option value="1">Litecoin</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="mr-sm-2">Duration</label>
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <label class="input-group-text"><i
+                                                                class="fa fa-calendar"></i></label>
+                                                    </div>
+                                                    <select id="duration" onchange="addDays()" class="form-control" name="duration">
+                                                        <option value="1">1 Day</option>
+                                                        <option value="2">2 Days</option>
+                                                        <option value="3">3 Days</option>
+                                                        <option value="4">4 Days</option>
+                                                        <option value="5">5 Days</option>
+                                                        <option value="6">6 Days</option>
+                                                        <option value="7">7 Days</option>
+                                                        <option value="14">14 Days</option>
+                                                        <option value="21">21 Days</option>
+                                                        <option selected value="30">1 Month</option>
+                                                        <option value="60">2 Months</option>
+                                                        <option value="90">3 Months</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="mr-sm-2">Enter amount</label>
+                                                <div class="input-group">
+                                                    <input id="amount" onkeyup="amountCheck()" type="text" name="amount" class="form-control"
+                                                        placeholder="Amount in USD">
+                                                </div>
+                                                <div class="d-flex justify-content-between mt-3">
+                                                    <p id="wallet_limit" class="mb-0">Bitcoin Wallet Limit</p>
+                                                    <h6 id="wallet_available" class="mb-0">${{cust.btc_total|floatformat:2}}</h6>
+                                                </div>
+                                                <p id="wallet_summary" class="text-center mb-0 mt-3 small">You can trade ${{cust.btc_available|floatformat:2}} from your Bitcoin Wallet</p>
+                                            </div>
+                                            {{formt.customer}}
+                                            {{formt.profit}}
+                                            <p class="text-center" id="buy_link"></p>
+                                            <button id="submit" type="submit" name="trade"
+                                                class="btn btn-success btn-block">Trade
+                                                Now</button>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-7 col-lg-7 col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="buyer-seller">
+                                <div class="d-flex justify-content-between mb-3">
+                                    <div class="buyer-info">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h4>Seller</h4>
+                                                <h5>{{cust.fullname}}</h5>
+                                                <a href="#">{{cust}}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="seller-info text-right">
+                                        <div class="media">
+                                            <div class="media-body">
+                                                <h4>Buyer</h4>
+                                                <h5>Simplex LLC</h5>
+                                                <a href="#">trade@simplex.com</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td><span class="text-primary">You are selling</span></td>
+                                                <td><span id="sell_amount" class="text-primary">$0.00 USD</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Today</td>
+                                                <td id="today">----</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Withdrawal Date</td>
+                                                <td id="withdate">----</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fee</td>
+                                                <td id="fee">-$0.00 USD</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Platform Bonus</td>
+                                                <td id="platform_bonus">+$0.00 USD</td>
+                                            </tr>
+                                            <tr>
+                                                <td>VAT</td>
+                                                <td>
+                                                    <div id="vat">-$0.00 USD</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td> Estimated Profit</td>
+                                                <td id="estimated_profit" class="text-success"> $0.00 USD</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xl-12 col-xxl-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">FAQ</h4>
+                        </div>
+                        <div class="card-body">
+                            <div id="accordion-faq" class="accordion">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse"
+                                            data-target="#collapseOne1" aria-expanded="false"
+                                            aria-controls="collapseOne1"><i class="fa" aria-hidden="true"></i>How To Deposit Crypto to my wallet?</h5>
+                                    </div>
+                                    <div id="collapseOne1" class="collapse show" data-parent="#accordion-faq">
+                                        <div class="card-body">
+                                            {{vars.site}} makes deposits to your Crypto Wallet fast and easy.
+                                                Copy your wallet address and buy crypto direct to your wallet with 
+                                                <a class="text-success" href="https://coinmama.com" target="_blank">Coinmama</a> or send from your local crypto wallet eg. BitPay, Coinbase or Bitcoin Wallet.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse"
+                                            data-target="#collapseTwo2" aria-expanded="false"
+                                            aria-controls="collapseTwo2"><i class="fa" aria-hidden="true"></i>
+                                            How Long Before I can Withdraw?</h5>
+                                    </div>
+                                    <div id="collapseTwo2" class="collapse" data-parent="#accordion-faq">
+                                        <div class="card-body">
+                                            Withdrawal is Available for all trades immediately they are completed. NB You can only withdraw from your available balance.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse"
+                                            data-target="#collapseThree5" aria-expanded="false"
+                                            aria-controls="collapseThree5"><i class="fa" aria-hidden="true"></i>
+                                            Where Do I Receive My Withdrawals?</h5>
+                                    </div>
+                                    <div id="collapseThree5" class="collapse" data-parent="#accordion-faq">
+                                        <div class="card-body">Immediately after completing your withdrawal request,
+                                                you will be redirected to our payment merchant unique to every Country/Region.
+                                                Then you can Withdraw direct to your Bank, Credit/Debit Card or send to another Wallet address.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse"
+                                            data-target="#collapseThree3" aria-expanded="false"
+                                            aria-controls="collapseThree3"><i class="fa" aria-hidden="true"></i>
+                                            Why Do I See "Amount Too Low" ?</h5>
+                                    </div>
+                                    <div id="collapseThree3" class="collapse" data-parent="#accordion-faq">
+                                        <div class="card-body">
+                                            Transactions have a minimum limit of $200 for trades and $2000 for withdrawals.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0 collapsed c-pointer" data-toggle="collapse"
+                                            data-target="#collapseThree4" aria-expanded="false"
+                                            aria-controls="collapseThree4"><i class="fa" aria-hidden="true"></i>
+                                            Withdrawal Not Available?</h5>
+                                    </div>
+                                    <div id="collapseThree4" class="collapse" data-parent="#accordion-faq">
+                                        <div class="card-body">
+                                            You might be seeing this error because you have outstanding deposits or payment to complete. Contact customer service by <a class="text-warning" href="mailto:{{vars.email}}">email</a> for assistance.
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+{% endblock %}
+    
+{%block scripts%}
+
+{{block.super}}
+
+    <script>
+        var wallet_coin = document.getElementById('wallet_coin');
+        var wallet_label = document.getElementById('wallet_label');
+        var wallet_limit = document.getElementById('wallet_limit');
+        var wallet_available = document.getElementById('wallet_available');
+        var wallet_summary = document.getElementById('wallet_summary');
+        var amount = document.getElementById('amount');
+        var submit = document.getElementById('submit');
+        var btc_limit = "{{cust.btc_total|floatformat:2}}";
+        var eth_limit = "{{cust.eth_total|floatformat:2}}";
+        var ltc_limit = "{{cust.ltc_total|floatformat:2}}";
+        var sell_amount = document.getElementById("sell_amount");
+        var fee = document.getElementById("fee");
+        var platform_bonus = document.getElementById("platform_bonus");
+        var vat = document.getElementById("vat");
+        var estimated_profit = document.getElementById("estimated_profit");
+        var buy_link = document.getElementById("buy_link");
+
+        function walletChange() {
+            amountCheck();
+            if (wallet_coin.value == 1) {
+                wallet_label.innerHTML = "<i class=\"cc LTC-alt\"></i>";
+                wallet_limit.innerHTML = "Litecoin Wallet Limit"
+                wallet_available.innerHTML = "$" + ltc_limit;
+                wallet_summary.innerHTML = "You can trade $" + ltc_limit + " from your Litecoin Wallet"
+            } else if (wallet_coin.value == 2) {
+                wallet_label.innerHTML = "<i class=\"cc ETH-alt\"></i>";
+                wallet_limit.innerHTML = "Ethereum Wallet Limit"
+                wallet_available.innerHTML = "$" + eth_limit;
+                wallet_summary.innerHTML = "You can trade $" + eth_limit + " from your Ethereum Wallet"
+            } else {
+                wallet_label.innerHTML = "<i class=\"cc BTC-alt\"></i>";
+                wallet_limit.innerHTML = "Bitcoin Wallet Limit"
+                wallet_available.innerHTML = "$" + btc_limit;
+                wallet_summary.innerHTML = "You can trade $" + btc_limit + " from your Bitcoin Wallet"
+            }
+        }
+
+        function amountCheck() {
+            if (amount.value < 200) {
+                submit.disabled = true;
+                submit.innerHTML = "Minimun 200 USD";
+                sell_amount.innerHTML = "$" + amount.value + " USD";
+                sell_amount.className = 'text-danger';
+                buy_link.innerHTML = null;
+            } else if (isNaN(amount.value)) {
+                submit.disabled = true;
+                submit.innerHTML = "Invalid amount";
+                buy_link.innerHTML = null;
+            }
+            else if (wallet_coin.value == 1 && amount.value > {{cust.ltc_total|floatformat:2}} || wallet_coin.value == 2 && amount.value > {{cust.eth_total|floatformat:2}} || wallet_coin.value == 3 && amount.value > {{cust.btc_total|floatformat:2}}) {
+                submit.disabled = true;
+                submit.innerHTML = "Insufficient funds";
+                sell_amount.innerHTML = "$" + amount.value + " USD";
+                sell_amount.className = 'text-danger';
+                buy_link.innerHTML = "You don't have that amount <a class='text-success' href='https://coinmama.com' target='_blank'>Buy Now</a>";
+            } else {
+                submit.disabled = false;
+                submit.innerHTML = "Trade Now";
+                sell_amount.innerHTML = "$" + amount.value + " USD";
+                sell_amount.className = 'text-success';
+                buy_link.innerHTML = null;
+            }
+            fee.innerHTML ="-$" +  (amount.value * 0.0063).toFixed(2) + " USD";
+            platform_bonus.innerHTML = "+$" + (amount.value * 0.0235).toFixed(2) + " USD";
+            vat.innerHTML = "-$" + (amount.value * 0.0125).toFixed(2) + " USD";
+            estimated_profit.innerHTML = "$" + (amount.value * 4.32).toFixed(2) + " USD";
+        }
+        function addDays() {
+            var today = new Date();
+            var duration = document.getElementById("duration").value;
+            var date = today.toLocaleString('default', { day: '2-digit', month: 'long', year: 'numeric'});
+            function getFuture(date, days) {
+                var result = new Date(date);
+                result.setDate(result.getDate() + days);
+                return result;
+            }
+            future = getFuture(today, Number(duration)).toLocaleString('default', { day: '2-digit', month: 'long', year: 'numeric'});
+            document.getElementById("today").innerHTML = date;
+            document.getElementById("withdate").innerHTML = future;
+        }
+    </script>
+
+{% endblock %}

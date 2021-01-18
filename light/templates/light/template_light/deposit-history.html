@@ -1,11 +1,8 @@
-{% extends 'light/template_light/index.html'%}
-{%load static%}
-{% block title %}
-    <title>{{vars.site}} </title>
-{% endblock %}
+{% extends 'light/template_light/layouts/base_dashboard.html'%}
 
-{% block body %}
-{%include 'light/template_light/header.html'%}
+{%load static%}
+
+{% block content %}
 
         <div class="history mb-80">
             <div class="container">
@@ -54,14 +51,4 @@
             </div>
         </div>
 
-        {%include 'light/template_light/index-footer.html'%}
-    </div>
-
-
-
-    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-    <script src="{% static 'static_new/js/scripts.js' %}"></script>
-</body>
 {% endblock %}

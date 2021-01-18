@@ -1,0 +1,92 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<!-- Mirrored from mannatthemes.com/metrica/metrica_live/crypto/crypto-index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 31 May 2020 23:08:58 GMT -->
+
+<head>
+    <meta charset="utf-8">
+    <title>{{vars.site}} - Update Deposit</title>
+
+    {%include 'dark/header.html' %}
+    <div class="page-wrapper">
+        <!-- Page Content-->
+        <div class="page-content-tab">
+            <div class="container-fluid">
+                <!-- Page-Title -->
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="page-title-box">
+                            <div class="float-right">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">{{vars.site}}</a></li>
+                                    <li class="breadcrumb-item"><a href="javascript:void(0);">Crypto</a></li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                </ol>
+                            </div>
+                            <h4 class="page-title">Dashboard</h4>
+                        </div>
+                        <!--end page-title-box-->
+                    </div>
+                    <!--end col-->
+                </div><!-- end page title end breadcrumb -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="bg-light py-2 pl-2 text-left">
+                                    <p class="text-muted text-5"><b>Client:</b> {{depo.customer}}</p>
+                                    <p class="text-muted text-5"><b>Wallet:</b> {{depo.wallet}}</p>
+                                    <p class="text-muted text-5"><b>Date deposited:</b> {{depo.date_created}}</p>
+                                    <p class="text-dark text-5">Amount: <b class="ml-4">$ {{depo.amount}}</b></p>
+                                </div>
+                            </div>
+                            <!--end card-body-->
+                        </div>
+                        <!--end card-->
+                    </div>
+                    <!--end col-->
+                </div>
+                <div class="row mt-4">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body pb-0">
+                                <p class="font-weight-bold mt-0">Change the amount {{depo.customer.user.first_name}} deposited</p>
+                            </div>
+                            <div class="card-body">
+                                <form class="form-horizontal" method="POST">
+                                    {%csrf_token%}
+                                    {{form.as_p}}
+                                    <div class="form-group mb-0 row">
+                                        <div class="col-12 mt-2">
+                                            <input class="btn btn-{{hue}} btn-rounded btn-block shadow-none waves-effect waves-light py-2" type="submit" name="correct" value="Update Deposit">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- container -->
+            <footer class="footer text-center text-sm-left">&copy; {%now 'Y'%} {{vars.site}} <span
+                    class="text-muted d-none d-sm-inline-block float-right">Crafted with <i
+                        class="mdi mdi-heart text-danger"></i> {{vars.site}} Developers</span></footer>
+            <!--end footer-->
+        </div><!-- end page content -->
+    </div><!-- end page-wrapper -->
+    <!-- jQuery  -->
+    <script src="{% static '/assets/js/jquery.min.js' %}"></script>
+    <script src="{% static '/assets/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static '/assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static '/assets/js/metismenu.min.js' %}"></script>
+    <script src="{% static '/assets/js/waves.js' %}"></script>
+    <script src="{% static '/assets/js/feather.min.js' %}"></script>
+    <script src="{% static '/assets/js/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static '/plugins/apexcharts/apexcharts.min.js' %}"></script>
+    <script src="{% static '/plugins/apexcharts/irregular-data-series.js' %}"></script>
+    <script src="{% static '/assets/pages/jquery.crypto-dashboard.init.js' %}"></script><!-- App js -->
+    <script src="{% static '/assets/js/app.js' %}"></script>
+</body>
+<!-- Mirrored from mannatthemes.com/metrica/metrica_live/crypto/crypto-index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 31 May 2020 23:09:23 GMT -->
+
+</html>
+</html>

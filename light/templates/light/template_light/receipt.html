@@ -1,167 +1,37 @@
-{% extends 'light/template_light/index.html'%}
+{% extends 'light/template_light/layouts/base_dashboard.html'%}
+
 {%load static%}
-{% block title %}
-    <title>{{vars.site}} </title>
-{% endblock %}
 
-{% block body %}
-<body class="dashboard">
+{% block content %}
 
-    <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
-    </div>
-
-    <div id="main-wrapper">
-
-        <div class="header dashboard">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <nav class="navbar navbar-expand-lg navbar-light px-0">
-                            <a class="navbar-brand" href="{%url 'dashboard'%}"><img src="{% static 'static_new/images/w_logo.png' %}" alt=""></a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                                aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-
-                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                                <ul class="navbar-nav">
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{%url 'dashboard'%}">Dashboard</a>
+    <div class="homepage mb-80">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-xl-6 col-lg-6">
+                    <div class="card balance-widget">
+                        <div class="card-header pb-0 border-0">
+                            <h5>Withdrawal successful</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="balance-widget">
+                                <div class="text-center my-4">
+                                    <h3>$ {{amount}}</h3>
+                                    <p class="mt-4">{{cust}}, withdrawal from your {{wallet}} wallet was successful.</p>
+                                </div>
+                                <div class="text-center my-4 display-4">
+                                    <i class="fa fa-check-circle fa-3x text-success"></i>
+                                </div>
+                                <ul class="list-unstyled">
+                                    <li class="media">
+                                        <a href="{%url 'administrator'%}" class="btn btn-success btn-block">Continue to dashboard</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{%url 'trade_view'%}">Trade / Withdraw</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{%url 'account'%}">Account</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{%url 'settings_profile'%}">Settings</a>
-                                    </li>
-                                    {%if user.is_admin%}
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{%url 'administrator'%}">Admin</a>
-                                    </li>
-                                    {%endif%}
                                 </ul>
                             </div>
-                            <div class="dashboard_log my-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="account_money">
-                                        <ul>
-                                            <li class="crypto">
-                                                <span>$ {{cust.available|floatformat:2}}</span>
-                                            </li>
-                                            <li class="usd">
-                                                <span>$ {{cust.balance|floatformat:2}}</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="profile_log dropdown">
-                                        <div class="user" data-toggle="dropdown">
-                                            <span class="thumb"><i class="la la-user"></i></span>
-                                            <span class="name">{{cust.fullname}}</span>
-                                            <span class="arrow"><i class="la la-angle-down"></i></span>
-                                        </div>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a href="{%url 'account'%}" class="dropdown-item">
-                                                <i class="la la-user"></i> Account
-                                            </a>
-                                            <a href="{%url 'settings_profile'%}" class="dropdown-item">
-                                                <i class="la la-cog"></i> Settings
-                                            </a>
-                                            <a href="{%url 'trade_view'%}" class="dropdown-item">
-                                                <i class="la la-bar-chart"></i> Trade / Withdraw
-                                            </a>
-                                            {%if user.is_admin%}
-                                            <a href="{%url 'administrator'%}" class="dropdown-item">
-                                                <i class="la la-cogs"></i> Admin
-                                            </a>
-                                            {%endif%}
-                                            <a href="{%url 'logout'%}" class="dropdown-item logout">
-                                                <i class="la la-sign-out"></i> Logout
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="page_title section-padding">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="page_title-content">
-                            <p>Welcome,
-                                <span> {{cust}}</span>
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="homepage mb-80">
-            <div class="container">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-xl-6 col-lg-6">
-                        <div class="card balance-widget">
-                            <div class="card-header pb-0 border-0">
-                                <h5>Withdrawal successful</h5>
-                            </div>
-                            <div class="card-body pt-0">
-                                <div class="balance-widget">
-                                    <div class="text-center my-4">
-                                        <h3>$ {{amount}}</h3>
-                                        <p class="mt-4">{{cust}}, withdrawal from your {{wallet}} wallet was successful.</p>
-                                    </div>
-                                    <div class="text-center my-4 display-4">
-                                        <i class="fa fa-check-circle fa-3x text-success"></i>
-                                    </div>
-                                    <ul class="list-unstyled">
-                                        <li class="media">
-                                            <a href="{%url 'administrator'%}" class="btn btn-success btn-block">Continue to dashboard</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        
-
-        {%include 'light/template_light/index-footer.html'%}
-
     </div>
-
-
-
-    <script src="{% static 'static_new/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/waves/waves.min.js' %}"></script>
-
-    <script src="{% static 'static_new/vendor/circle-progress/circle-progress.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/circle-progress/circle-progress-init.js' %}"></script>
-
-
-    <!--  flot-chart js -->
-    <script src="{% static 'static_new/vendor/apexchart/apexcharts.min.js' %}"></script>
-    <script src="{% static 'static_new/vendor/apexchart/apexchart-init.js' %}"></script>
-
-
-    <!-- <script src="{% static 'static_new/./js/dashboard.js"></script> -->
-    <script src="{% static 'static_new/js/scripts.js' %}"></script>
-
-</body>
+        
 {% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'light/template_light/layouts/base.html'%}
+
+{%load static%}
+
+{% block body %}
+
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+
+    <div id="main-wrapper">
+
+        <div class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12">
+                        <nav class="navbar navbar-expand-lg navbar-light px-0 justify-content-between">
+                            <a class="navbar-brand" href="{%url 'home'%}"><img src="{% static 'static_new/images/w_logo.png' %}" alt="">
+                                <span>{{vars.site}}</span></a>
+
+                            <div class="dashboard_log">
+                                <div class="d-flex align-items-center">
+                                    <div class="header_auth">
+                                        <a href="{%url 'register'%}" class="btn btn-success  mx-2">Register</a>
+                                        <a href="{%url 'reset_password'%}" class="btn btn-outline-primary  mx-2">Forgot Password</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {%block content%}
+        {%endblock%}
+
+    </div>
+
+    <div class="bg_icons"></div>
+
+{% endblock %}
+
+{%block footer%}
+{%endblock%}
